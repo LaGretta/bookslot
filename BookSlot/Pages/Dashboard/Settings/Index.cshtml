@@ -33,7 +33,33 @@
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <h5 class="fw-bold mb-4">Профіль бізнесу</h5>
-                            <form method="post">
+                            <form method="post" id="settingsForm">
+                                <!-- Logo upload -->
+                                <input type="hidden" name="logoBase64" id="logoBase64Input" value="" />
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold">Фото / Лого бізнесу</label>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:2px solid #e5e7eb;background:#f3f4f6;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                                            @if (!string.IsNullOrEmpty(Model.Business?.LogoUrl))
+                                            {
+                                                <img id="logoPreview" src="@Model.Business.LogoUrl" style="width:100%;height:100%;object-fit:cover" />
+                                                <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af;display:none"></i>
+                                            }
+                                            else
+                                            {
+                                                <img id="logoPreview" src="" style="width:100%;height:100%;object-fit:cover;display:none" />
+                                                <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af"></i>
+                                            }
+                                        </div>
+                                        <div>
+                                            <label class="btn btn-outline-secondary btn-sm" for="logoFileInput">
+                                                <i class="bi bi-upload me-1"></i> Обрати фото
+                                            </label>
+                                            <input id="logoFileInput" type="file" accept="image/jpeg,image/png,image/webp" class="d-none" onchange="handleLogoFile(this)" />
+                                            <div class="text-muted small mt-1">JPG, PNG або WebP, до 2 МБ</div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Назва бізнесу *</label>
                                     <input id="businessName" name="name" class="form-control"
@@ -128,6 +154,40 @@ function copyLink() {
         btn.innerHTML = '<i class="bi bi-check-lg"></i>';
         setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
     });
+}
+
+function handleLogoFile(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) { alert('Файл занадто великий. Максимум 2 МБ.'); return; }
+
+    const reader = new FileReader();
+    reader.onload = e => {
+        const originalImg = new Image();
+        originalImg.onload = () => {
+            // Resize to max 300x300 using canvas
+            const maxSize = 300;
+            let w = originalImg.width, h = originalImg.height;
+            if (w > maxSize || h > maxSize) {
+                if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+                else { w = Math.round(w * maxSize / h); h = maxSize; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            canvas.getContext('2d').drawImage(originalImg, 0, 0, w, h);
+            const base64 = canvas.toDataURL('image/jpeg', 0.85);
+
+            document.getElementById('logoBase64Input').value = base64;
+
+            const preview = document.getElementById('logoPreview');
+            const placeholder = document.getElementById('logoPlaceholder');
+            preview.src = base64;
+            preview.style.display = 'block';
+            if (placeholder) placeholder.style.display = 'none';
+        };
+        originalImg.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
 }
 
 // Auto-generate slug from business name (only if slug is empty or user hasn't manually edited it)

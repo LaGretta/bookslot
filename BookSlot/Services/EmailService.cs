@@ -30,8 +30,8 @@ public class EmailService : IEmailService
             using var client = new SmtpClient();
             await client.ConnectAsync(
                 _config["Email:Host"] ?? "smtp.gmail.com",
-                int.Parse(_config["Email:Port"] ?? "587"),
-                SecureSocketOptions.StartTls);
+                int.Parse(_config["Email:Port"] ?? "465"),
+                SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(
                 _config["Email:Username"] ?? "",
                 _config["Email:Password"] ?? "");

@@ -29,7 +29,8 @@ public class IndexModel : PageModel
     }
 
     public async Task<IActionResult> OnPostAsync(
-        string name, string slug, string? description, string? phone, string? address, string? category)
+        string name, string slug, string? description, string? phone, string? address, string? category,
+        string? logoBase64)
     {
         var userId = _userManager.GetUserId(User)!;
         slug = slug.ToLower().Trim().Replace(" ", "-");
@@ -82,6 +83,14 @@ public class IndexModel : PageModel
         business.Phone = phone;
         business.Address = address;
         business.Category = category;
+
+        // Handle logo (stored as base64 data URL directly in DB — no filesystem needed on Railway)
+        if (!string.IsNullOrWhiteSpace(logoBase64) && logoBase64.StartsWith("data:image/"))
+        {
+            // Validate max size (~500KB base64 ≈ ~375KB image)
+            if (logoBase64.Length <= 700_000)
+                business.LogoUrl = logoBase64;
+        }
 
         bool isNew = business.Id == 0;
         await _db.SaveChangesAsync();

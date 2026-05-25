@@ -31,8 +31,16 @@ else
         <!-- Business Header -->
         <div class="booking-header mb-0 text-center">
             <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
-                 style="width:70px;height:70px;background:rgba(255,255,255,.2);font-size:2rem">
-                @GetCategoryEmoji(Model.Business.Category)
+                 style="width:80px;height:80px;background:rgba(255,255,255,.2);font-size:2rem;overflow:hidden">
+                @if (!string.IsNullOrEmpty(Model.Business.LogoUrl))
+                {
+                    <img src="@Model.Business.LogoUrl" alt="@Model.Business.Name"
+                         style="width:100%;height:100%;object-fit:cover" />
+                }
+                else
+                {
+                    @GetCategoryEmoji(Model.Business.Category)
+                }
             </div>
             <h2 class="fw-bold mb-1">@Model.Business.Name</h2>
             @if (!string.IsNullOrEmpty(Model.Business.Category))
