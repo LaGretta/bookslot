@@ -76,14 +76,34 @@
             <!-- Plans -->
             <h5 class="fw-bold mb-3">Обрати план</h5>
             <div class="row g-4">
+                <!-- Free reminder -->
                 <div class="col-md-4">
-                    <div class="pricing-card">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <p class="text-muted mb-1 fw-semibold" style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px">Безкоштовно</p>
+                            <div class="fs-3 fw-bold mb-3">0 грн<span class="fs-6 fw-normal text-muted">/міс</span></div>
+                            <ul class="list-unstyled mb-4" style="font-size:.93rem">
+                                <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>До 30 записів/міс</li>
+                                <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i>Email-сповіщення</li>
+                                <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i>Статистика</li>
+                            </ul>
+                            <span class="btn btn-outline-secondary w-100 disabled">Поточний безкоштовний</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Basic -->
+                <div class="col-md-4">
+                    <div class="pricing-card" style="border:2px solid var(--primary)">
+                        <span class="badge mb-2" style="background:var(--primary)">Найпопулярніший</span>
                         <h5 class="fw-bold">Basic</h5>
                         <div class="pricing-price my-3">299 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                        <ul class="list-unstyled text-start mb-4">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>До 200 записів/міс</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Необмежені послуги</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Email-сповіщення</li>
+                        <ul class="list-unstyled text-start mb-4" style="font-size:.93rem">
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>До 200 записів/міс</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Необмежені послуги</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Email-сповіщення</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Статистика записів</li>
+                            <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i>Видалення "Powered by BookSlot"</li>
                         </ul>
                         @if (Model.StripeConfigured)
                         {
@@ -96,18 +116,24 @@
                         }
                         else
                         {
-                            <button class="btn btn-outline-secondary w-100" disabled>Налаштуй Stripe ↑</button>
+                            <button class="btn btn-outline-secondary w-100" disabled>Незабаром</button>
                         }
                     </div>
                 </div>
+
+                <!-- Pro -->
                 <div class="col-md-4">
                     <div class="pricing-card featured">
+                        <span class="badge bg-warning text-dark mb-2">Максимум можливостей</span>
                         <h5 class="fw-bold">Pro</h5>
                         <div class="pricing-price my-3">599 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                        <ul class="list-unstyled text-start mb-4">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Необмежені записи</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Необмежені послуги</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Пріоритетна підтримка</li>
+                        <ul class="list-unstyled text-start mb-4" style="font-size:.93rem">
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Необмежені записи</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Необмежені послуги</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Email-сповіщення</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Повна аналітика</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Без "Powered by BookSlot"</li>
+                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill me-1 mt-1" style="color:#a5f3a5"></i>Підтримка в Telegram</li>
                         </ul>
                         @if (Model.StripeConfigured)
                         {
@@ -120,7 +146,7 @@
                         }
                         else
                         {
-                            <button class="btn btn-outline-light w-100" disabled>Налаштуй Stripe ↑</button>
+                            <button class="btn btn-outline-light w-100" disabled>Незабаром</button>
                         }
                     </div>
                 </div>

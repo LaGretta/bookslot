@@ -1,3 +1,6 @@
+@using Microsoft.AspNetCore.Identity
+@using BookSlot.Data
+@inject SignInManager<ApplicationUser> SignInManager
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -21,12 +24,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto gap-1">
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="/#features">Можливості</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link px-3" href="/#pricing">Ціни</a>
-                    </li>
+                    @if (!SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="/#features">Можливості</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" href="/#pricing">Ціни</a>
+                        </li>
+                    }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -55,7 +61,17 @@
                 <div class="col-md-4">
                     <h6 class="text-white fw-600 mb-3">Контакти</h6>
                     <ul class="list-unstyled" style="font-size:.9rem">
-                        <li class="mb-2"><a href="mailto:sashagutsul2014@gmail.com" style="color:inherit;text-decoration:none"><i class="bi bi-envelope me-2"></i>sashagutsul2014@gmail.com</a></li>
+                        <li class="mb-2">
+                            <a href="https://mail.google.com/mail/?view=cm&to=sashagutsul2014@gmail.com&su=BookSlot: Підтримка"
+                               target="_blank" style="color:inherit;text-decoration:none">
+                                <i class="bi bi-envelope me-2"></i>Написати нам
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="https://t.me/koletvl" target="_blank" style="color:inherit;text-decoration:none">
+                                <i class="bi bi-telegram me-2"></i>@@koletvl
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>

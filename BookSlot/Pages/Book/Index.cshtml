@@ -165,9 +165,12 @@ else
             </div>
         }
 
-        <div class="text-center mt-4">
-            <small class="text-muted">Powered by <a asp-page="/Index" style="color:var(--primary)">BookSlot</a></small>
-        </div>
+        @if (!Model.IsPro)
+        {
+            <div class="text-center mt-4">
+                <small class="text-muted">Powered by <a asp-page="/Index" style="color:var(--primary)">BookSlot</a></small>
+            </div>
+        }
     </div>
 }
 
