@@ -14,6 +14,8 @@ public class Subscription
 
     public Business Business { get; set; } = null!;
 
+    public bool PromoUsed { get; set; } = false;
+
     public bool IsExpired => EndDate.HasValue && EndDate.Value < DateTime.UtcNow;
     public bool CanAddServices => Plan != SubscriptionPlan.Free || true;
     public int MaxBookingsPerMonth => Plan switch

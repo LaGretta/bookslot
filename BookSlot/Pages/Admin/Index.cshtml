@@ -1,0 +1,140 @@
+@page
+@model BookSlot.Pages.Admin.IndexModel
+@{
+    ViewData["Title"] = "Admin";
+    Layout = "_Layout";
+}
+
+<div class="container py-4" style="max-width:900px">
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="brand-icon" style="width:40px;height:40px;font-size:1.2rem;border-radius:12px">
+            <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        <div>
+            <h4 class="fw-bold mb-0">Адмін-панель</h4>
+            <small class="text-muted">Управління промо-акціями</small>
+        </div>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>@TempData["Success"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]</div>
+    }
+
+    <!-- Promo info -->
+    <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid var(--primary) !important;border-radius:12px">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-1"><i class="bi bi-megaphone me-2 text-primary"></i>Акція "Запіарь — отримай 7 днів Basic"</h6>
+            <p class="text-muted small mb-0">Клієнт скидає фото сторіс у Telegram → ти знаходиш його email тут → натискаєш "Активувати акцію". Одна активація на акаунт.</p>
+        </div>
+    </div>
+
+    <!-- Search -->
+    <form method="get" class="mb-3">
+        <div class="input-group">
+            <input name="search" class="form-control" placeholder="Пошук по email..." value="@Model.SearchEmail" />
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            @if (!string.IsNullOrEmpty(Model.SearchEmail))
+            {
+                <a class="btn btn-outline-secondary" asp-page="/Admin/Index">Скинути</a>
+            }
+        </div>
+    </form>
+
+    <!-- Users table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="font-size:.8rem">Email</th>
+                            <th style="font-size:.8rem">Бізнес</th>
+                            <th style="font-size:.8rem">Підписка</th>
+                            <th style="font-size:.8rem">Акція</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var u in Model.Users)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="fw-semibold" style="font-size:.9rem">@u.Email</div>
+                                </td>
+                                <td>
+                                    @if (u.BusinessName != null)
+                                    {
+                                        <div style="font-size:.9rem">@u.BusinessName</div>
+                                        <small class="text-muted">/book/@u.BusinessSlug</small>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">Бізнес не створено</span>
+                                    }
+                                </td>
+                                <td>
+                                    @{
+                                        var planLabel = u.Plan switch {
+                                            BookSlot.Models.SubscriptionPlan.Basic => "Basic",
+                                            BookSlot.Models.SubscriptionPlan.Pro   => "Pro",
+                                            _ => "Free"
+                                        };
+                                        var badgeClass = u.Plan switch {
+                                            BookSlot.Models.SubscriptionPlan.Basic => "bg-primary",
+                                            BookSlot.Models.SubscriptionPlan.Pro   => "bg-success",
+                                            _ => "bg-secondary"
+                                        };
+                                    }
+                                    <span class="badge @badgeClass">@planLabel</span>
+                                    @if (u.EndDate.HasValue)
+                                    {
+                                        <div class="small @(u.IsExpired ? "text-danger" : "text-muted")">
+                                            до @u.EndDate.Value.ToString("dd.MM.yy")
+                                            @if (u.IsExpired) { <span>(прострочено)</span> }
+                                        </div>
+                                    }
+                                </td>
+                                <td>
+                                    @if (u.PromoUsed)
+                                    {
+                                        <span class="badge bg-light text-muted border">Використано</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Доступна</span>
+                                    }
+                                </td>
+                                <td class="text-end">
+                                    @if (u.SubscriptionId.HasValue && !u.PromoUsed)
+                                    {
+                                        <form method="post" asp-page-handler="GrantPromo" style="display:inline">
+                                            <input type="hidden" name="subscriptionId" value="@u.SubscriptionId" />
+                                            <button class="btn btn-sm btn-primary fw-semibold"
+                                                    onclick="return confirm('Активувати 7 днів Basic для @u.Email?')">
+                                                <i class="bi bi-gift me-1"></i> Активувати акцію
+                                            </button>
+                                        </form>
+                                    }
+                                    else if (!u.SubscriptionId.HasValue)
+                                    {
+                                        <span class="text-muted small">Немає підписки</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.Users.Any())
+                        {
+                            <tr><td colspan="5" class="text-center py-4 text-muted">Нічого не знайдено</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">Показано до 50 останніх реєстрацій.</p>
+</div>
