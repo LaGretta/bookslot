@@ -1,6 +1,7 @@
 using BookSlot.Data;
 using BookSlot.Models;
 using BookSlot.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,20 @@ public class IndexModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly BookingService _bookingService;
     private readonly IEmailService _emailService;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public IndexModel(ApplicationDbContext db, BookingService bookingService, IEmailService emailService)
+    public IndexModel(ApplicationDbContext db, BookingService bookingService,
+        IEmailService emailService, UserManager<ApplicationUser> userManager)
     {
         _db = db;
         _bookingService = bookingService;
         _emailService = emailService;
+        _userManager = userManager;
     }
 
     public Business? Business { get; set; }
     public List<Service> Services { get; set; } = [];
+    public bool IsOwner { get; set; }
 
     public async Task OnGetAsync(string slug)
     {
@@ -34,6 +39,9 @@ public class IndexModel : PageModel
                 .Where(s => s.BusinessId == Business.Id && s.IsActive)
                 .OrderBy(s => s.Name)
                 .ToListAsync();
+
+            var userId = _userManager.GetUserId(User);
+            IsOwner = userId != null && Business.UserId == userId;
         }
     }
 
