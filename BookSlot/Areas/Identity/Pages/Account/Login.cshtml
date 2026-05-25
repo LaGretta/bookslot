@@ -23,8 +23,11 @@
             </div>
 
             <div class="mb-4">
-                <label asp-for="Input.Password" class="form-label fw-semibold">Пароль</label>
-                <input asp-for="Input.Password" class="form-control" placeholder="ваш пароль" autocomplete="current-password" />
+                <div class="d-flex justify-content-between align-items-center">
+                    <label asp-for="Input.Password" class="form-label fw-semibold mb-0">Пароль</label>
+                    <a asp-page="./ForgotPassword" style="font-size:.85rem;color:#6C63FF">Забули пароль?</a>
+                </div>
+                <input asp-for="Input.Password" class="form-control mt-1" placeholder="ваш пароль" autocomplete="current-password" />
                 <span asp-validation-for="Input.Password" class="text-danger small"></span>
             </div>
 
