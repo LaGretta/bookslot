@@ -37,7 +37,8 @@ builder.Services.AddDataProtection()
 
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<BookingService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddHttpClient<ResendEmailService>();
+builder.Services.AddScoped<IEmailService, ResendEmailService>();
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<StripeService>();
 

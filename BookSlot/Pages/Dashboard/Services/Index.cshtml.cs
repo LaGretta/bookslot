@@ -34,7 +34,7 @@ public class IndexModel : PageModel
         if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
 
         Services = await _db.Services
-            .Where(s => s.BusinessId == business.Id)
+            .Where(s => s.BusinessId == business.Id && s.IsActive)
             .OrderBy(s => s.Name)
             .ToListAsync();
         return Page();
