@@ -1,0 +1,231 @@
+@page "{slug}"
+@model BookSlot.Pages.Book.IndexModel
+@{
+    ViewData["Title"] = Model.Business?.Name ?? "Запис";
+    Layout = "_BookLayout";
+}
+
+@if (Model.Business == null)
+{
+    <div class="container py-5 text-center">
+        <div style="font-size:4rem">😕</div>
+        <h3 class="mt-3">Бізнес не знайдено</h3>
+        <p class="text-muted">Перевірте посилання або зверніться до власника</p>
+        <a asp-page="/Index" class="btn btn-primary">На головну</a>
+    </div>
+}
+else
+{
+    <div class="container py-4" style="max-width:700px">
+        <!-- Business Header -->
+        <div class="booking-header mb-0 text-center">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+                 style="width:70px;height:70px;background:rgba(255,255,255,.2);font-size:2rem">
+                @GetCategoryEmoji(Model.Business.Category)
+            </div>
+            <h2 class="fw-bold mb-1">@Model.Business.Name</h2>
+            @if (!string.IsNullOrEmpty(Model.Business.Category))
+            {
+                <p class="opacity-75 mb-1">@Model.Business.Category</p>
+            }
+            @if (!string.IsNullOrEmpty(Model.Business.Address))
+            {
+                <p class="opacity-75 small mb-0"><i class="bi bi-geo-alt me-1"></i>@Model.Business.Address</p>
+            }
+        </div>
+
+        <div class="card border-0 shadow-sm" style="border-radius:0 0 20px 20px">
+            <div class="card-body p-4">
+                @if (!string.IsNullOrEmpty(Model.Business.Description))
+                {
+                    <p class="text-muted mb-4">@Model.Business.Description</p>
+                }
+
+                @if (TempData["BookingSuccess"] != null)
+                {
+                    <div class="alert alert-success text-center py-4">
+                        <div style="font-size:3rem">🎉</div>
+                        <h5 class="fw-bold mt-2">Запис підтверджено!</h5>
+                        <p>@TempData["BookingSuccess"]</p>
+                        <p class="small text-muted">Перевірте свою пошту — ми надіслали підтвердження</p>
+                    </div>
+                }
+                else if (!Model.Services.Any())
+                {
+                    <div class="text-center py-4 text-muted">
+                        <div style="font-size:3rem">🛠️</div>
+                        <p class="mt-2">Послуги ще не додані. Зверніться до закладу.</p>
+                    </div>
+                }
+                else
+                {
+                    <!-- Step 1: Service -->
+                    <div id="step1">
+                        <h5 class="fw-bold mb-3">1. Оберіть послугу</h5>
+                        <div class="row g-2 mb-4">
+                            @foreach (var s in Model.Services)
+                            {
+                                <div class="col-md-6">
+                                    <div class="service-card" onclick="selectService(@s.Id, '@s.Name', @s.DurationMinutes)">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <div class="fw-semibold">@s.Name</div>
+                                                @if (!string.IsNullOrEmpty(s.Description))
+                                                {
+                                                    <small class="text-muted">@s.Description</small>
+                                                }
+                                            </div>
+                                            <div class="text-end ms-2">
+                                                <div class="fw-bold" style="color:var(--primary)">@s.Price грн</div>
+                                                <small class="text-muted">@s.DurationMinutes хв</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Step 2: Date -->
+                        <div id="step2" style="display:none">
+                            <h5 class="fw-bold mb-3">2. Оберіть дату</h5>
+                            <input type="date" id="bookingDate" class="form-control mb-3"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                   max="@DateTime.Today.AddDays(60).ToString("yyyy-MM-dd")"
+                                   onchange="loadSlots()" style="max-width:220px" />
+
+                            <!-- Step 3: Time -->
+                            <div id="step3" style="display:none">
+                                <h5 class="fw-bold mb-3">3. Оберіть час</h5>
+                                <div id="slotsContainer" class="row g-2 mb-4"></div>
+                            </div>
+
+                            <!-- Step 4: Client form -->
+                            <div id="step4" style="display:none">
+                                <h5 class="fw-bold mb-3">4. Ваші дані</h5>
+                                <form method="post">
+                                    <input type="hidden" name="serviceId" id="formServiceId" />
+                                    <input type="hidden" name="date" id="formDate" />
+                                    <input type="hidden" name="time" id="formTime" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Ім'я та прізвище *</label>
+                                        <input name="clientName" class="form-control" required placeholder="Іван Петренко" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Телефон *</label>
+                                        <input name="clientPhone" type="tel" class="form-control" required placeholder="+380XXXXXXXXX" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Email <span class="text-muted">(для підтвердження)</span></label>
+                                        <input name="clientEmail" type="email" class="form-control" placeholder="ivan@email.com" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Нотатки</label>
+                                        <textarea name="notes" class="form-control" rows="2" placeholder="Побажання або коментар"></textarea>
+                                    </div>
+
+                                    <!-- Summary -->
+                                    <div class="alert alert-light border mb-3" id="bookingSummary"></div>
+
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
+                                        <i class="bi bi-calendar-check me-2"></i> Підтвердити запис
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Business phone -->
+        @if (!string.IsNullOrEmpty(Model.Business.Phone))
+        {
+            <div class="text-center mt-3">
+                <small class="text-muted">Питання? <a href="tel:@Model.Business.Phone">@Model.Business.Phone</a></small>
+            </div>
+        }
+
+        <div class="text-center mt-4">
+            <small class="text-muted">Powered by <a asp-page="/Index" style="color:var(--primary)">BookSlot</a></small>
+        </div>
+    </div>
+}
+
+@functions {
+    string GetCategoryEmoji(string? cat) => cat switch {
+        "Барбершоп" => "✂️",
+        "Косметолог" => "💆",
+        "Манікюр/Педикюр" => "💅",
+        "Масаж" => "💆",
+        "Репетитор" => "📚",
+        "Фітнес/Тренер" => "💪",
+        "Лікар" => "🏥",
+        _ => "🏢"
+    };
+}
+
+@section Scripts {
+<script>
+var selectedServiceId = null;
+var selectedTime = null;
+var businessId = @Model.Business?.Id;
+
+function selectService(id, name, duration) {
+    selectedServiceId = id;
+    document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('formServiceId').value = id;
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'none';
+    document.getElementById('slotsContainer').innerHTML = '';
+    selectedTime = null;
+}
+
+function loadSlots() {
+    const date = document.getElementById('bookingDate').value;
+    if (!date || !selectedServiceId) return;
+
+    document.getElementById('formDate').value = date;
+    document.getElementById('step3').style.display = 'none';
+    document.getElementById('step4').style.display = 'none';
+
+    const container = document.getElementById('slotsContainer');
+    container.innerHTML = '<div class="col-12 text-center text-muted py-3">Завантаження...</div>';
+    document.getElementById('step3').style.display = 'block';
+
+    fetch(`/api/slots?businessId=${businessId}&serviceId=${selectedServiceId}&date=${date}`)
+        .then(r => r.json())
+        .then(slots => {
+            if (!slots.length) {
+                container.innerHTML = '<div class="col-12 text-center text-muted py-3">Немає вільних слотів на цей день</div>';
+                return;
+            }
+            container.innerHTML = slots.map(s =>
+                `<div class="col-4 col-md-3"><div class="time-slot" onclick="selectTime('${s}')">${s}</div></div>`
+            ).join('');
+        })
+        .catch(() => container.innerHTML = '<div class="col-12 text-muted">Помилка завантаження слотів</div>');
+}
+
+function selectTime(time) {
+    selectedTime = time;
+    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+    event.currentTarget.classList.add('selected');
+    document.getElementById('formTime').value = time;
+    document.getElementById('step4').style.display = 'block';
+
+    const date = document.getElementById('bookingDate').value;
+    const [y,m,d] = date.split('-');
+    const serviceName = event.currentTarget.closest('.card-body')?.querySelector('.service-card.selected .fw-semibold')?.textContent || '';
+
+    document.getElementById('bookingSummary').innerHTML = `
+        <strong>Ваш запис:</strong><br>
+        📅 ${d}.${m}.${y} о ${time}
+    `;
+
+    document.getElementById('step4').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+}

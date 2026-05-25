@@ -1,0 +1,27 @@
+<nav class="nav flex-column">
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Index") == true ? "active" : "")"
+       asp-page="/Dashboard/Index">
+        <i class="bi bi-speedometer2"></i> Дашборд
+    </a>
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Bookings") == true ? "active" : "")"
+       asp-page="/Dashboard/Bookings/Index">
+        <i class="bi bi-calendar-check"></i> Записи
+    </a>
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Services") == true ? "active" : "")"
+       asp-page="/Dashboard/Services/Index">
+        <i class="bi bi-scissors"></i> Послуги
+    </a>
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Schedule") == true ? "active" : "")"
+       asp-page="/Dashboard/Schedule/Index">
+        <i class="bi bi-clock"></i> Розклад
+    </a>
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Settings") == true ? "active" : "")"
+       asp-page="/Dashboard/Settings/Index">
+        <i class="bi bi-gear"></i> Налаштування
+    </a>
+    <hr class="mx-3">
+    <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Subscription") == true ? "active" : "")"
+       asp-page="/Dashboard/Subscription/Index">
+        <i class="bi bi-star"></i> Підписка
+    </a>
+</nav>

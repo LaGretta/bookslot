@@ -1,0 +1,121 @@
+@page
+@model BookSlot.Pages.Dashboard.Bookings.IndexModel
+@{
+    ViewData["Title"] = "Записи";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <partial name="_DashboardNav" />
+        </div>
+        <div class="col-md-10 py-4 px-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">Всі записи</h4>
+                <div class="d-flex gap-2">
+                    <form method="get" class="d-flex gap-2">
+                        <input type="date" name="date" class="form-control" value="@Model.FilterDate?.ToString("yyyy-MM-dd")" style="width:160px"/>
+                        <select name="status" class="form-select" style="width:160px">
+                            <option value="">Всі статуси</option>
+                            <option value="Pending" selected="@(Model.FilterStatus == "Pending" ? "selected" : null)">Очікують</option>
+                            <option value="Confirmed" selected="@(Model.FilterStatus == "Confirmed" ? "selected" : null)">Підтверджені</option>
+                            <option value="Completed" selected="@(Model.FilterStatus == "Completed" ? "selected" : null)">Завершені</option>
+                            <option value="Cancelled" selected="@(Model.FilterStatus == "Cancelled" ? "selected" : null)">Скасовані</option>
+                        </select>
+                        <button type="submit" class="btn btn-outline-primary"><i class="bi bi-search"></i></button>
+                        <a asp-page="./Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+                    </form>
+                </div>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <div class="card border-0 shadow-sm">
+                @if (!Model.Bookings.Any())
+                {
+                    <div class="text-center py-5 text-muted">
+                        <div style="font-size:3rem">📭</div>
+                        <p class="mt-2">Записів не знайдено</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Клієнт</th>
+                                    <th>Послуга</th>
+                                    <th>Дата / Час</th>
+                                    <th>Статус</th>
+                                    <th>Нотатки</th>
+                                    <th>Дії</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var b in Model.Bookings)
+                                {
+                                    <tr>
+                                        <td class="text-muted">@b.Id</td>
+                                        <td>
+                                            <div class="fw-semibold">@b.ClientName</div>
+                                            <small class="text-muted">@b.ClientPhone</small><br/>
+                                            <small class="text-muted">@b.ClientEmail</small>
+                                        </td>
+                                        <td>
+                                            <div>@b.Service.Name</div>
+                                            <small class="text-muted">@b.Service.DurationMinutes хв · @b.Service.Price грн</small>
+                                        </td>
+                                        <td>
+                                            @b.BookingDate.ToString("dd.MM.yyyy")<br/>
+                                            <small>@b.StartTime.ToString(@"hh\:mm") — @b.EndTime.ToString(@"hh\:mm")</small>
+                                        </td>
+                                        <td>
+                                            <span class="badge @GetBadgeClass(b.Status)">@GetStatusLabel(b.Status)</span>
+                                        </td>
+                                        <td><small class="text-muted">@(b.Notes ?? "—")</small></td>
+                                        <td>
+                                            @if (b.Status == BookSlot.Models.BookingStatus.Confirmed || b.Status == BookSlot.Models.BookingStatus.Pending)
+                                            {
+                                                <form method="post" asp-page-handler="Complete" asp-route-id="@b.Id" class="d-inline">
+                                                    <button class="btn btn-sm btn-outline-success me-1" title="Завершити">
+                                                        <i class="bi bi-check-lg"></i>
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Cancel" asp-route-id="@b.Id" class="d-inline"
+                                                      onsubmit="return confirm('Скасувати запис?')">
+                                                    <button class="btn btn-sm btn-outline-danger" title="Скасувати">
+                                                        <i class="bi bi-x-lg"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetBadgeClass(BookSlot.Models.BookingStatus s) => s switch {
+        BookSlot.Models.BookingStatus.Confirmed => "bg-info text-dark",
+        BookSlot.Models.BookingStatus.Completed => "bg-success",
+        BookSlot.Models.BookingStatus.Cancelled => "bg-danger",
+        _ => "bg-warning text-dark"
+    };
+    string GetStatusLabel(BookSlot.Models.BookingStatus s) => s switch {
+        BookSlot.Models.BookingStatus.Confirmed => "Підтверджено",
+        BookSlot.Models.BookingStatus.Completed => "Завершено",
+        BookSlot.Models.BookingStatus.Cancelled => "Скасовано",
+        _ => "Очікує"
+    };
+}

@@ -1,0 +1,141 @@
+@page
+@model BookSlot.Pages.Dashboard.IndexModel
+@{
+    ViewData["Title"] = "Дашборд";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-2 sidebar">
+            <partial name="_DashboardNav" />
+        </div>
+
+        <!-- Main -->
+        <div class="col-md-10 py-4 px-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="fw-bold mb-0">Дашборд</h4>
+                    <p class="text-muted mb-0">@Model.Business?.Name</p>
+                </div>
+                <a asp-page="/Book/Index" asp-route-slug="@Model.Business?.Slug" target="_blank" class="btn btn-outline-primary">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Моя сторінка
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 opacity-75">Всього записів</p>
+                                <h3 class="fw-bold mb-0">@Model.TotalBookings</h3>
+                            </div>
+                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">📅</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#11998e,#38ef7d);color:white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 opacity-75">Цього місяця</p>
+                                <h3 class="fw-bold mb-0">@Model.MonthBookings</h3>
+                            </div>
+                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">📈</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#f093fb,#f5576c);color:white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 opacity-75">Сьогодні</p>
+                                <h3 class="fw-bold mb-0">@Model.TodayBookings</h3>
+                            </div>
+                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">⏰</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card" style="background:linear-gradient(135deg,#4facfe,#00f2fe);color:white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <p class="mb-1 opacity-75">Послуг</p>
+                                <h3 class="fw-bold mb-0">@Model.ServicesCount</h3>
+                            </div>
+                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">✂️</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-0 pt-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="fw-bold mb-0">Останні записи</h6>
+                        <a asp-page="/Dashboard/Bookings/Index" class="btn btn-sm btn-outline-primary">Всі записи</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    @if (!Model.RecentBookings.Any())
+                    {
+                        <div class="text-center py-5 text-muted">
+                            <div style="font-size:3rem">📭</div>
+                            <p class="mt-2">Ще немає записів. Поділіться посиланням з клієнтами!</p>
+                            <small>bookslot.com/book/@Model.Business?.Slug</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Клієнт</th>
+                                        <th>Послуга</th>
+                                        <th>Дата/Час</th>
+                                        <th>Статус</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var b in Model.RecentBookings)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <div class="fw-semibold">@b.ClientName</div>
+                                                <small class="text-muted">@b.ClientPhone</small>
+                                            </td>
+                                            <td>@b.Service.Name</td>
+                                            <td>@b.BookingDate.ToString("dd.MM.yyyy") о @b.StartTime.ToString(@"hh\:mm")</td>
+                                            <td>
+                                                <span class="badge @GetBadgeClass(b.Status)">@GetStatusLabel(b.Status)</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetBadgeClass(BookSlot.Models.BookingStatus s) => s switch {
+        BookSlot.Models.BookingStatus.Confirmed => "bg-info text-dark",
+        BookSlot.Models.BookingStatus.Completed => "bg-success",
+        BookSlot.Models.BookingStatus.Cancelled => "bg-danger",
+        _ => "bg-warning text-dark"
+    };
+    string GetStatusLabel(BookSlot.Models.BookingStatus s) => s switch {
+        BookSlot.Models.BookingStatus.Confirmed => "Підтверджено",
+        BookSlot.Models.BookingStatus.Completed => "Завершено",
+        BookSlot.Models.BookingStatus.Cancelled => "Скасовано",
+        _ => "Очікує"
+    };
+}

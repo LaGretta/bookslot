@@ -1,0 +1,119 @@
+@page
+@model BookSlot.Pages.Dashboard.Settings.IndexModel
+@{
+    ViewData["Title"] = "Налаштування";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <partial name="_DashboardNav" />
+        </div>
+        <div class="col-md-10 py-4 px-4">
+            <h4 class="fw-bold mb-4">Налаштування бізнесу</h4>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">@TempData["Success"]</div>
+            }
+
+            <div class="row g-4">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-4">Профіль бізнесу</h5>
+                            <form method="post">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Назва бізнесу *</label>
+                                    <input name="name" class="form-control" value="@Model.Business?.Name" required
+                                           placeholder="напр. Барбершоп Іван" />
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">URL-адреса (slug) *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text text-muted">bookslot.com/book/</span>
+                                        <input name="slug" class="form-control" value="@Model.Business?.Slug" required
+                                               placeholder="barber-ivan" pattern="[a-z0-9\-]+" />
+                                    </div>
+                                    <small class="text-muted">Тільки малі літери, цифри та дефіси</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Категорія</label>
+                                    <select name="category" class="form-select">
+                                        <option selected="@(Model.Business?.Category == "Барбершоп" ? "selected" : null)">Барбершоп</option>
+                                        <option selected="@(Model.Business?.Category == "Косметолог" ? "selected" : null)">Косметолог</option>
+                                        <option selected="@(Model.Business?.Category == "Манікюр/Педикюр" ? "selected" : null)">Манікюр/Педикюр</option>
+                                        <option selected="@(Model.Business?.Category == "Масаж" ? "selected" : null)">Масаж</option>
+                                        <option selected="@(Model.Business?.Category == "Репетитор" ? "selected" : null)">Репетитор</option>
+                                        <option selected="@(Model.Business?.Category == "Фітнес/Тренер" ? "selected" : null)">Фітнес/Тренер</option>
+                                        <option selected="@(Model.Business?.Category == "Лікар" ? "selected" : null)">Лікар</option>
+                                        <option selected="@(Model.Business?.Category == "Інше" ? "selected" : null)">Інше</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">Опис</label>
+                                    <textarea name="description" class="form-control" rows="3"
+                                              placeholder="Короткий опис вашого бізнесу для клієнтів">@Model.Business?.Description</textarea>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Телефон</label>
+                                        <input name="phone" type="tel" class="form-control" value="@Model.Business?.Phone"
+                                               placeholder="+380XXXXXXXXX" />
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label fw-semibold">Адреса</label>
+                                        <input name="address" class="form-control" value="@Model.Business?.Address"
+                                               placeholder="вул. Хрещатик 1, Київ" />
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary px-4">
+                                    <i class="bi bi-check-lg me-1"></i> Зберегти
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h6 class="fw-bold mb-3">Ваша сторінка запису</h6>
+                            @if (Model.Business?.Slug != null)
+                            {
+                                <p class="text-muted small mb-3">Поділіться цим посиланням з клієнтами в Instagram, Telegram або WhatsApp</p>
+                                <div class="input-group mb-3">
+                                    <input id="bookingLink" type="text" class="form-control form-control-sm"
+                                           value="/book/@Model.Business.Slug" readonly />
+                                    <button class="btn btn-outline-secondary btn-sm" onclick="copyLink()">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                                <a asp-page="/Book/Index" asp-route-slug="@Model.Business.Slug" target="_blank"
+                                   class="btn btn-outline-primary w-100 btn-sm">
+                                    <i class="bi bi-eye me-1"></i> Переглянути
+                                </a>
+                            }
+                            else
+                            {
+                                <p class="text-muted small">Збережіть профіль щоб отримати посилання</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+function copyLink() {
+    const link = window.location.origin + document.getElementById('bookingLink').value;
+    navigator.clipboard.writeText(link).then(() => {
+        const btn = event.target.closest('button');
+        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
+    });
+}
+</script>
+}
