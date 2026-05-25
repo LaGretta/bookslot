@@ -35,10 +35,11 @@ public class IndexModel : PageModel
         if (Business == null)
             return RedirectToPage("/Dashboard/Settings/Index");
 
-        var today       = DateTime.UtcNow.Date;
-        var tomorrow    = today.AddDays(1);
-        var monthStart  = new DateTime(today.Year, today.Month, 1, 0, 0, 0, DateTimeKind.Utc);
-        var monthEnd    = monthStart.AddMonths(1);
+        var now        = DateTime.UtcNow;
+        var today      = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0, DateTimeKind.Utc);
+        var tomorrow   = today.AddDays(1);
+        var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var monthEnd   = monthStart.AddMonths(1);
 
         TotalBookings = await _db.Bookings.CountAsync(b => b.BusinessId == Business.Id);
         MonthBookings = await _db.Bookings.CountAsync(b => b.BusinessId == Business.Id

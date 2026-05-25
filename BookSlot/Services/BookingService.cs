@@ -21,8 +21,11 @@ public class BookingService
 
         if (schedule == null) return [];
 
+        var dayStart = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
+        var dayEnd   = dayStart.AddDays(1);
         var existingBookings = await _db.Bookings
-            .Where(b => b.BusinessId == businessId && b.BookingDate.Date == date.Date
+            .Where(b => b.BusinessId == businessId
+                     && b.BookingDate >= dayStart && b.BookingDate < dayEnd
                      && b.Status != BookingStatus.Cancelled)
             .ToListAsync();
 
@@ -62,7 +65,7 @@ public class BookingService
             ClientName = clientName,
             ClientPhone = clientPhone,
             ClientEmail = clientEmail,
-            BookingDate = date.Date,
+            BookingDate = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc),
             StartTime = startTime,
             EndTime = startTime + TimeSpan.FromMinutes(service.DurationMinutes),
             Notes = notes,

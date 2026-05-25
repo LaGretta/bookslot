@@ -49,7 +49,11 @@ public class IndexModel : PageModel
             .Where(b => b.BusinessId == business.Id);
 
         if (date.HasValue)
-            query = query.Where(b => b.BookingDate.Date == date.Value.Date);
+        {
+            var dayStart = DateTime.SpecifyKind(date.Value.Date, DateTimeKind.Utc);
+            var dayEnd   = dayStart.AddDays(1);
+            query = query.Where(b => b.BookingDate >= dayStart && b.BookingDate < dayEnd);
+        }
 
         if (!string.IsNullOrEmpty(status) && Enum.TryParse<BookingStatus>(status, out var statusEnum))
             query = query.Where(b => b.Status == statusEnum);
