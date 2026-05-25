@@ -15,7 +15,7 @@
 body { font-family: 'Inter', 'Segoe UI', sans-serif; color: var(--text); }
 
 /* ── NAVBAR ── */
-.navbar { box-shadow: 0 1px 0 var(--border); background: #fff !important; padding: .875rem 0; }
+.navbar { position: sticky; top: 0; z-index: 1030; box-shadow: 0 1px 0 var(--border); background: #fff !important; padding: .875rem 0; }
 .navbar-brand {
     font-weight: 800; font-size: 1.2rem; color: var(--dark) !important;
     display: flex; align-items: center; gap: .55rem; text-decoration: none;
