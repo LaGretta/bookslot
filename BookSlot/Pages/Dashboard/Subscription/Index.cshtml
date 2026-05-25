@@ -63,33 +63,89 @@
             <!-- Promo Banner -->
             @if (Model.Subscription != null && !Model.Subscription.PromoUsed)
             {
-                <div class="card border-0 mb-4" style="background:linear-gradient(135deg,#1e1b4b,#4F46E5);border-radius:16px;overflow:hidden">
-                    <div class="card-body p-4 text-white">
-                        <div class="d-flex align-items-start gap-3 flex-wrap">
-                            <div style="font-size:2.5rem;line-height:1">📸</div>
-                            <div class="flex-grow-1">
-                                <h5 class="fw-bold mb-1">Безкоштовно 7 днів Basic — за одне сторіс!</h5>
-                                <p class="mb-3" style="opacity:.85;font-size:.95rem">
-                                    Запіарь BookSlot у себе в Instagram або TikTok Stories і отримай Basic підписку на 7 днів. Безкоштовно. Одна акція на акаунт.
-                                </p>
-                                <ol class="mb-3 ps-3" style="opacity:.85;font-size:.9rem">
-                                    <li class="mb-1">Зроби сторіс з посиланням на свою сторінку BookSlot</li>
-                                    <li class="mb-1">Скинь скріншот в Telegram: <a href="https://t.me/koletvl" target="_blank" class="text-warning fw-semibold">@@koletvl</a></li>
-                                    <li>Отримай 7 днів Basic протягом кількох годин 🎁</li>
-                                </ol>
-                                <a href="https://t.me/koletvl" target="_blank" class="btn btn-warning fw-bold px-4">
-                                    <i class="bi bi-telegram me-2"></i>Написати в Telegram
-                                </a>
+                <div class="mb-4" style="position:relative;border-radius:20px;overflow:hidden;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e)">
+                    <!-- Decorative blobs -->
+                    <div style="position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(99,102,241,.25);filter:blur(40px);pointer-events:none"></div>
+                    <div style="position:absolute;bottom:-30px;left:60px;width:120px;height:120px;border-radius:50%;background:rgba(168,85,247,.2);filter:blur(35px);pointer-events:none"></div>
+
+                    <div class="p-4 p-md-5" style="position:relative">
+                        <!-- Badge -->
+                        <div class="mb-3">
+                            <span style="background:rgba(255,215,0,.15);border:1px solid rgba(255,215,0,.35);color:#fde68a;font-size:.75rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:.3rem .85rem;border-radius:999px">
+                                🎁 Обмежена акція
+                            </span>
+                        </div>
+
+                        <div class="row align-items-center g-4">
+                            <!-- Icon block -->
+                            <div class="col-auto d-none d-md-block">
+                                <div style="width:90px;height:90px;border-radius:24px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);position:relative">
+                                    <i class="bi bi-phone-fill" style="font-size:2.4rem;color:#a5b4fc"></i>
+                                    <!-- Small camera badge -->
+                                    <div style="position:absolute;bottom:-8px;right:-8px;width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);display:flex;align-items:center;justify-content:center;border:2px solid #1e1b4b">
+                                        <i class="bi bi-camera-fill" style="font-size:.8rem;color:#fff"></i>
+                                    </div>
+                                </div>
                             </div>
+
+                            <!-- Text -->
+                            <div class="col text-white">
+                                <h4 class="fw-bold mb-1" style="font-size:clamp(1.1rem,2.5vw,1.45rem);line-height:1.25">
+                                    7 днів Basic — безкоштовно.<br>
+                                    <span style="color:#a5b4fc">Просто зроби сторіс.</span>
+                                </h4>
+                                <p class="mb-0" style="opacity:.7;font-size:.9rem;max-width:480px">
+                                    Запіарь нас в Instagram або TikTok Stories і отримай Basic підписку на тиждень. Одна акція на акаунт.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Steps -->
+                        <div class="row g-3 mt-3">
+                            <div class="col-md-4">
+                                <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1rem 1.25rem">
+                                    <div style="font-size:1.4rem;margin-bottom:.35rem">📱</div>
+                                    <div class="text-white fw-semibold" style="font-size:.88rem">Крок 1</div>
+                                    <div style="color:rgba(255,255,255,.6);font-size:.83rem">Зроби сторіс із посиланням на свою BookSlot-сторінку</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1rem 1.25rem">
+                                    <div style="font-size:1.4rem;margin-bottom:.35rem">✉️</div>
+                                    <div class="text-white fw-semibold" style="font-size:.88rem">Крок 2</div>
+                                    <div style="color:rgba(255,255,255,.6);font-size:.83rem">Скинь скріншот у Telegram <a href="https://t.me/koletvl" target="_blank" style="color:#fde68a;text-decoration:none;font-weight:600">@@koletvl</a></div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:1rem 1.25rem">
+                                    <div style="font-size:1.4rem;margin-bottom:.35rem">⚡</div>
+                                    <div class="text-white fw-semibold" style="font-size:.88rem">Крок 3</div>
+                                    <div style="color:rgba(255,255,255,.6);font-size:.83rem">Отримай 7 днів Basic протягом кількох годин</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="https://t.me/koletvl" target="_blank"
+                               style="background:linear-gradient(135deg,#6366f1,#8b5cf6);border:none;color:#fff;font-weight:700;padding:.7rem 1.8rem;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem;font-size:.95rem;box-shadow:0 4px 20px rgba(99,102,241,.4);transition:all .2s"
+                               onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(99,102,241,.5)'"
+                               onmouseout="this.style.transform='';this.style.boxShadow='0 4px 20px rgba(99,102,241,.4)'">
+                                <i class="bi bi-telegram"></i> Написати в Telegram
+                            </a>
                         </div>
                     </div>
                 </div>
             }
             else if (Model.Subscription?.PromoUsed == true)
             {
-                <div class="alert alert-light border d-flex align-items-center gap-2 mb-4">
-                    <i class="bi bi-check-circle-fill text-success"></i>
-                    <span>Ти вже скористався промо-акцією. Дякуємо за підтримку! 🙌</span>
+                <div class="d-flex align-items-center gap-3 mb-4 p-3" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:14px">
+                    <div style="width:40px;height:40px;border-radius:12px;background:#dcfce7;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="bi bi-check2-circle" style="color:#16a34a;font-size:1.3rem"></i>
+                    </div>
+                    <div>
+                        <div class="fw-semibold" style="color:#15803d;font-size:.95rem">Акцію використано</div>
+                        <div style="color:#166534;font-size:.85rem;opacity:.8">Дякуємо за підтримку! Ти вже отримав свої 7 днів 🙌</div>
+                    </div>
                 </div>
             }
 
