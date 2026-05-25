@@ -25,47 +25,55 @@
 
             <!-- Stats -->
             <div class="row g-3 mb-4">
-                <div class="col-md-3">
-                    <div class="stat-card" style="background:linear-gradient(135deg,#667eea,#764ba2);color:white">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="mb-1 opacity-75">Всього записів</p>
-                                <h3 class="fw-bold mb-0">@Model.TotalBookings</h3>
+                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Всього записів</p>
+                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.TotalBookings</h3>
                             </div>
-                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">📅</div>
+                            <div class="stat-icon" style="background:var(--primary-light)">
+                                <i class="bi bi-calendar-check" style="color:var(--primary)"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card" style="background:linear-gradient(135deg,#11998e,#38ef7d);color:white">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="mb-1 opacity-75">Цього місяця</p>
-                                <h3 class="fw-bold mb-0">@Model.MonthBookings</h3>
+                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Цього місяця</p>
+                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.MonthBookings</h3>
                             </div>
-                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">📈</div>
+                            <div class="stat-icon" style="background:#ECFDF5">
+                                <i class="bi bi-bar-chart-line" style="color:#10B981"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card" style="background:linear-gradient(135deg,#f093fb,#f5576c);color:white">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="mb-1 opacity-75">Сьогодні</p>
-                                <h3 class="fw-bold mb-0">@Model.TodayBookings</h3>
+                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Сьогодні</p>
+                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.TodayBookings</h3>
                             </div>
-                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">⏰</div>
+                            <div class="stat-icon" style="background:#FEF3C7">
+                                <i class="bi bi-clock" style="color:#D97706"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="stat-card" style="background:linear-gradient(135deg,#4facfe,#00f2fe);color:white">
+                <div class="col-6 col-md-3">
+                    <div class="stat-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="mb-1 opacity-75">Послуг</p>
-                                <h3 class="fw-bold mb-0">@Model.ServicesCount</h3>
+                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Послуг</p>
+                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.ServicesCount</h3>
                             </div>
-                            <div class="stat-icon" style="background:rgba(255,255,255,.2)">✂️</div>
+                            <div class="stat-icon" style="background:#FDF2F8">
+                                <i class="bi bi-scissors" style="color:#9333EA"></i>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -82,10 +90,18 @@
                 <div class="card-body p-0">
                     @if (!Model.RecentBookings.Any())
                     {
-                        <div class="text-center py-5 text-muted">
-                            <div style="font-size:3rem">📭</div>
-                            <p class="mt-2">Ще немає записів. Поділіться посиланням з клієнтами!</p>
-                            <small>bookslot.com/book/@Model.Business?.Slug</small>
+                        <div class="text-center py-5">
+                            <div class="mb-3" style="font-size:2.5rem">📭</div>
+                            <h6 class="fw-bold text-dark">Ще немає записів</h6>
+                            <p class="text-muted mb-3">Поділіться посиланням з клієнтами у Instagram або Telegram</p>
+                            <div class="input-group mx-auto" style="max-width:380px">
+                                <input id="dashLink" type="text" class="form-control form-control-sm"
+                                       value="https://bookslot-production-8bbb.up.railway.app/book/@Model.Business?.Slug"
+                                       readonly />
+                                <button class="btn btn-primary btn-sm" onclick="copyDashLink()">
+                                    <i class="bi bi-clipboard"></i>
+                                </button>
+                            </div>
                         </div>
                     }
                     else
@@ -124,6 +140,20 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+function copyDashLink() {
+    const val = document.getElementById('dashLink')?.value;
+    if (!val) return;
+    navigator.clipboard.writeText(val).then(() => {
+        const btn = event.target.closest('button');
+        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
+        setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
+    });
+}
+</script>
+}
 
 @functions {
     string GetBadgeClass(BookSlot.Models.BookingStatus s) => s switch {

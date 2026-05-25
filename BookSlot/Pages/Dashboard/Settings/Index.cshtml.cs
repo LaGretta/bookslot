@@ -83,10 +83,17 @@ public class IndexModel : PageModel
         business.Address = address;
         business.Category = category;
 
+        bool isNew = business.Id == 0;
         await _db.SaveChangesAsync();
         Business = business;
 
-        TempData["Success"] = "Налаштування збережено!";
-        return RedirectToPage();
+        TempData["Success"] = isNew
+            ? "Бізнес створено! Тепер додайте послуги та налаштуйте розклад."
+            : "Налаштування збережено!";
+
+        // After first business creation, go directly to dashboard
+        return isNew
+            ? RedirectToPage("/Dashboard/Index")
+            : RedirectToPage();
     }
 }
