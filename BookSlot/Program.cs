@@ -2,6 +2,7 @@ using BookSlot.Data;
 using BookSlot.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,7 @@ builder.Services.AddDataProtection()
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<StripeService>();
 
 var app = builder.Build();

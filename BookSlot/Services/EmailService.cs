@@ -15,6 +15,9 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
+    public async Task SendRawAsync(string toEmail, string toName, string subject, string htmlBody) =>
+        await SendAsync(toEmail, toName, subject, htmlBody);
+
     private async Task SendAsync(string toEmail, string toName, string subject, string htmlBody)
     {
         try
