@@ -27,12 +27,10 @@ public class IndexModel : PageModel
     public Business? Business { get; set; }
     public List<Service> Services { get; set; } = [];
     public bool IsOwner { get; set; }
-    public bool IsPro { get; set; }
 
     public async Task OnGetAsync(string slug)
     {
         Business = await _db.Businesses
-            .Include(b => b.Subscription)
             .FirstOrDefaultAsync(b => b.Slug == slug && b.IsActive);
 
         if (Business != null)
@@ -44,9 +42,6 @@ public class IndexModel : PageModel
 
             var userId = _userManager.GetUserId(User);
             IsOwner = userId != null && Business.UserId == userId;
-
-            IsPro = Business.Subscription?.Plan == SubscriptionPlan.Pro
-                    && !(Business.Subscription.IsExpired);
         }
     }
 
