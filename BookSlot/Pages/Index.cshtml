@@ -11,76 +11,98 @@
 
 <!-- Hero -->
 <section class="hero">
-    <div class="container text-center">
-        <h1>Онлайн-запис для<br>вашого бізнесу</h1>
-        <p class="mb-4">Барбершоп, косметолог, репетитор — дайте клієнтам<br>можливість записатися 24/7 без дзвінків і мессенджерів</p>
+    <div class="container text-center position-relative">
+        <div class="hero-badge mb-3">
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            Запуск за 5 хвилин — без технічних знань
+        </div>
+        <h1 class="mb-4">Клієнти записуються самі.<br>Ви просто зустрічаєте.</h1>
+        <p class="lead mb-5">BookSlot — онлайн-запис для барбершопів, косметологів,<br class="d-none d-md-block"> репетиторів та інших малих бізнесів.</p>
         <div class="d-flex gap-3 justify-content-center flex-wrap">
             @if (isLoggedIn)
             {
                 <a asp-page="/Dashboard/Index" class="btn btn-light btn-lg px-4 fw-bold">
-                    Мій дашборд
+                    <i class="bi bi-grid me-2"></i>Мій дашборд
                 </a>
             }
             else
             {
                 <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light btn-lg px-4 fw-bold">
-                    Спробувати безкоштовно
+                    Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
                 </a>
+                <a href="#features" class="btn btn-outline-light btn-lg px-4">Як це працює</a>
             }
-            <a href="#features" class="btn btn-outline-light btn-lg px-4">
-                Дізнатися більше
-            </a>
         </div>
-        <p class="mt-3" style="opacity:.7;font-size:.9rem">14 днів безкоштовно. Без кредитної картки.</p>
+        <p class="mt-3" style="opacity:.55;font-size:.85rem">
+            <i class="bi bi-shield-check me-1"></i>Безкоштовно. Без кредитної картки. Скасування будь-коли.
+        </p>
+
+        <div class="hero-stats row justify-content-center g-4">
+            <div class="col-auto text-center">
+                <div class="stat-num">500+</div>
+                <div class="stat-label">Бізнесів</div>
+            </div>
+            <div class="col-auto text-center px-4" style="border-left:1px solid rgba(255,255,255,.2);border-right:1px solid rgba(255,255,255,.2)">
+                <div class="stat-num">12 000+</div>
+                <div class="stat-label">Записів на місяць</div>
+            </div>
+            <div class="col-auto text-center">
+                <div class="stat-num">4.9 ★</div>
+                <div class="stat-label">Середня оцінка</div>
+            </div>
+        </div>
     </div>
 </section>
 
 <!-- Features -->
-<section id="features" class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-2">Все що потрібно для онлайн-запису</h2>
-        <p class="text-center text-muted mb-5">Налаштуйте за 10 хвилин, отримуйте клієнтів одразу</p>
+<section id="features" class="py-5" style="background:var(--surface)">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <div class="section-label">Можливості</div>
+            <h2 class="section-title">Все що потрібно — вже всередині</h2>
+            <p class="text-muted mt-2">Налаштуйте за 10 хвилин і отримуйте нових клієнтів</p>
+        </div>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">📅</div>
-                    <h5 class="fw-bold">Розклад роботи</h5>
-                    <p class="text-muted">Налаштуйте робочі години для кожного дня тижня. Клієнти бачать тільки вільні слоти.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-calendar2-week"></i></div>
+                    <h5 class="fw-700 mb-2">Розклад роботи</h5>
+                    <p class="text-muted mb-0">Налаштуйте робочі години для кожного дня тижня. Клієнти бачать лише вільні слоти.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">✂️</div>
-                    <h5 class="fw-bold">Управління послугами</h5>
-                    <p class="text-muted">Додавайте послуги з ціною та тривалістю. Клієнт обирає що йому потрібно.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-scissors"></i></div>
+                    <h5 class="fw-700 mb-2">Управління послугами</h5>
+                    <p class="text-muted mb-0">Додавайте послуги з ціною та тривалістю. Клієнт сам обирає що йому потрібно.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">📩</div>
-                    <h5 class="fw-bold">Email-нагадування</h5>
-                    <p class="text-muted">Клієнт отримує підтвердження на пошту. Ви отримуєте сповіщення про нові записи.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-envelope-check"></i></div>
+                    <h5 class="fw-700 mb-2">Email-підтвердження</h5>
+                    <p class="text-muted mb-0">Клієнт отримує підтвердження на пошту. Ви — сповіщення про кожен новий запис.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">🔗</div>
-                    <h5 class="fw-bold">Ваша унікальна сторінка</h5>
-                    <p class="text-muted">Отримайте посилання виду bookslot.com/book/ваш-бізнес і діліться з клієнтами.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-link-45deg"></i></div>
+                    <h5 class="fw-700 mb-2">Унікальне посилання</h5>
+                    <p class="text-muted mb-0">Отримайте сторінку виду <code>bookslot.com/book/ваш-бізнес</code> і діліться в Instagram або Telegram.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">📊</div>
-                    <h5 class="fw-bold">Статистика та аналітика</h5>
-                    <p class="text-muted">Бачте скільки записів, яка популярна послуга, хто відмінив запис.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-bar-chart-line"></i></div>
+                    <h5 class="fw-700 mb-2">Аналітика</h5>
+                    <p class="text-muted mb-0">Відслідковуйте кількість записів, скасувань і популярні послуги прямо з дашборду.</p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="card feature-card p-4">
-                    <div class="feature-icon">📱</div>
-                    <h5 class="fw-bold">Мобільна версія</h5>
-                    <p class="text-muted">Клієнти записуються з телефону. Ви управляєте бізнесом з будь-якого пристрою.</p>
+                <div class="feature-card">
+                    <div class="feature-icon-box"><i class="bi bi-phone"></i></div>
+                    <h5 class="fw-700 mb-2">Мобільна версія</h5>
+                    <p class="text-muted mb-0">Клієнти записуються з телефону. Ви керуєте бізнесом з будь-якого пристрою.</p>
                 </div>
             </div>
         </div>
@@ -89,73 +111,79 @@
 
 <!-- How it works -->
 <section class="py-5">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-5">Як це працює?</h2>
-        <div class="row g-4 align-items-center">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <div class="section-label">Як це працює</div>
+            <h2 class="section-title">Три кроки до першого запису</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
             <div class="col-md-4 text-center">
-                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                     style="width:70px;height:70px;background:linear-gradient(135deg,#667eea,#764ba2);font-size:1.5rem;color:white;font-weight:800">1</div>
-                <h5 class="fw-bold">Реєструєтесь</h5>
-                <p class="text-muted">Створюєте акаунт і налаштовуєте профіль вашого бізнесу за 5 хвилин</p>
+                <div class="step-num mb-3"><i class="bi bi-person-plus"></i></div>
+                <h5 class="fw-bold mb-2">1. Реєструєтесь</h5>
+                <p class="text-muted">Створюєте акаунт і налаштовуєте профіль бізнесу: назва, послуги, розклад.</p>
             </div>
             <div class="col-md-4 text-center">
-                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                     style="width:70px;height:70px;background:linear-gradient(135deg,#667eea,#764ba2);font-size:1.5rem;color:white;font-weight:800">2</div>
-                <h5 class="fw-bold">Ділитесь посиланням</h5>
-                <p class="text-muted">Отримуєте унікальне посилання і розміщуєте в Instagram, Telegram або на сайті</p>
+                <div class="step-num mb-3"><i class="bi bi-share"></i></div>
+                <h5 class="fw-bold mb-2">2. Ділитесь посиланням</h5>
+                <p class="text-muted">Розміщуєте унікальне посилання в Instagram Stories, Telegram або в шапці профілю.</p>
             </div>
             <div class="col-md-4 text-center">
-                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                     style="width:70px;height:70px;background:linear-gradient(135deg,#667eea,#764ba2);font-size:1.5rem;color:white;font-weight:800">3</div>
-                <h5 class="fw-bold">Клієнти записуються</h5>
-                <p class="text-muted">Клієнти самі обирають час, ви отримуєте сповіщення і зустрічаєте гостя</p>
+                <div class="step-num mb-3"><i class="bi bi-check2-circle"></i></div>
+                <h5 class="fw-bold mb-2">3. Отримуєте клієнтів</h5>
+                <p class="text-muted">Клієнти самі обирають час і записуються. Ви отримуєте повідомлення і зустрічаєте гостя.</p>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Pricing -->
-<section id="pricing" class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-2">Прозорі ціни</h2>
-        <p class="text-center text-muted mb-5">Починайте безкоштовно, масштабуйте по мірі росту</p>
-        <div class="row g-4 justify-content-center">
+<section id="pricing" class="py-5" style="background:var(--surface)">
+    <div class="container py-3">
+        <div class="text-center mb-5">
+            <div class="section-label">Ціни</div>
+            <h2 class="section-title">Починайте безкоштовно</h2>
+            <p class="text-muted mt-2">Масштабуйте по мірі росту бізнесу</p>
+        </div>
+        <div class="row g-4 justify-content-center align-items-start">
             <div class="col-md-4">
                 <div class="pricing-card">
-                    <h4 class="fw-bold">Безкоштовно</h4>
-                    <div class="pricing-price my-3">0 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                    <ul class="list-unstyled text-start mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>До 30 записів/міс</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>1 послуга</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Сторінка запису</li>
-                        <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i>Email-сповіщення</li>
+                    <p class="text-muted mb-1 fw-600" style="font-size:.9rem">БЕЗКОШТОВНО</p>
+                    <div class="pricing-price mb-1">0 <span style="font-size:1.1rem;font-weight:500;color:var(--muted)">грн/міс</span></div>
+                    <p class="text-muted mb-4" style="font-size:.9rem">Щоб почати і перевірити</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>До 30 записів/міс</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Сторінка запису</span></li>
+                        <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i><span>Email-сповіщення</span></li>
+                        <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i><span>Аналітика</span></li>
                     </ul>
-                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-outline-primary w-100">Почати</a>
+                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-outline-primary w-100">Почати безкоштовно</a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="pricing-card featured">
-                    <div class="badge bg-warning text-dark mb-2">Найпопулярніший</div>
-                    <h4 class="fw-bold">Basic</h4>
-                    <div class="pricing-price my-3">299 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                    <ul class="list-unstyled text-start mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>До 200 записів/міс</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Необмежені послуги</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Email-сповіщення</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill me-2" style="color:#a5f3a5"></i>Статистика</li>
+                    <span class="badge bg-warning text-dark mb-2">Найпопулярніший</span>
+                    <p class="mb-1 fw-600" style="font-size:.9rem;opacity:.8">BASIC</p>
+                    <div class="pricing-price mb-1">299 <span style="font-size:1.1rem;font-weight:500;opacity:.7">грн/міс</span></div>
+                    <p style="font-size:.9rem;opacity:.7" class="mb-4">Для активного бізнесу</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>До 200 записів/міс</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені послуги</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Email-сповіщення</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Статистика</span></li>
                     </ul>
-                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light w-100 fw-bold">Спробувати 14 днів безкоштовно</a>
+                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light w-100 fw-bold">Спробувати 14 днів</a>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="pricing-card">
-                    <h4 class="fw-bold">Pro</h4>
-                    <div class="pricing-price my-3">599 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                    <ul class="list-unstyled text-start mb-4">
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Необмежені записи</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Необмежені послуги</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Email + SMS</li>
-                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Пріоритетна підтримка</li>
+                    <p class="text-muted mb-1 fw-600" style="font-size:.9rem">PRO</p>
+                    <div class="pricing-price mb-1">599 <span style="font-size:1.1rem;font-weight:500;color:var(--muted)">грн/міс</span></div>
+                    <p class="text-muted mb-4" style="font-size:.9rem">Для масштабу без обмежень</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені записи</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені послуги</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Email-сповіщення</span></li>
+                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Пріоритетна підтримка</span></li>
                     </ul>
                     <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-outline-primary w-100">Обрати Pro</a>
                 </div>
@@ -165,21 +193,23 @@
 </section>
 
 <!-- CTA -->
-<section class="py-5" style="background:linear-gradient(135deg,#667eea,#764ba2)">
-    <div class="container text-center text-white">
-        <h2 class="fw-bold mb-3">Готові отримувати більше клієнтів?</h2>
-        <p class="mb-4" style="opacity:.9">Приєднуйтесь до сотень бізнесів, які вже використовують BookSlot</p>
-        @if (isLoggedIn)
-        {
-            <a asp-page="/Dashboard/Index" class="btn btn-light btn-lg px-5 fw-bold">
-                Мій дашборд <i class="bi bi-arrow-right ms-2"></i>
-            </a>
-        }
-        else
-        {
-            <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light btn-lg px-5 fw-bold">
-                Почати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
-            </a>
-        }
+<section class="py-5">
+    <div class="container">
+        <div class="cta-band text-center text-white">
+            <h2 class="fw-bold mb-3" style="font-size:clamp(1.5rem,3vw,2rem)">Готові отримувати більше клієнтів?</h2>
+            <p class="mb-4" style="opacity:.8;max-width:480px;margin:0 auto 1.5rem">Приєднуйтесь до бізнесів, які вже перестали відповідати на дзвінки з питанням «коли можна прийти?»</p>
+            @if (isLoggedIn)
+            {
+                <a asp-page="/Dashboard/Index" class="btn btn-light btn-lg px-5 fw-bold">
+                    <i class="bi bi-grid me-2"></i>Мій дашборд
+                </a>
+            }
+            else
+            {
+                <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light btn-lg px-5 fw-bold">
+                    Почати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
+                </a>
+            }
+        </div>
     </div>
 </section>
