@@ -22,6 +22,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     public DbSet<WorkSchedule> WorkSchedules { get; set; }
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
+    public DbSet<ManualBlock> ManualBlocks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -56,6 +57,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
         builder.Entity<Subscription>(e =>
         {
             e.HasOne(s => s.Business).WithOne(b => b.Subscription).HasForeignKey<Subscription>(s => s.BusinessId);
+        });
+
+        builder.Entity<ManualBlock>(e =>
+        {
+            e.HasOne(m => m.Business).WithMany(b => b.ManualBlocks).HasForeignKey(m => m.BusinessId);
+            e.HasIndex(m => new { m.BusinessId, m.Date, m.BlockedTime });
         });
     }
 }

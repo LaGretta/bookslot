@@ -29,6 +29,12 @@ public class BookingService
                      && b.Status != BookingStatus.Cancelled)
             .ToListAsync();
 
+        // Load manually blocked times for this day
+        var manualBlocks = await _db.ManualBlocks
+            .Where(b => b.BusinessId == businessId && b.Date == dayStart)
+            .Select(b => b.BlockedTime)
+            .ToListAsync();
+
         var slots = new List<TimeSpan>();
         var current = schedule.StartTime;
         var duration = TimeSpan.FromMinutes(service.DurationMinutes);
@@ -39,7 +45,10 @@ public class BookingService
             var isBooked = existingBookings.Any(b =>
                 b.StartTime < slotEnd && b.EndTime > current);
 
-            if (!isBooked)
+            // Also skip any slot that overlaps a manually blocked time
+            var isManuallyBlocked = manualBlocks.Any(bt => bt >= current && bt < slotEnd);
+
+            if (!isBooked && !isManuallyBlocked)
                 slots.Add(current);
 
             current = current.Add(TimeSpan.FromMinutes(30));

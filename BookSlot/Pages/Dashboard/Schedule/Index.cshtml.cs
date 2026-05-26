@@ -21,6 +21,7 @@ public class IndexModel : PageModel
     }
 
     public List<WorkSchedule> Schedules { get; set; } = [];
+    public List<ManualBlock> Blocks { get; set; } = [];
 
     private async Task<Business?> GetBusinessAsync()
     {
@@ -36,9 +37,16 @@ public class IndexModel : PageModel
         Schedules = await _db.WorkSchedules
             .Where(w => w.BusinessId == business.Id)
             .ToListAsync();
+
+        Blocks = await _db.ManualBlocks
+            .Where(b => b.BusinessId == business.Id && b.Date >= DateTime.UtcNow.Date)
+            .OrderBy(b => b.Date).ThenBy(b => b.BlockedTime)
+            .ToListAsync();
+
         return Page();
     }
 
+    // ── Save weekly schedule ─────────────────────────────────────────────
     public async Task<IActionResult> OnPostAsync(
         [FromForm(Name = "isWorking")] Dictionary<int, bool> isWorking,
         [FromForm(Name = "start")] Dictionary<int, string> start,
@@ -80,6 +88,58 @@ public class IndexModel : PageModel
 
         await _db.SaveChangesAsync();
         TempData["Success"] = "Розклад збережено!";
+        return RedirectToPage();
+    }
+
+    // ── Add manual block ────────────────────────────────────────────────
+    public async Task<IActionResult> OnPostAddBlockAsync(string blockDate, string blockTime, string? blockNote)
+    {
+        var business = await GetBusinessAsync();
+        if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
+
+        if (!DateTime.TryParse(blockDate, out var date) || !TimeSpan.TryParse(blockTime, out var time))
+        {
+            TempData["BlockError"] = "Невірна дата або час.";
+            return RedirectToPage();
+        }
+
+        // Avoid duplicates
+        var exists = await _db.ManualBlocks.AnyAsync(b =>
+            b.BusinessId == business.Id &&
+            b.Date == DateTime.SpecifyKind(date.Date, DateTimeKind.Utc) &&
+            b.BlockedTime == time);
+
+        if (!exists)
+        {
+            _db.ManualBlocks.Add(new ManualBlock
+            {
+                BusinessId = business.Id,
+                Date = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc),
+                BlockedTime = time,
+                Note = blockNote?.Trim()
+            });
+            await _db.SaveChangesAsync();
+        }
+
+        TempData["BlockSuccess"] = $"Час {time:hh\\:mm} на {date:dd.MM.yyyy} заблоковано.";
+        return RedirectToPage();
+    }
+
+    // ── Delete manual block ─────────────────────────────────────────────
+    public async Task<IActionResult> OnPostDeleteBlockAsync(int blockId)
+    {
+        var business = await GetBusinessAsync();
+        if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
+
+        var block = await _db.ManualBlocks
+            .FirstOrDefaultAsync(b => b.Id == blockId && b.BusinessId == business.Id);
+
+        if (block != null)
+        {
+            _db.ManualBlocks.Remove(block);
+            await _db.SaveChangesAsync();
+        }
+
         return RedirectToPage();
     }
 }

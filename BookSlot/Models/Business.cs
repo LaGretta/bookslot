@@ -17,5 +17,6 @@ public class Business
     public ICollection<Service> Services { get; set; } = [];
     public ICollection<WorkSchedule> WorkSchedules { get; set; } = [];
     public ICollection<Booking> Bookings { get; set; } = [];
+    public ICollection<ManualBlock> ManualBlocks { get; set; } = [];
     public Subscription? Subscription { get; set; }
 }

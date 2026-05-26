@@ -15,14 +15,24 @@
 
             @if (TempData["Success"] != null)
             {
-                <div class="alert alert-success">@TempData["Success"]</div>
+                <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>@TempData["Success"]</div>
+            }
+            @if (TempData["BlockSuccess"] != null)
+            {
+                <div class="alert alert-success"><i class="bi bi-lock me-2"></i>@TempData["BlockSuccess"]</div>
+            }
+            @if (TempData["BlockError"] != null)
+            {
+                <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>@TempData["BlockError"]</div>
             }
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <p class="text-muted mb-4">Встановіть робочі години для кожного дня. Клієнти зможуть записуватись тільки на доступний час.</p>
+            <!-- ── Weekly schedule ── -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-1">Робочі години</h5>
+                    <p class="text-muted small mb-4">Встановіть графік на тиждень. Клієнти записуються лише у вільний час.</p>
                     <form method="post">
-                        <!-- підказка тільки на мобільних -->
+                        <!-- mobile hint -->
                         <div class="d-flex d-md-none align-items-center gap-2 mb-3 px-2 py-2 rounded"
                              style="background:#EEF2FF;font-size:.83rem;color:#4F46E5">
                             <i class="bi bi-arrow-left-right"></i>
@@ -76,6 +86,92 @@
                     </form>
                 </div>
             </div>
+
+            <!-- ── Manual blocks ── -->
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-1">
+                        <i class="bi bi-lock-fill me-2" style="color:#f59e0b"></i>Заблоковані часи
+                    </h5>
+                    <p class="text-muted small mb-4">
+                        Додайте конкретні дату + час, щоб клієнти не могли на них записатись — наприклад, якщо вас вже записали деінде.
+                    </p>
+
+                    <!-- Add block form -->
+                    <form method="post" asp-page-handler="AddBlock" class="row g-2 align-items-end mb-4">
+                        <div class="col-sm-4 col-md-3">
+                            <label class="form-label fw-semibold small">Дата</label>
+                            <input type="date" name="blockDate" class="form-control"
+                                   min="@DateTime.Today.ToString("yyyy-MM-dd")"
+                                   max="@DateTime.Today.AddMonths(3).ToString("yyyy-MM-dd")"
+                                   required />
+                        </div>
+                        <div class="col-sm-3 col-md-2">
+                            <label class="form-label fw-semibold small">Час</label>
+                            <input type="time" name="blockTime" class="form-control" required />
+                        </div>
+                        <div class="col-sm-5 col-md-4">
+                            <label class="form-label fw-semibold small">Причина <span class="text-muted fw-normal">(необов'язково)</span></label>
+                            <input type="text" name="blockNote" class="form-control"
+                                   placeholder="напр. Особиста зустріч" maxlength="100" />
+                        </div>
+                        <div class="col-sm-auto">
+                            <button type="submit" class="btn btn-warning fw-semibold px-3">
+                                <i class="bi bi-lock me-1"></i> Заблокувати
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- List of blocks -->
+                    @if (Model.Blocks.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Дата</th>
+                                        <th>Час</th>
+                                        <th>Причина</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var b in Model.Blocks)
+                                    {
+                                        <tr>
+                                            <td class="fw-semibold">@b.Date.ToString("dd.MM.yyyy")</td>
+                                            <td>
+                                                <span class="badge" style="background:#FEF3C7;color:#92400E;font-size:.85rem;padding:.35rem .7rem">
+                                                    <i class="bi bi-lock-fill me-1" style="font-size:.7rem"></i>
+                                                    @b.BlockedTime.ToString(@"hh\:mm")
+                                                </span>
+                                            </td>
+                                            <td class="text-muted small">@(b.Note ?? "—")</td>
+                                            <td class="text-end">
+                                                <form method="post" asp-page-handler="DeleteBlock" style="display:inline">
+                                                    <input type="hidden" name="blockId" value="@b.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger px-2 py-1"
+                                                            onclick="return confirm('Розблокувати цей час?')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="text-center py-3 text-muted">
+                            <i class="bi bi-unlock" style="font-size:2rem;opacity:.35"></i>
+                            <p class="small mt-2 mb-0">Заблокованих годин немає — всі вільні</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
