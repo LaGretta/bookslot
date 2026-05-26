@@ -31,6 +31,15 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan    = TimeSpan.FromDays(14);
+    options.SlidingExpiration = true;
+    options.Cookie.MaxAge     = TimeSpan.FromDays(14);
+    options.Cookie.HttpOnly   = true;
+    options.LoginPath         = "/Identity/Account/Login";
+});
+
 builder.Services.AddDataProtection()
     .PersistKeysToDbContext<ApplicationDbContext>()
     .SetApplicationName("BookSlot");
