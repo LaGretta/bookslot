@@ -47,10 +47,10 @@ public class IndexModel : PageModel
     }
 
     // ── Save weekly schedule ─────────────────────────────────────────────
-    public async Task<IActionResult> OnPostAsync(
-        [FromForm(Name = "isWorking")] Dictionary<int, bool> isWorking,
-        [FromForm(Name = "start")] Dictionary<int, string> start,
-        [FromForm(Name = "end")] Dictionary<int, string> end)
+    // NOTE: HTML checkboxes send "on" when checked and nothing when unchecked.
+    // [FromForm] Dictionary<int,bool> does not reliably parse "on" → true,
+    // so we read directly from Request.Form instead.
+    public async Task<IActionResult> OnPostAsync()
     {
         var business = await GetBusinessAsync();
         if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
@@ -63,26 +63,30 @@ public class IndexModel : PageModel
         {
             var day = (DayOfWeek)i;
             var schedule = existing.FirstOrDefault(w => w.DayOfWeek == day);
-            var working = isWorking.ContainsKey(i) && isWorking[i];
-            var startTime = TimeSpan.TryParse(start.GetValueOrDefault(i), out var s) ? s : new TimeSpan(9, 0, 0);
-            var endTime = TimeSpan.TryParse(end.GetValueOrDefault(i), out var e) ? e : new TimeSpan(18, 0, 0);
+
+            // Unchecked checkboxes are NOT submitted — presence in form = checked
+            var working = Request.Form.ContainsKey($"isWorking[{i}]");
+            var startStr = Request.Form[$"start[{i}]"].ToString();
+            var endStr   = Request.Form[$"end[{i}]"].ToString();
+            var startTime = TimeSpan.TryParse(startStr, out var s) ? s : new TimeSpan(9, 0, 0);
+            var endTime   = TimeSpan.TryParse(endStr,   out var e) ? e : new TimeSpan(18, 0, 0);
 
             if (schedule == null)
             {
                 _db.WorkSchedules.Add(new WorkSchedule
                 {
                     BusinessId = business.Id,
-                    DayOfWeek = day,
-                    IsWorking = working,
-                    StartTime = startTime,
-                    EndTime = endTime
+                    DayOfWeek  = day,
+                    IsWorking  = working,
+                    StartTime  = startTime,
+                    EndTime    = endTime
                 });
             }
             else
             {
-                schedule.IsWorking = working;
-                schedule.StartTime = startTime;
-                schedule.EndTime = endTime;
+                schedule.IsWorking  = working;
+                schedule.StartTime  = startTime;
+                schedule.EndTime    = endTime;
             }
         }
 

@@ -16,9 +16,6 @@ public class IndexModel : PageModel
 
     public IActionResult OnGet()
     {
-        if (_signInManager.IsSignedIn(User))
-            return RedirectToPage("/Dashboard/Index");
-
         return Page();
     }
 }
