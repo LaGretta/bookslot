@@ -610,7 +610,6 @@ footer .footer-brand .brand-icon {
 .lp-mockup-wrap {
     position: relative;
     animation: lpCardFloat 7s ease-in-out infinite;
-    padding: 0 32px 32px 0;
 }
 @keyframes lpCardFloat {
     0%,100% { transform: translateY(0) rotate(0deg); }
@@ -618,11 +617,20 @@ footer .footer-brand .brand-icon {
     70%     { transform: translateY(-5px) rotate(-.25deg); }
 }
 .lp-mockup-card {
+    position: relative; z-index: 1;
     background: rgba(255,255,255,.07);
     border: 1px solid rgba(255,255,255,.13);
     border-radius: 24px; padding: 1.75rem;
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     box-shadow: 0 40px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+    animation: lpMainCardSwap 12s ease-in-out infinite;
+}
+@keyframes lpMainCardSwap {
+    0%, 40%  { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
+    48%      { opacity: 0; transform: scale(0.88) rotate(2.5deg) translateY(16px); }
+    50%, 88% { opacity: 0; transform: scale(0.88) rotate(2.5deg) translateY(16px); }
+    96%      { opacity: 0.8; transform: scale(0.97) rotate(0.3deg) translateY(2px); }
+    100%     { opacity: 1; transform: scale(1) rotate(0deg) translateY(0); }
 }
 .lp-mockup-header {
     display: flex; align-items: center; gap: .75rem;
@@ -686,38 +694,45 @@ footer .footer-brand .brand-icon {
     50%, 100%  { opacity: 0; transform: translateY(-8px); }
 }
 
-/* Mini phone screen #2 (sequential, -6s delay) */
+/* Full-size dark card overlay — phase 2 of 12s cycle (delay -6s) */
 .lp-screen2 {
-    position: absolute; bottom: -28px; right: -28px;
-    width: 190px; background: #070d1a;
-    border: 1px solid rgba(255,255,255,.07);
-    border-radius: 22px; padding: 1rem;
-    box-shadow: 0 24px 60px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.06);
-    animation: lpScreen2Anim 12s ease-in-out infinite;
+    position: absolute; top: 0; left: 0; right: 0;
+    z-index: 3;
+    background: #070d1a;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 24px; padding: 1.75rem;
+    box-shadow: 0 40px 80px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.06);
+    animation: lpScreen2Swap 12s ease-in-out infinite;
     animation-delay: -6s;
 }
-.lp-screen2-status { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+/* With delay=-6s: at real t=0 anim is at 50% → invisible.
+   Visible window: anim 0%-46% = real t≈6s to t≈11.5s */
+@keyframes lpScreen2Swap {
+    0%, 5%   { opacity: 0; transform: scale(0.9) translateY(-20px) rotate(-2deg); }
+    15%      { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+    38%      { opacity: 1; transform: scale(1) translateY(0) rotate(0deg); }
+    46%      { opacity: 0; transform: scale(0.9) translateY(-14px) rotate(-1deg); }
+    50%, 100%{ opacity: 0; transform: scale(0.9) translateY(-14px) rotate(-1deg); }
+}
+.lp-screen2-status { display: flex; align-items: center; justify-content: space-between; margin-bottom: .75rem; }
 .lp-screen2-time   { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
-.lp-screen2-icons  { font-size: .7rem; color: rgba(255,255,255,.35); display: flex; gap: .3rem; }
+.lp-screen2-icons  { font-size: .75rem; color: rgba(255,255,255,.35); display: flex; gap: .35rem; }
 .lp-screen2-card   {
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08);
-    border-radius: 13px; padding: .65rem .75rem;
-    display: flex; align-items: flex-start; gap: .55rem;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.09);
+    border-radius: 14px; padding: .75rem .9rem;
+    display: flex; align-items: flex-start; gap: .65rem;
+    margin-bottom: 1.25rem;
 }
 .lp-screen2-ico {
-    width: 26px; height: 26px; border-radius: 8px;
+    width: 32px; height: 32px; border-radius: 10px;
     background: linear-gradient(135deg, #10b981, #0ea5e9);
     display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: .72rem; flex-shrink: 0; margin-top: .1rem;
+    color: #fff; font-size: .85rem; flex-shrink: 0; margin-top: .1rem;
+    box-shadow: 0 4px 12px rgba(16,185,129,.35);
 }
-.lp-screen2-app { font-size: .6rem; color: rgba(255,255,255,.38); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
-.lp-screen2-msg { font-size: .73rem; color: #fff; font-weight: 700; margin-top: .1rem; }
-.lp-screen2-sub { font-size: .63rem; color: rgba(255,255,255,.38); margin-top: .2rem; }
-@keyframes lpScreen2Anim {
-    0%         { opacity: 0; transform: translateX(20px) scale(.92); }
-    8%, 40%    { opacity: 1; transform: translateX(0) scale(1); }
-    50%, 100%  { opacity: 0; transform: translateX(12px) scale(.95); }
-}
+.lp-screen2-app { font-size: .65rem; color: rgba(255,255,255,.38); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.lp-screen2-msg { font-size: .82rem; color: #fff; font-weight: 700; margin-top: .15rem; }
+.lp-screen2-sub { font-size: .7rem; color: rgba(255,255,255,.38); margin-top: .2rem; }
 
 /* Subscription page pricing cards fix */
 button.lp-btn-price { cursor: pointer; }
