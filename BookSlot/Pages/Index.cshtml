@@ -9,209 +9,350 @@
     var isLoggedIn = SignInManager.IsSignedIn(User);
 }
 
-<!-- Hero -->
-<section class="hero">
-    <div class="container text-center position-relative">
-        <div class="hero-badge mb-3">
-            <i class="bi bi-lightning-charge-fill text-warning"></i>
-            Запуск за 5 хвилин — без технічних знань
-        </div>
-        <h1 class="mb-4">Клієнти записуються самі.<br>Ви просто зустрічаєте.</h1>
-        <p class="lead mb-5">BookSlot — онлайн-запис для барбершопів, косметологів,<br class="d-none d-md-block"> репетиторів та інших малих бізнесів.</p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
-            @if (isLoggedIn)
-            {
-                <a asp-page="/Dashboard/Index" class="btn btn-light btn-lg px-4 fw-bold">
-                    <i class="bi bi-grid me-2"></i>Мій дашборд
-                </a>
-            }
-            else
-            {
-                <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light btn-lg px-4 fw-bold">
-                    Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
-                </a>
-                <a href="#features" class="btn btn-outline-light btn-lg px-4">Як це працює</a>
-            }
-        </div>
-        <p class="mt-3" style="opacity:.55;font-size:.85rem">
-            <i class="bi bi-shield-check me-1"></i>Безкоштовно. Без кредитної картки.
-        </p>
+<style>
+/* ── Glass navbar on landing page ── */
+#main-nav { background: transparent !important; box-shadow: none !important; border-bottom: none !important; }
+#main-nav.lp-scrolled { background: rgba(255,255,255,.92) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 0 #e2e8f0 !important; }
+#main-nav:not(.lp-scrolled) .nav-link { color: rgba(255,255,255,.8) !important; }
+#main-nav:not(.lp-scrolled) .nav-link:hover { color: #fff !important; background: rgba(255,255,255,.08) !important; }
+#main-nav:not(.lp-scrolled) .navbar-toggler { border-color: rgba(255,255,255,.3) !important; }
+#main-nav:not(.lp-scrolled) .navbar-toggler-icon { filter: invert(1); }
+#main-nav:not(.lp-scrolled) .btn-outline-primary { border-color: rgba(255,255,255,.3) !important; color: rgba(255,255,255,.9) !important; }
+#main-nav:not(.lp-scrolled) .btn-outline-primary:hover { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.5) !important; }
+#main-nav:not(.lp-scrolled) .btn-primary { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.25) !important; }
+</style>
 
-        <div class="hero-stats row justify-content-center g-4">
-            <div class="col-auto text-center">
-                <div class="stat-num">200+</div>
-                <div class="stat-label">Акаунтів</div>
+<!-- ══ HERO ══════════════════════════════════════════════════════════ -->
+<section class="lp-hero">
+    <div class="lp-blob1"></div>
+    <div class="lp-blob2"></div>
+    <div class="container position-relative" style="z-index:2">
+        <div class="text-center">
+            <div class="lp-badge">
+                <span class="lp-dot"></span>
+                Запуск за 5 хвилин · Без технічних знань
             </div>
-            <div class="col-auto text-center px-4" style="border-left:1px solid rgba(255,255,255,.2);border-right:1px solid rgba(255,255,255,.2)">
-                <div class="stat-num">15 000+</div>
-                <div class="stat-label">Записів на місяць</div>
+            <h1 class="lp-h1">Клієнти записуються <em class="lp-em">самі.</em><br>Ви просто зустрічаєте.</h1>
+            <p class="lp-sub">BookSlot — онлайн-запис для барбершопів, косметологів,<br class="d-none d-md-block"> репетиторів та інших малих бізнесів. Замість дзвінків — посилання.</p>
+            <div class="lp-actions">
+                @if (isLoggedIn)
+                {
+                    <a asp-page="/Dashboard/Index" class="lp-btn-prim">
+                        <i class="bi bi-grid me-2"></i>Мій дашборд
+                    </a>
+                }
+                else
+                {
+                    <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim">
+                        Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#features" class="lp-btn-sec"><i class="bi bi-play-circle me-2"></i>Як це працює</a>
+                }
             </div>
-            <div class="col-auto text-center">
-                <div class="stat-num">4.9 ★</div>
-                <div class="stat-label">Середня оцінка</div>
+            <div class="lp-trust">
+                <i class="bi bi-gift"></i> Є безкоштовний план &nbsp;·&nbsp;
+                <i class="bi bi-lightning-charge"></i> Готово за 5 хв &nbsp;·&nbsp;
+                <i class="bi bi-shield-check"></i> Безпечна оплата
+            </div>
+            <div class="lp-stats">
+                <div class="lp-stat"><div class="lp-stat-n">200+</div><div class="lp-stat-l">Акаунтів</div></div>
+                <div class="lp-stat"><div class="lp-stat-n">15 000+</div><div class="lp-stat-l">Записів на місяць</div></div>
+                <div class="lp-stat"><div class="lp-stat-n">4.9 ★</div><div class="lp-stat-l">Середня оцінка</div></div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- Features -->
-<section id="features" class="py-5" style="background:var(--surface)">
-    <div class="container py-3">
-        <div class="text-center mb-5">
-            <div class="section-label">Можливості</div>
-            <h2 class="section-title">Все що потрібно — вже всередині</h2>
-            <p class="text-muted mt-2">Налаштуйте за 10 хвилин і отримуйте нових клієнтів</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-calendar2-week"></i></div>
-                    <h5 class="fw-700 mb-2">Розклад роботи</h5>
-                    <p class="text-muted mb-0">Налаштуйте робочі години для кожного дня тижня. Клієнти бачать лише вільні слоти.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-scissors"></i></div>
-                    <h5 class="fw-700 mb-2">Управління послугами</h5>
-                    <p class="text-muted mb-0">Додавайте послуги з ціною та тривалістю. Клієнт сам обирає що йому потрібно.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-envelope-check"></i></div>
-                    <h5 class="fw-700 mb-2">Email-підтвердження</h5>
-                    <p class="text-muted mb-0">Клієнт отримує підтвердження на пошту. Ви — сповіщення про кожен новий запис.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-link-45deg"></i></div>
-                    <h5 class="fw-700 mb-2">Унікальне посилання</h5>
-                    <p class="text-muted mb-0">Отримайте сторінку виду <code>bookslot.com/book/ваш-бізнес</code> і діліться в Instagram або Telegram.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-bar-chart-line"></i></div>
-                    <h5 class="fw-700 mb-2">Аналітика</h5>
-                    <p class="text-muted mb-0">Відслідковуйте кількість записів, скасувань і популярні послуги прямо з дашборду.</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon-box"><i class="bi bi-phone"></i></div>
-                    <h5 class="fw-700 mb-2">Мобільна версія</h5>
-                    <p class="text-muted mb-0">Клієнти записуються з телефону. Ви керуєте бізнесом з будь-якого пристрою.</p>
-                </div>
-            </div>
+<!-- ══ MARQUEE ════════════════════════════════════════════════════════ -->
+<div class="lp-trust-strip">
+    <p class="lp-strip-lbl">Ідеально підходить для</p>
+    <div class="lp-marquee-wrap">
+        <div class="lp-marquee">
+            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
+            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
+            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
+            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
+            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
+            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
+            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
+            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
+            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
+            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
+            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
+            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
+            <!-- copy 2 -->
+            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
+            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
+            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
+            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
+            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
+            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
+            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
+            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
+            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
+            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
+            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
+            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
+            <!-- copy 3 -->
+            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
+            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
+            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
+            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
+            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
+            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
+            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
+            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
+            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
+            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
+            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
+            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
         </div>
     </div>
-</section>
+</div>
 
-<!-- How it works -->
-<section class="py-5">
-    <div class="container py-3">
-        <div class="text-center mb-5">
-            <div class="section-label">Як це працює</div>
-            <h2 class="section-title">Три кроки до першого запису</h2>
-        </div>
-        <div class="row g-4 justify-content-center">
-            <div class="col-md-4 text-center">
-                <div class="step-num mb-3"><i class="bi bi-person-plus"></i></div>
-                <h5 class="fw-bold mb-2">1. Реєструєтесь</h5>
-                <p class="text-muted">Створюєте акаунт і налаштовуєте профіль бізнесу: назва, послуги, розклад.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="step-num mb-3"><i class="bi bi-share"></i></div>
-                <h5 class="fw-bold mb-2">2. Ділитесь посиланням</h5>
-                <p class="text-muted">Розміщуєте унікальне посилання в Instagram Stories, Telegram або в шапці профілю.</p>
-            </div>
-            <div class="col-md-4 text-center">
-                <div class="step-num mb-3"><i class="bi bi-check2-circle"></i></div>
-                <h5 class="fw-bold mb-2">3. Отримуєте клієнтів</h5>
-                <p class="text-muted">Клієнти самі обирають час і записуються. Ви отримуєте повідомлення і зустрічаєте гостя.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Pricing -->
-<section id="pricing" class="py-5" style="background:var(--surface)">
-    <div class="container py-3">
-        <div class="text-center mb-5">
-            <div class="section-label">Ціни</div>
-            <h2 class="section-title">Починайте безкоштовно</h2>
-            <p class="text-muted mt-2">Масштабуйте по мірі росту бізнесу</p>
-        </div>
-        <div class="row g-4 justify-content-center align-items-start">
-            <div class="col-md-4">
-                <div class="pricing-card">
-                    <p class="text-muted mb-1 fw-600" style="font-size:.9rem">БЕЗКОШТОВНО</p>
-                    <div class="pricing-price mb-1">0 <span style="font-size:1.1rem;font-weight:500;color:var(--muted)">грн/міс</span></div>
-                    <p class="text-muted mb-4" style="font-size:.9rem">Щоб почати і перевірити</p>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>До 30 записів/міс</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Сторінка запису</span></li>
-                        <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i><span>Email-сповіщення</span></li>
-                        <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i><span>Аналітика</span></li>
-                    </ul>
-                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-outline-primary w-100">Почати безкоштовно</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="pricing-card featured">
-                    <span class="badge bg-warning text-dark mb-2">Найпопулярніший</span>
-                    <p class="mb-1 fw-600" style="font-size:.9rem;opacity:.8">BASIC</p>
-                    <div class="pricing-price mb-1">299 <span style="font-size:1.1rem;font-weight:500;opacity:.7">грн/міс</span></div>
-                    <p style="font-size:.9rem;opacity:.7" class="mb-4">Для активного бізнесу</p>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>До 200 записів/міс</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені послуги</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Email-сповіщення</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Статистика</span></li>
-                    </ul>
-                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light w-100 fw-bold">Обрати Basic</a>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="pricing-card">
-                    <p class="text-muted mb-1 fw-600" style="font-size:.9rem">PRO</p>
-                    <div class="pricing-price mb-1">599 <span style="font-size:1.1rem;font-weight:500;color:var(--muted)">грн/міс</span></div>
-                    <p class="text-muted mb-4" style="font-size:.9rem">Для масштабу без обмежень</p>
-                    <ul class="list-unstyled mb-4">
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені записи</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Необмежені послуги</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Email-сповіщення власнику та клієнту</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Детальна статистика</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>Email-нагадування клієнту за 24 год</span></li>
-                        <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill check-icon mt-1"></i><span>QR-код вашої сторінки</span></li>
-                    </ul>
-                    <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-outline-primary w-100">Обрати Pro</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
-<section class="py-5">
+<!-- ══ FEATURES ══════════════════════════════════════════════════════ -->
+<section id="features" class="lp-section">
     <div class="container">
-        <div class="cta-band text-center text-white">
-            <h2 class="fw-bold mb-3" style="font-size:clamp(1.5rem,3vw,2rem)">Готові отримувати більше клієнтів?</h2>
-            <p class="mb-4" style="opacity:.8;max-width:480px;margin:0 auto 1.5rem">Приєднуйтесь до бізнесів, які вже перестали відповідати на дзвінки з питанням «коли можна прийти?»</p>
+        <div class="text-center mb-5">
+            <div class="lp-eyebrow"><i class="bi bi-stars"></i> Можливості</div>
+            <h2 class="lp-sec-title">Все що потрібно — вже всередині</h2>
+            <p class="lp-sec-sub" style="max-width:500px;margin:.75rem auto 0">Налаштуйте за 10 хвилин і отримуйте нових клієнтів без дзвінків</p>
+        </div>
+        <div class="lp-feat-grid">
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-calendar2-week-fill"></i></div>
+                <h5 class="lp-feat-h">Розклад роботи</h5>
+                <p class="lp-feat-p">Налаштуйте робочі години для кожного дня. Клієнти бачать лише вільні слоти — ніякої плутанини.</p>
+            </div>
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-grid-fill"></i></div>
+                <h5 class="lp-feat-h">Управління послугами</h5>
+                <p class="lp-feat-p">Додавайте послуги з ціною та тривалістю. Клієнт сам обирає що йому потрібно.</p>
+            </div>
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-envelope-check-fill"></i></div>
+                <h5 class="lp-feat-h">Email-підтвердження</h5>
+                <p class="lp-feat-p">Клієнт отримує підтвердження одразу після запису. Ви — сповіщення про кожен новий запис.</p>
+            </div>
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-link-45deg"></i></div>
+                <h5 class="lp-feat-h">Ваша унікальна сторінка</h5>
+                <p class="lp-feat-p">Отримайте посилання <code style="background:#EEF2FF;color:#4F46E5;padding:.1rem .4rem;border-radius:5px;font-size:.78rem">bookslot.com/book/ваш-бізнес</code> і діліться в Instagram.</p>
+            </div>
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-bar-chart-line-fill"></i></div>
+                <h5 class="lp-feat-h">Аналітика</h5>
+                <p class="lp-feat-p">Кількість записів, скасувань і популярні послуги — все в одному дашборді.</p>
+            </div>
+            <div class="lp-feat-card">
+                <div class="lp-feat-ico"><i class="bi bi-phone-fill"></i></div>
+                <h5 class="lp-feat-h">100% мобільний</h5>
+                <p class="lp-feat-p">Клієнти записуються з телефону за 30 секунд. Ви керуєте бізнесом з будь-якого пристрою.</p>
+            </div>
+        </div>
+
+        <!-- No account needed -->
+        <div class="lp-noaccnt-card mt-4">
+            <div>
+                <div class="lp-feat-ico"><i class="bi bi-person-check-fill"></i></div>
+                <h5 class="lp-feat-h" style="font-size:1.05rem">Клієнту не потрібен акаунт</h5>
+                <p class="lp-feat-p mt-2" style="max-width:420px">Клієнт переходить по посиланню, обирає час і залишає ім'я та телефон. Жодної реєстрації, жодних додатків — просто записується за 30 секунд.</p>
+            </div>
+            <div class="lp-timer-card">
+                <div class="lp-timer-ico"><i class="bi bi-stopwatch-fill"></i></div>
+                <div class="lp-timer-label">Середній час запису</div>
+                <div class="lp-timer-num">28<span class="lp-timer-unit">сек</span></div>
+                <div class="lp-timer-sub">від переходу до підтвердження</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ HOW IT WORKS ═══════════════════════════════════════════════════ -->
+<section class="lp-section lp-gray">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="lp-eyebrow"><i class="bi bi-arrow-right-circle"></i> Як це працює</div>
+            <h2 class="lp-sec-title">Три кроки до першого запису</h2>
+        </div>
+        <div class="lp-steps-grid">
+            <div class="lp-step-card">
+                <div class="lp-step-n">1</div>
+                <div class="lp-step-ico" style="background:#EEF2FF;color:#4F46E5"><i class="bi bi-shop-window"></i></div>
+                <h5 class="lp-feat-h">Реєструєтесь</h5>
+                <p class="lp-feat-p">Створюєте акаунт і налаштовуєте профіль: назва бізнесу, послуги, ціни, розклад роботи.</p>
+            </div>
+            <div class="lp-step-card">
+                <div class="lp-step-n">2</div>
+                <div class="lp-step-ico" style="background:#F0FDF4;color:#16a34a"><i class="bi bi-share-fill"></i></div>
+                <h5 class="lp-feat-h">Ділитесь посиланням</h5>
+                <p class="lp-feat-p">Публікуєте унікальне посилання в Instagram Stories, Telegram, шапці профілю або на сайті.</p>
+            </div>
+            <div class="lp-step-card">
+                <div class="lp-step-n">3</div>
+                <div class="lp-step-ico" style="background:#FEF3C7;color:#d97706"><i class="bi bi-calendar2-check-fill"></i></div>
+                <h5 class="lp-feat-h">Отримуєте клієнтів</h5>
+                <p class="lp-feat-p">Клієнти самі обирають час і записуються. Ви отримуєте сповіщення на пошту і зустрічаєте гостя.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ TESTIMONIALS ═══════════════════════════════════════════════════ -->
+<section class="lp-section">
+    <div class="container">
+        <div class="text-center mb-5">
+            <div class="lp-eyebrow"><i class="bi bi-chat-quote"></i> Відгуки</div>
+            <h2 class="lp-sec-title">Що кажуть наші клієнти</h2>
+        </div>
+        <div class="lp-testi-grid">
+            <div class="lp-testi-card">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-q">"Раніше щодня відповідала на 20+ повідомлень «коли можна?». Тепер просто скидаю посилання і все. Економлю 2 години щодня."</p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#f97316,#ef4444)">О</div>
+                    <div>
+                        <div class="lp-testi-name">Олена Захаренко</div>
+                        <div class="lp-testi-role">Косметолог, Київ</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-testi-card">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-q">"Клієнти в захваті — записались навіть вночі поки я спав. Зранку прокинувся і вже 4 нових записи. Це магія 🔥"</p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">М</div>
+                    <div>
+                        <div class="lp-testi-name">Максим Коваль</div>
+                        <div class="lp-testi-role">Барбер, Харків</div>
+                    </div>
+                </div>
+            </div>
+            <div class="lp-testi-card">
+                <div class="lp-testi-stars">★★★★★</div>
+                <p class="lp-testi-q">"Налаштувала за 10 хвилин і відразу розмістила в шапці Instagram. За перший тиждень — 18 нових клієнтів. Раджу всім!"</p>
+                <div class="lp-testi-author">
+                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">В</div>
+                    <div>
+                        <div class="lp-testi-name">Вікторія Бондар</div>
+                        <div class="lp-testi-role">Майстер манікюру, Одеса</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══ PRICING ════════════════════════════════════════════════════════ -->
+<section id="pricing" class="lp-section lp-gray">
+    <div class="container">
+        <div class="text-center mb-2">
+            <div class="lp-eyebrow"><i class="bi bi-tag"></i> Ціни</div>
+            <h2 class="lp-sec-title">Починайте безкоштовно</h2>
+            <p class="lp-sec-sub" style="max-width:440px;margin:.75rem auto 0">Масштабуйте по мірі росту бізнесу. Без прихованих платежів.</p>
+        </div>
+        <div class="lp-price-grid">
+            <!-- FREE -->
+            <div class="lp-p-card">
+                <div class="lp-p-plan lp-plan-free">БЕЗКОШТОВНО</div>
+                <div class="lp-p-price">0<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">Щоб почати і спробувати</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>До 30 записів/міс</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Сторінка запису</span></li>
+                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Email-сповіщення</span></li>
+                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Аналітика</span></li>
+                </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-outline">Почати безкоштовно</a>
+            </div>
+            <!-- BASIC (featured) -->
+            <div class="lp-p-card lp-featured">
+                <div class="lp-p-badge">⭐ Найпопулярніший</div>
+                <div class="lp-p-plan lp-plan-basic">BASIC</div>
+                <div class="lp-p-price">299<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">Для активного бізнесу</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>До 200 записів/міс</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Необмежені послуги</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Email-сповіщення</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Статистика записів</span></li>
+                </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-white">Обрати Basic</a>
+            </div>
+            <!-- PRO -->
+            <div class="lp-p-card">
+                <div class="lp-p-plan lp-plan-pro">PRO</div>
+                <div class="lp-p-price">599<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">Для масштабу без обмежень</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені записи</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені послуги</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Email власнику та клієнту</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Детальна статистика</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Нагадування за 24 год</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>QR-код сторінки</span></li>
+                </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-pout">Обрати Pro</a>
+            </div>
+        </div>
+        <p class="text-center mt-3" style="color:#64748b;font-size:.82rem">
+            <i class="bi bi-shield-check" style="color:#10b981"></i> Оплата через Stripe — Visa, Mastercard, Apple Pay, Google Pay
+        </p>
+    </div>
+</section>
+
+<!-- ══ CTA ════════════════════════════════════════════════════════════ -->
+<section class="lp-cta-outer">
+    <div class="container">
+        <div class="lp-cta-box">
+            <h2 class="lp-cta-h">Готові перестати<br>відповідати на дзвінки?</h2>
+            <p class="lp-cta-p">Приєднуйтесь до бізнесів, які вже автоматизували запис і витрачають час на клієнтів, а не на телефон.</p>
             @if (isLoggedIn)
             {
-                <a asp-page="/Dashboard/Index" class="btn btn-light btn-lg px-5 fw-bold">
+                <a asp-page="/Dashboard/Index" class="lp-btn-prim">
                     <i class="bi bi-grid me-2"></i>Мій дашборд
                 </a>
             }
             else
             {
-                <a asp-page="/Account/Register" asp-area="Identity" class="btn btn-light btn-lg px-5 fw-bold">
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim" style="font-size:1rem;padding:.9rem 2.25rem">
                     Почати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
                 </a>
             }
         </div>
     </div>
 </section>
+
+@section Scripts {
+<script>
+// Glass navbar
+(function(){
+  var nav = document.getElementById('main-nav');
+  function upd(){ nav.classList.toggle('lp-scrolled', window.scrollY > 60); }
+  window.addEventListener('scroll', upd, { passive: true });
+  upd();
+})();
+
+// 3D tilt on pricing cards
+document.querySelectorAll('.lp-p-card').forEach(function(card){
+  var f = card.classList.contains('lp-featured');
+  card.addEventListener('mousemove', function(e){
+    var r = card.getBoundingClientRect();
+    var x = e.clientX - r.left  - r.width/2;
+    var y = e.clientY - r.top   - r.height/2;
+    var rx = (-y / (r.height/2)) * 13;
+    var ry = ( x / (r.width/2))  * 13;
+    card.style.transition = 'transform .1s ease, box-shadow .1s ease';
+    card.style.transform  = 'translateY('+(f?-10:-18)+'px) scale('+(f?1.08:1.05)+') rotateX('+rx+'deg) rotateY('+ry+'deg)';
+    card.style.boxShadow  = f
+      ? '0 70px 120px rgba(79,70,229,.65), 0 0 100px rgba(79,70,229,.28)'
+      : '0 40px 90px rgba(79,70,229,.18)';
+  });
+  card.addEventListener('mouseleave', function(){
+    card.style.transition = 'transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease';
+    card.style.transform  = f ? 'scale(1.04)' : '';
+    card.style.boxShadow  = f ? '0 30px 70px rgba(79,70,229,.45)' : '';
+  });
+});
+</script>
+}
