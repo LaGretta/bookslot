@@ -39,24 +39,35 @@
                                 <div class="mb-4">
                                     <label class="form-label fw-semibold">Фото / Лого бізнесу</label>
                                     <div class="d-flex align-items-center gap-3">
-                                        <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:2px solid #e5e7eb;background:#f3f4f6;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                                            @if (!string.IsNullOrEmpty(Model.Business?.LogoUrl))
-                                            {
-                                                <img id="logoPreview" src="@Model.Business.LogoUrl" style="width:100%;height:100%;object-fit:cover" />
-                                                <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af;display:none"></i>
-                                            }
-                                            else
-                                            {
-                                                <img id="logoPreview" src="" style="width:100%;height:100%;object-fit:cover;display:none" />
-                                                <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af"></i>
-                                            }
-                                        </div>
+                                        <!-- Кружок — клікабельний, відкриває вибір файлу -->
+                                        <label for="logoFileInput" style="cursor:pointer;flex-shrink:0" title="Натисніть щоб змінити фото">
+                                            <div style="width:80px;height:80px;border-radius:50%;overflow:hidden;border:2px solid #e5e7eb;background:#f3f4f6;display:flex;align-items:center;justify-content:center;position:relative">
+                                                @if (!string.IsNullOrEmpty(Model.Business?.LogoUrl))
+                                                {
+                                                    <img id="logoPreview" src="@Model.Business.LogoUrl" style="width:100%;height:100%;object-fit:cover" />
+                                                    <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af;display:none"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img id="logoPreview" src="" style="width:100%;height:100%;object-fit:cover;display:none" />
+                                                    <i id="logoPlaceholder" class="bi bi-camera" style="font-size:1.8rem;color:#9ca3af"></i>
+                                                }
+                                                <!-- Overlay при наведенні -->
+                                                <div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                                                    <i class="bi bi-camera-fill" style="color:#fff;font-size:1.4rem"></i>
+                                                </div>
+                                            </div>
+                                        </label>
+                                        <!-- input не можна ховати через d-none на iOS Safari -->
+                                        <input id="logoFileInput" type="file" accept="image/jpeg,image/png,image/webp"
+                                               style="position:absolute;opacity:0;pointer-events:none;width:1px;height:1px"
+                                               onchange="handleLogoFile(this)" />
                                         <div>
                                             <label class="btn btn-outline-secondary btn-sm" for="logoFileInput">
                                                 <i class="bi bi-upload me-1"></i> Обрати фото
                                             </label>
-                                            <input id="logoFileInput" type="file" accept="image/jpeg,image/png,image/webp" class="d-none" onchange="handleLogoFile(this)" />
                                             <div class="text-muted small mt-1">JPG, PNG або WebP, до 2 МБ</div>
+                                            <div id="logoStatus" class="small mt-1" style="display:none;color:#4F46E5">✓ Фото обрано</div>
                                         </div>
                                     </div>
                                 </div>
@@ -184,6 +195,8 @@ function handleLogoFile(input) {
             preview.src = base64;
             preview.style.display = 'block';
             if (placeholder) placeholder.style.display = 'none';
+            const status = document.getElementById('logoStatus');
+            if (status) status.style.display = 'block';
         };
         originalImg.src = e.target.result;
     };
