@@ -19,6 +19,14 @@ public class IndexModel : PageModel
     public string? SearchEmail { get; set; }
     public string? Message { get; set; }
 
+    // Stats
+    public int TotalUsers { get; set; }
+    public int TotalBusinesses { get; set; }
+    public int TotalBookings { get; set; }
+    public int BookingsThisMonth { get; set; }
+    public int PaidSubscriptions { get; set; }
+    public int NewUsersThisWeek { get; set; }
+
     public class UserRow
     {
         public string UserId { get; set; } = "";
@@ -41,6 +49,7 @@ public class IndexModel : PageModel
         if (!IsAdmin()) return Forbid();
 
         SearchEmail = search;
+        await LoadStatsAsync();
         await LoadUsersAsync(search);
         return Page();
     }
@@ -67,6 +76,21 @@ public class IndexModel : PageModel
 
         TempData["Success"] = "✅ 7 днів Basic активовано!";
         return RedirectToPage();
+    }
+
+    private async Task LoadStatsAsync()
+    {
+        var now = DateTime.UtcNow;
+        var startOfMonth = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+        var startOfWeek  = now.AddDays(-7);
+
+        TotalUsers        = await _db.Users.CountAsync();
+        TotalBusinesses   = await _db.Businesses.CountAsync();
+        TotalBookings     = await _db.Bookings.CountAsync();
+        BookingsThisMonth = await _db.Bookings.CountAsync(b => b.CreatedAt >= startOfMonth);
+        PaidSubscriptions = await _db.Subscriptions.CountAsync(s =>
+            s.Plan != SubscriptionPlan.Free && (s.EndDate == null || s.EndDate > now));
+        NewUsersThisWeek  = await _db.Businesses.CountAsync(b => b.CreatedAt >= startOfWeek);
     }
 
     private async Task LoadUsersAsync(string? search)
