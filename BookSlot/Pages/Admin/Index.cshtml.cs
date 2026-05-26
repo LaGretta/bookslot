@@ -25,6 +25,7 @@ public class IndexModel : PageModel
     public int TotalBookings { get; set; }
     public int BookingsThisMonth { get; set; }
     public int PaidSubscriptions { get; set; }
+    public int PromoSubscriptions { get; set; }
     public int NewUsersThisWeek { get; set; }
 
     public class UserRow
@@ -89,7 +90,9 @@ public class IndexModel : PageModel
         TotalBookings     = await _db.Bookings.CountAsync();
         BookingsThisMonth = await _db.Bookings.CountAsync(b => b.CreatedAt >= startOfMonth);
         PaidSubscriptions = await _db.Subscriptions.CountAsync(s =>
-            s.Plan != SubscriptionPlan.Free && (s.EndDate == null || s.EndDate > now));
+            s.Plan != SubscriptionPlan.Free && !s.PromoUsed && (s.EndDate == null || s.EndDate > now));
+        PromoSubscriptions = await _db.Subscriptions.CountAsync(s =>
+            s.Plan != SubscriptionPlan.Free && s.PromoUsed && (s.EndDate == null || s.EndDate > now));
         NewUsersThisWeek  = await _db.Businesses.CountAsync(b => b.CreatedAt >= startOfWeek);
     }
 
