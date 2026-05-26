@@ -163,87 +163,110 @@
             }
 
             <!-- Plans -->
-            <h5 class="fw-bold mb-3">Обрати план</h5>
-            <div class="row g-4">
-                <!-- Free reminder -->
-                <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body p-4">
-                            <p class="text-muted mb-1 fw-semibold" style="font-size:.85rem;text-transform:uppercase;letter-spacing:.5px">Безкоштовно</p>
-                            <div class="fs-3 fw-bold mb-3">0 грн<span class="fs-6 fw-normal text-muted">/міс</span></div>
-                            <ul class="list-unstyled mb-4" style="font-size:.93rem">
-                                <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>До 30 записів/міс</li>
-                                <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i>Email-сповіщення</li>
-                                <li class="mb-2 d-flex gap-2 text-muted"><i class="bi bi-x-circle mt-1"></i>Статистика</li>
-                            </ul>
-                            <span class="btn btn-outline-secondary w-100 disabled">Поточний безкоштовний</span>
-                        </div>
-                    </div>
+            <h5 class="fw-bold mb-1 mt-2">Обрати план</h5>
+            <p class="text-muted small mb-0">Масштабуйте по мірі росту бізнесу. Без прихованих платежів.</p>
+            <div class="lp-price-grid" style="margin-top:1.5rem">
+
+                <!-- FREE -->
+                <div class="lp-p-card">
+                    <div class="lp-p-plan lp-plan-free">БЕЗКОШТОВНО</div>
+                    <div class="lp-p-price">0<sub> грн/міс</sub></div>
+                    <p class="lp-p-desc">Щоб почати і спробувати</p>
+                    <ul class="lp-p-list">
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>До 30 записів/міс</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Сторінка запису</span></li>
+                        <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Email-сповіщення</span></li>
+                        <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Аналітика</span></li>
+                    </ul>
+                    <span class="lp-btn-price lp-price-outline" style="opacity:.55;cursor:default">Поточний план</span>
                 </div>
 
-                <!-- Basic -->
-                <div class="col-md-4">
-                    <div class="pricing-card" style="border:2px solid var(--primary)">
-                        <span class="badge mb-2" style="background:var(--primary)">Найпопулярніший</span>
-                        <h5 class="fw-bold">Basic</h5>
-                        <div class="pricing-price my-3">299 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                        <ul class="list-unstyled text-start mb-4" style="font-size:.93rem">
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>До 200 записів/міс</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Необмежені послуги</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Email-сповіщення</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill text-success mt-1"></i>Статистика записів</li>
-                        </ul>
-                        @if (Model.StripeConfigured)
-                        {
-                            <form method="post" asp-page-handler="Subscribe">
-                                <input type="hidden" name="plan" value="Basic" />
-                                <button class="btn btn-primary w-100 fw-bold">
-                                    <i class="bi bi-credit-card me-1"></i> Оплатити 299 грн
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <button class="btn btn-outline-secondary w-100" disabled>Незабаром</button>
-                        }
-                    </div>
+                <!-- BASIC (featured) -->
+                <div class="lp-p-card lp-featured">
+                    <div class="lp-p-badge">⭐ Найпопулярніший</div>
+                    <div class="lp-p-plan lp-plan-basic">BASIC</div>
+                    <div class="lp-p-price">299<sub> грн/міс</sub></div>
+                    <p class="lp-p-desc">Для активного бізнесу</p>
+                    <ul class="lp-p-list">
+                        <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>До 200 записів/міс</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Необмежені послуги</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Email-сповіщення</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Статистика записів</span></li>
+                    </ul>
+                    @if (Model.StripeConfigured)
+                    {
+                        <form method="post" asp-page-handler="Subscribe">
+                            <input type="hidden" name="plan" value="Basic" />
+                            <button type="submit" class="lp-btn-price lp-price-white w-100" style="border:none">
+                                <i class="bi bi-credit-card me-1"></i> Оплатити 299 грн
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="lp-btn-price lp-price-white" style="opacity:.6;cursor:default">Незабаром</span>
+                    }
                 </div>
 
-                <!-- Pro -->
-                <div class="col-md-4">
-                    <div class="pricing-card featured">
-                        <span class="badge bg-warning text-dark mb-2">Максимум можливостей</span>
-                        <h5 class="fw-bold">Pro</h5>
-                        <div class="pricing-price my-3">599 грн<span style="font-size:1rem;font-weight:400">/міс</span></div>
-                        <ul class="list-unstyled text-start mb-4" style="font-size:.93rem">
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>Необмежені записи</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>Необмежені послуги</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>Email-сповіщення власнику та клієнту</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>Детальна статистика</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>Email-нагадування клієнту за 24 год</li>
-                            <li class="mb-2 d-flex gap-2"><i class="bi bi-check-circle-fill mt-1" style="color:#a5f3a5;flex-shrink:0"></i>QR-код вашої сторінки</li>
-                        </ul>
-                        @if (Model.StripeConfigured)
-                        {
-                            <form method="post" asp-page-handler="Subscribe">
-                                <input type="hidden" name="plan" value="Pro" />
-                                <button class="btn btn-light w-100 fw-bold">
-                                    <i class="bi bi-credit-card me-1"></i> Оплатити 599 грн
-                                </button>
-                            </form>
-                        }
-                        else
-                        {
-                            <button class="btn btn-outline-light w-100" disabled>Незабаром</button>
-                        }
-                    </div>
+                <!-- PRO -->
+                <div class="lp-p-card">
+                    <div class="lp-p-plan lp-plan-pro">PRO</div>
+                    <div class="lp-p-price">599<sub> грн/міс</sub></div>
+                    <p class="lp-p-desc">Для масштабу без обмежень</p>
+                    <ul class="lp-p-list">
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені записи</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені послуги</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Email власнику та клієнту</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Детальна статистика</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Нагадування за 24 год</span></li>
+                        <li><i class="bi bi-check-circle-fill lp-ok"></i><span>QR-код сторінки</span></li>
+                    </ul>
+                    @if (Model.StripeConfigured)
+                    {
+                        <form method="post" asp-page-handler="Subscribe">
+                            <input type="hidden" name="plan" value="Pro" />
+                            <button type="submit" class="lp-btn-price lp-price-pout w-100" style="border:none">
+                                <i class="bi bi-credit-card me-1"></i> Оплатити 599 грн
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="lp-btn-price lp-price-pout" style="opacity:.6;cursor:default">Незабаром</span>
+                    }
                 </div>
+
             </div>
-
-            <div class="alert alert-light border mt-4 small">
-                <i class="bi bi-shield-check me-2 text-success"></i>
-                Оплата через <strong>Stripe</strong> — світовий стандарт безпеки. Підтримує Visa, Mastercard, Apple Pay, Google Pay.
-            </div>
+            <p class="mt-3 small" style="color:#64748b">
+                <i class="bi bi-shield-check" style="color:#10b981"></i>
+                Оплата через <strong>Stripe</strong> — Visa, Mastercard, Apple Pay, Google Pay
+            </p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+// 3D tilt on pricing cards (same as landing page)
+document.querySelectorAll('.lp-p-card').forEach(function(card){
+  var f = card.classList.contains('lp-featured');
+  card.addEventListener('mousemove', function(e){
+    var r = card.getBoundingClientRect();
+    var x = e.clientX - r.left  - r.width/2;
+    var y = e.clientY - r.top   - r.height/2;
+    var rx = (-y / (r.height/2)) * 13;
+    var ry = ( x / (r.width/2))  * 13;
+    card.style.transition = 'transform .1s ease, box-shadow .1s ease';
+    card.style.transform  = 'translateY('+(f?-10:-18)+'px) scale('+(f?1.08:1.05)+') rotateX('+rx+'deg) rotateY('+ry+'deg)';
+    card.style.boxShadow  = f
+      ? '0 70px 120px rgba(79,70,229,.65), 0 0 100px rgba(79,70,229,.28)'
+      : '0 40px 90px rgba(79,70,229,.18)';
+  });
+  card.addEventListener('mouseleave', function(){
+    card.style.transition = 'transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease';
+    card.style.transform  = f ? 'scale(1.04)' : '';
+    card.style.boxShadow  = f ? '0 30px 70px rgba(79,70,229,.45)' : '';
+  });
+});
+</script>
+}

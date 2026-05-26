@@ -594,9 +594,142 @@ footer .footer-brand .brand-icon {
 .lp-cta-box .lp-btn-prim { position: relative; z-index: 1; }
 
 /* ── LANDING RESPONSIVE ── */
+/* ── HERO 2-COLUMN ── */
+.lp-hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 430px;
+    gap: 4rem;
+    align-items: center;
+}
+/* Left-align hero text on desktop */
+.lp-hero-text .lp-sub    { margin-left: 0; margin-right: 0; }
+.lp-hero-text .lp-actions{ justify-content: flex-start; }
+.lp-hero-text .lp-stats  { justify-content: flex-start; }
+
+/* ── PHONE MOCKUP ── */
+.lp-mockup-wrap {
+    position: relative;
+    animation: lpCardFloat 7s ease-in-out infinite;
+    padding: 0 32px 32px 0;
+}
+@keyframes lpCardFloat {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    40%     { transform: translateY(-12px) rotate(.4deg); }
+    70%     { transform: translateY(-5px) rotate(-.25deg); }
+}
+.lp-mockup-card {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.13);
+    border-radius: 24px; padding: 1.75rem;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 40px 80px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.1);
+}
+.lp-mockup-header {
+    display: flex; align-items: center; gap: .75rem;
+    margin-bottom: 1.5rem; padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.lp-mockup-avatar {
+    width: 38px; height: 38px; border-radius: 12px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1rem; flex-shrink: 0;
+}
+.lp-mockup-name { color: #fff; font-weight: 700; font-size: .95rem; }
+.lp-mockup-sub  { color: rgba(255,255,255,.4); font-size: .73rem; margin-top: .1rem; }
+.lp-day-label {
+    color: rgba(255,255,255,.45); font-size: .72rem;
+    font-weight: 600; text-transform: uppercase;
+    letter-spacing: .8px; margin-bottom: .75rem;
+}
+.lp-t-slot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .6rem .85rem; border-radius: 10px;
+    margin-bottom: .4rem; font-size: .8rem; font-weight: 600;
+}
+.lp-t-slot.free { background: rgba(79,70,229,.2); color: #a5b4fc; border: 1px solid rgba(79,70,229,.3); }
+.lp-t-slot.busy { background: rgba(255,255,255,.04); color: rgba(255,255,255,.25); border: 1px solid rgba(255,255,255,.06); }
+.lp-t-slot.sel  { background: #4F46E5; color: #fff; border: 1px solid #4F46E5; box-shadow: 0 4px 14px rgba(79,70,229,.5); }
+.lp-t-badge { font-size: .65rem; padding: .2rem .5rem; border-radius: 6px; }
+.lp-t-badge.ok { background: rgba(34,197,94,.2); color: #4ade80; }
+.lp-t-badge.no { background: rgba(255,255,255,.07); color: rgba(255,255,255,.25); }
+.lp-t-badge.go { background: rgba(255,255,255,.2); color: #fff; }
+.lp-mockup-btn {
+    width: 100%; background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    color: #fff; border: none; border-radius: 12px;
+    padding: .75rem; font-weight: 700; font-size: .85rem;
+    margin-top: 1rem; cursor: default;
+    box-shadow: 0 4px 16px rgba(79,70,229,.5);
+}
+
+/* Notification in main card */
+.lp-card-live-notif {
+    background: rgba(15,23,42,.9);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 13px; padding: .65rem .9rem;
+    display: flex; align-items: center; gap: .7rem;
+    margin-bottom: 1.25rem;
+    animation: lpCardNotifAnim 12s ease-in-out infinite;
+}
+.lp-card-notif-ico {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: linear-gradient(135deg, #4F46E5, #7C3AED);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: .8rem; flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(79,70,229,.5);
+}
+.lp-card-notif-app { font-size: .62rem; color: rgba(255,255,255,.38); font-weight: 700; text-transform: uppercase; letter-spacing: .5px; }
+.lp-card-notif-msg { font-size: .78rem; color: #fff; font-weight: 700; margin-top: .1rem; }
+@keyframes lpCardNotifAnim {
+    0%         { opacity: 0; transform: translateY(-12px); }
+    8%, 40%    { opacity: 1; transform: translateY(0); }
+    50%, 100%  { opacity: 0; transform: translateY(-8px); }
+}
+
+/* Mini phone screen #2 (sequential, -6s delay) */
+.lp-screen2 {
+    position: absolute; bottom: -28px; right: -28px;
+    width: 190px; background: #070d1a;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 22px; padding: 1rem;
+    box-shadow: 0 24px 60px rgba(0,0,0,.75), inset 0 1px 0 rgba(255,255,255,.06);
+    animation: lpScreen2Anim 12s ease-in-out infinite;
+    animation-delay: -6s;
+}
+.lp-screen2-status { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.lp-screen2-time   { font-size: 1.35rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
+.lp-screen2-icons  { font-size: .7rem; color: rgba(255,255,255,.35); display: flex; gap: .3rem; }
+.lp-screen2-card   {
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.08);
+    border-radius: 13px; padding: .65rem .75rem;
+    display: flex; align-items: flex-start; gap: .55rem;
+}
+.lp-screen2-ico {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: linear-gradient(135deg, #10b981, #0ea5e9);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: .72rem; flex-shrink: 0; margin-top: .1rem;
+}
+.lp-screen2-app { font-size: .6rem; color: rgba(255,255,255,.38); font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+.lp-screen2-msg { font-size: .73rem; color: #fff; font-weight: 700; margin-top: .1rem; }
+.lp-screen2-sub { font-size: .63rem; color: rgba(255,255,255,.38); margin-top: .2rem; }
+@keyframes lpScreen2Anim {
+    0%         { opacity: 0; transform: translateX(20px) scale(.92); }
+    8%, 40%    { opacity: 1; transform: translateX(0) scale(1); }
+    50%, 100%  { opacity: 0; transform: translateX(12px) scale(.95); }
+}
+
+/* Subscription page pricing cards fix */
+button.lp-btn-price { cursor: pointer; }
+
+/* ── RESPONSIVE ── */
 @media (max-width: 992px) {
     .lp-feat-grid { grid-template-columns: repeat(2, 1fr); }
     .lp-testi-grid { grid-template-columns: repeat(2, 1fr); }
+    .lp-hero-inner { grid-template-columns: 1fr; text-align: center; }
+    .lp-hero-text .lp-sub    { margin: 0 auto 2.25rem; }
+    .lp-hero-text .lp-actions{ justify-content: center; }
+    .lp-hero-text .lp-stats  { justify-content: center; }
 }
 @media (max-width: 768px) {
     .lp-hero { padding: 90px 0 60px; min-height: auto; }

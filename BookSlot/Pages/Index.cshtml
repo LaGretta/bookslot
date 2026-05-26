@@ -27,37 +27,92 @@
     <div class="lp-blob1"></div>
     <div class="lp-blob2"></div>
     <div class="container position-relative" style="z-index:2">
-        <div class="text-center">
-            <div class="lp-badge">
-                <span class="lp-dot"></span>
-                Запуск за 5 хвилин · Без технічних знань
+        <div class="lp-hero-inner">
+
+            <!-- Left: text -->
+            <div class="lp-hero-text">
+                <div class="lp-badge">
+                    <span class="lp-dot"></span>
+                    Запуск за 5 хвилин · Без технічних знань
+                </div>
+                <h1 class="lp-h1">Клієнти записуються <em class="lp-em">самі.</em><br>Ви просто зустрічаєте.</h1>
+                <p class="lp-sub">BookSlot — онлайн-запис для барбершопів, косметологів, репетиторів та інших малих бізнесів. Замість дзвінків — посилання.</p>
+                <div class="lp-actions">
+                    @if (isLoggedIn)
+                    {
+                        <a asp-page="/Dashboard/Index" class="lp-btn-prim">
+                            <i class="bi bi-grid me-2"></i>Мій дашборд
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim">
+                            Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#features" class="lp-btn-sec"><i class="bi bi-play-circle me-2"></i>Як це працює</a>
+                    }
+                </div>
+                <div class="lp-trust">
+                    <i class="bi bi-gift"></i> Є безкоштовний план &nbsp;·&nbsp;
+                    <i class="bi bi-lightning-charge"></i> Готово за 5 хв &nbsp;·&nbsp;
+                    <i class="bi bi-shield-check"></i> Безпечна оплата
+                </div>
+                <div class="lp-stats">
+                    <div class="lp-stat"><div class="lp-stat-n">200+</div><div class="lp-stat-l">Акаунтів</div></div>
+                    <div class="lp-stat"><div class="lp-stat-n">15 000+</div><div class="lp-stat-l">Записів</div></div>
+                    <div class="lp-stat"><div class="lp-stat-n">4.9 ★</div><div class="lp-stat-l">Оцінка</div></div>
+                </div>
             </div>
-            <h1 class="lp-h1">Клієнти записуються <em class="lp-em">самі.</em><br>Ви просто зустрічаєте.</h1>
-            <p class="lp-sub">BookSlot — онлайн-запис для барбершопів, косметологів,<br class="d-none d-md-block"> репетиторів та інших малих бізнесів. Замість дзвінків — посилання.</p>
-            <div class="lp-actions">
-                @if (isLoggedIn)
-                {
-                    <a asp-page="/Dashboard/Index" class="lp-btn-prim">
-                        <i class="bi bi-grid me-2"></i>Мій дашборд
-                    </a>
-                }
-                else
-                {
-                    <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim">
-                        Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
-                    </a>
-                    <a href="#features" class="lp-btn-sec"><i class="bi bi-play-circle me-2"></i>Як це працює</a>
-                }
-            </div>
-            <div class="lp-trust">
-                <i class="bi bi-gift"></i> Є безкоштовний план &nbsp;·&nbsp;
-                <i class="bi bi-lightning-charge"></i> Готово за 5 хв &nbsp;·&nbsp;
-                <i class="bi bi-shield-check"></i> Безпечна оплата
-            </div>
-            <div class="lp-stats">
-                <div class="lp-stat"><div class="lp-stat-n">200+</div><div class="lp-stat-l">Акаунтів</div></div>
-                <div class="lp-stat"><div class="lp-stat-n">15 000+</div><div class="lp-stat-l">Записів на місяць</div></div>
-                <div class="lp-stat"><div class="lp-stat-n">4.9 ★</div><div class="lp-stat-l">Середня оцінка</div></div>
+
+            <!-- Right: animated phone mockup (hidden below lg) -->
+            <div class="lp-mockup-wrap d-none d-lg-block">
+
+                <!-- Mini phone screen #2 — "Запис підтверджено" notification -->
+                <div class="lp-screen2">
+                    <div class="lp-screen2-status">
+                        <div class="lp-screen2-time">18:43</div>
+                        <div class="lp-screen2-icons">
+                            <i class="bi bi-wifi"></i>
+                            <i class="bi bi-battery-full"></i>
+                        </div>
+                    </div>
+                    <div class="lp-screen2-card">
+                        <div class="lp-screen2-ico"><i class="bi bi-check2"></i></div>
+                        <div>
+                            <div class="lp-screen2-app">BookSlot</div>
+                            <div class="lp-screen2-msg">Запис підтверджено</div>
+                            <div class="lp-screen2-sub">Максим · Стрижка · 14:00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main booking card -->
+                <div class="lp-mockup-card">
+                    <!-- Live notification — phase 1 -->
+                    <div class="lp-card-live-notif">
+                        <div class="lp-card-notif-ico"><i class="bi bi-bell-fill"></i></div>
+                        <div>
+                            <div class="lp-card-notif-app">BookSlot · щойно</div>
+                            <div class="lp-card-notif-msg">Новий запис — Аліна, 11:00</div>
+                        </div>
+                    </div>
+                    <div class="lp-mockup-header">
+                        <div class="lp-mockup-avatar"><i class="bi bi-scissors"></i></div>
+                        <div>
+                            <div class="lp-mockup-name">Барбершоп Іван</div>
+                            <div class="lp-mockup-sub">bookslot.com/book/barber-ivan</div>
+                        </div>
+                    </div>
+                    <div class="lp-day-label">Середа, 28 травня 2026</div>
+                    <div class="lp-t-slot busy"><span>09:00 — Стрижка</span><span class="lp-t-badge no">Зайнято</span></div>
+                    <div class="lp-t-slot busy"><span>10:00 — Борода</span><span class="lp-t-badge no">Зайнято</span></div>
+                    <div class="lp-t-slot sel"><span>11:00 — Стрижка</span><span class="lp-t-badge go">Обрано ✓</span></div>
+                    <div class="lp-t-slot free"><span>12:00 — Будь-яка</span><span class="lp-t-badge ok">Вільно</span></div>
+                    <div class="lp-t-slot free"><span>14:00 — Стрижка</span><span class="lp-t-badge ok">Вільно</span></div>
+                    <div class="lp-t-slot free"><span>15:30 — Борода</span><span class="lp-t-badge ok">Вільно</span></div>
+                    <button class="lp-mockup-btn" disabled>Підтвердити запис →</button>
+                </div>
+
             </div>
         </div>
     </div>
