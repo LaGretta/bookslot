@@ -1,0 +1,129 @@
+@page "{id:int}"
+@model BookSlot.Pages.Dashboard.AiAssistant.Conversations.DetailsModel
+@{
+    ViewData["Title"] = "AI-розмова #" + Model.Conversation?.Id;
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <partial name="_DashboardNav" />
+        </div>
+
+        <div class="col-md-10 py-4 px-4">
+            <div class="d-flex align-items-start justify-content-between gap-3 mb-4 flex-wrap">
+                <div>
+                    <a asp-page="/Dashboard/AiAssistant/Index" class="text-decoration-none small text-muted">
+                        <i class="bi bi-arrow-left me-1"></i> AI-помічник
+                    </a>
+                    <h4 class="fw-bold mb-1 mt-2">AI-розмова #@Model.Conversation?.Id</h4>
+                    <p class="text-muted mb-0">@Model.Conversation?.Channel / @Model.Conversation?.ExternalChatId</p>
+                </div>
+                <span class="badge bg-light text-dark border px-3 py-2">@Model.Conversation?.Status</span>
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-4">
+                    <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+                    <i class="bi bi-exclamation-triangle-fill"></i> @TempData["Error"]
+                </div>
+            }
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-3">Повідомлення</h5>
+                            @if (!Model.Messages.Any())
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-chat-dots" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.5rem"></i>
+                                    <p class="small mb-0">Повідомлень ще немає.</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-grid gap-3">
+                                    @foreach (var message in Model.Messages)
+                                    {
+                                        var isAssistant = message.SenderType == BookSlot.Features.AiAssistant.Models.AiMessageSenderType.Assistant;
+                                        var isSystem = message.SenderType == BookSlot.Features.AiAssistant.Models.AiMessageSenderType.System;
+                                        <div class="@(isAssistant ? "ms-md-5" : isSystem ? "" : "me-md-5")">
+                                            <div class="border rounded-3 p-3" style="background:@(isSystem ? "#f8fafc" : isAssistant ? "#eef2ff" : "#ffffff")">
+                                                <div class="d-flex justify-content-between gap-2 mb-2">
+                                                    <strong class="small">
+                                                        @(isAssistant ? "AI" : isSystem ? "Система" : "Клієнт")
+                                                    </strong>
+                                                    <span class="text-muted" style="font-size:.72rem">@message.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                                                </div>
+                                                <div>@message.Text</div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                                <h5 class="fw-bold mb-0">Чернетка запису</h5>
+                                @if (Model.Draft != null)
+                                {
+                                    <span class="badge bg-light text-dark border">@Model.Draft.Status</span>
+                                }
+                            </div>
+
+                            @if (Model.Draft == null)
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-file-earmark-text" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.5rem"></i>
+                                    <p class="small mb-0">Чернетку ще не зібрано.</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <dl class="row small mb-4">
+                                    <dt class="col-5 text-muted">Послуга</dt>
+                                    <dd class="col-7">@((Model.DraftService?.Name) ?? "—")</dd>
+                                    <dt class="col-5 text-muted">Дата</dt>
+                                    <dd class="col-7">@(Model.Draft.RequestedDate?.ToString("dd.MM.yyyy") ?? "—")</dd>
+                                    <dt class="col-5 text-muted">Час</dt>
+                                    <dd class="col-7">@(Model.Draft.RequestedTime?.ToString(@"hh\:mm") ?? "—")</dd>
+                                    <dt class="col-5 text-muted">Клієнт</dt>
+                                    <dd class="col-7">@(Model.Draft.CustomerName ?? "—")</dd>
+                                    <dt class="col-5 text-muted">Контакт</dt>
+                                    <dd class="col-7">@(Model.Draft.CustomerContact ?? "—")</dd>
+                                </dl>
+
+                                @if (Model.CanCreateBookingFromDraft)
+                                {
+                                    <form method="post" asp-page-handler="CreateBooking" asp-route-id="@Model.Conversation!.Id">
+                                        <button type="submit" class="btn btn-success w-100">
+                                            <i class="bi bi-calendar-check me-1"></i> Створити запис із чернетки
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-outline-secondary w-100" disabled>
+                                        <i class="bi bi-hourglass me-1"></i> Чернетка ще неповна
+                                    </button>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

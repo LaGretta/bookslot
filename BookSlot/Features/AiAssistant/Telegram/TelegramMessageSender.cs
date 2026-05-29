@@ -1,0 +1,88 @@
+using System.Text;
+using System.Text.Json;
+using BookSlot.Features.AiAssistant.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace BookSlot.Features.AiAssistant.Telegram;
+
+public class TelegramMessageSender : ITelegramMessageSender
+{
+    private readonly HttpClient _httpClient;
+    private readonly AiAssistantOptions _options;
+    private readonly ILogger<TelegramMessageSender> _logger;
+
+    public TelegramMessageSender(
+        HttpClient httpClient,
+        IOptions<AiAssistantOptions> options,
+        ILogger<TelegramMessageSender> logger)
+    {
+        _httpClient = httpClient;
+        _options = options.Value;
+        _logger = logger;
+    }
+
+    public async Task<TelegramSendResult> SendMessageAsync(
+        long chatId,
+        string text,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(_options.TelegramBotToken))
+        {
+            return new TelegramSendResult
+            {
+                Success = false,
+                ErrorMessage = "Telegram bot token is not configured."
+            };
+        }
+
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return new TelegramSendResult
+            {
+                Success = false,
+                ErrorMessage = "Telegram message text is empty."
+            };
+        }
+
+        var payload = new
+        {
+            chat_id = chatId,
+            text,
+            disable_web_page_preview = true
+        };
+
+        try
+        {
+            using var request = new HttpRequestMessage(
+                HttpMethod.Post,
+                $"https://api.telegram.org/bot{_options.TelegramBotToken}/sendMessage");
+
+            request.Content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await _httpClient.SendAsync(request, cancellationToken);
+            if (response.IsSuccessStatusCode)
+                return new TelegramSendResult { Success = true };
+
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            _logger.LogWarning("Telegram sendMessage failed with {Status}: {Body}", response.StatusCode, body);
+
+            return new TelegramSendResult
+            {
+                Success = false,
+                ErrorMessage = $"Telegram API returned {response.StatusCode}."
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Telegram sendMessage failed.");
+            return new TelegramSendResult
+            {
+                Success = false,
+                ErrorMessage = "Telegram send failed."
+            };
+        }
+    }
+}

@@ -1,3 +1,4 @@
+using BookSlot.Features.AiAssistant.Models;
 using BookSlot.Models;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<ManualBlock> ManualBlocks { get; set; }
+    public DbSet<AiAssistantSettings> AiAssistantSettings { get; set; }
+    public DbSet<TelegramBotConnection> TelegramBotConnections { get; set; }
+    public DbSet<AiConversation> AiConversations { get; set; }
+    public DbSet<AiConversationMessage> AiConversationMessages { get; set; }
+    public DbSet<AppointmentDraft> AppointmentDrafts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -63,6 +69,47 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
         {
             e.HasOne(m => m.Business).WithMany(b => b.ManualBlocks).HasForeignKey(m => m.BusinessId);
             e.HasIndex(m => new { m.BusinessId, m.Date, m.BlockedTime });
+        });
+
+        builder.Entity<AiAssistantSettings>(e =>
+        {
+            e.HasOne<Business>().WithOne().HasForeignKey<AiAssistantSettings>(s => s.BusinessId);
+            e.HasIndex(s => s.BusinessId).IsUnique();
+            e.Property(s => s.WelcomeMessage).IsRequired().HasMaxLength(500);
+            e.Property(s => s.BusinessDescription).HasMaxLength(1000);
+            e.Property(s => s.ToneOfVoice).IsRequired().HasMaxLength(120);
+        });
+
+        builder.Entity<TelegramBotConnection>(e =>
+        {
+            e.HasOne<Business>().WithOne().HasForeignKey<TelegramBotConnection>(t => t.BusinessId);
+            e.HasIndex(t => t.BusinessId).IsUnique();
+            e.Property(t => t.BotUsername).IsRequired().HasMaxLength(100);
+        });
+
+        builder.Entity<AiConversation>(e =>
+        {
+            e.HasOne<Business>().WithMany().HasForeignKey(c => c.BusinessId);
+            e.HasIndex(c => new { c.BusinessId, c.Channel, c.ExternalChatId }).IsUnique();
+            e.Property(c => c.ExternalChatId).IsRequired().HasMaxLength(120);
+            e.Property(c => c.CustomerName).HasMaxLength(200);
+            e.Property(c => c.CustomerContact).HasMaxLength(200);
+        });
+
+        builder.Entity<AiConversationMessage>(e =>
+        {
+            e.HasOne(m => m.Conversation).WithMany(c => c.Messages).HasForeignKey(m => m.ConversationId);
+            e.Property(m => m.Text).IsRequired().HasMaxLength(2000);
+            e.HasIndex(m => new { m.ConversationId, m.CreatedAt });
+        });
+
+        builder.Entity<AppointmentDraft>(e =>
+        {
+            e.HasOne(d => d.Conversation).WithOne().HasForeignKey<AppointmentDraft>(d => d.ConversationId);
+            e.HasOne<Service>().WithMany().HasForeignKey(d => d.ServiceId);
+            e.HasIndex(d => d.ConversationId).IsUnique();
+            e.Property(d => d.CustomerName).HasMaxLength(200);
+            e.Property(d => d.CustomerContact).HasMaxLength(200);
         });
     }
 }

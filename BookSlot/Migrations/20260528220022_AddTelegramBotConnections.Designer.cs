@@ -3,6 +3,7 @@ using System;
 using BookSlot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookSlot.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260528220022_AddTelegramBotConnections")]
+    partial class AddTelegramBotConnections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,126 +132,6 @@ namespace BookSlot.Migrations
                         .IsUnique();
 
                     b.ToTable("AiAssistantSettings");
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AiConversation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BusinessId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Channel")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CustomerContact")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("CustomerName")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("ExternalChatId")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("character varying(120)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BusinessId", "Channel", "ExternalChatId")
-                        .IsUnique();
-
-                    b.ToTable("AiConversations");
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AiConversationMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("SenderType")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId", "CreatedAt");
-
-                    b.ToTable("AiConversationMessages");
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AppointmentDraft", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ConversationId")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CustomerContact")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<string>("CustomerName")
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<DateTime?>("RequestedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<TimeSpan?>("RequestedTime")
-                        .HasColumnType("interval");
-
-                    b.Property<int?>("ServiceId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConversationId")
-                        .IsUnique();
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("AppointmentDrafts");
                 });
 
             modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.TelegramBotConnection", b =>
@@ -686,41 +569,6 @@ namespace BookSlot.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AiConversation", b =>
-                {
-                    b.HasOne("BookSlot.Models.Business", null)
-                        .WithMany()
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AiConversationMessage", b =>
-                {
-                    b.HasOne("BookSlot.Features.AiAssistant.Models.AiConversation", "Conversation")
-                        .WithMany("Messages")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Conversation");
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AppointmentDraft", b =>
-                {
-                    b.HasOne("BookSlot.Features.AiAssistant.Models.AiConversation", "Conversation")
-                        .WithOne()
-                        .HasForeignKey("BookSlot.Features.AiAssistant.Models.AppointmentDraft", "ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BookSlot.Models.Service", null)
-                        .WithMany()
-                        .HasForeignKey("ServiceId");
-
-                    b.Navigation("Conversation");
-                });
-
             modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.TelegramBotConnection", b =>
                 {
                     b.HasOne("BookSlot.Models.Business", null)
@@ -856,11 +704,6 @@ namespace BookSlot.Migrations
             modelBuilder.Entity("BookSlot.Data.ApplicationUser", b =>
                 {
                     b.Navigation("Business");
-                });
-
-            modelBuilder.Entity("BookSlot.Features.AiAssistant.Models.AiConversation", b =>
-                {
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("BookSlot.Models.Business", b =>
