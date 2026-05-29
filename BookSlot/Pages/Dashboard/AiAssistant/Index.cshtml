@@ -57,6 +57,58 @@
                 </div>
             }
 
+            @if (!Model.IsProPlan)
+            {
+                @* ── Upsell: AI is a Pro-only feature ── *@
+                <div class="row g-4 align-items-center">
+                    <div class="col-lg-6">
+                        <span class="badge px-3 py-2 mb-3" style="background:#eef2ff;color:#4f46e5;border:1px solid #c7d2fe">
+                            <i class="bi bi-stars me-1"></i> Тариф Pro
+                        </span>
+                        <h3 class="fw-bold mb-3">AI Receptionist відповідає за вас 24/7</h3>
+                        <p class="text-muted mb-4">
+                            Бот сам спілкується з клієнтами в Telegram, підбирає послугу, дату й час
+                            і готує запис — навіть коли ви зайняті чи спите. Доступно у тарифі <strong>Pro</strong>.
+                        </p>
+                        <div class="d-grid gap-2 mb-4" style="max-width:420px">
+                            <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success"></i><span class="small">Автовідповіді клієнтам у Telegram</span></div>
+                            <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success"></i><span class="small">Кнопки послуг і вільних годин</span></div>
+                            <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success"></i><span class="small">Готові чернетки записів у дашборді</span></div>
+                            <div class="d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill text-success"></i><span class="small">Персональне посилання-бот для клієнтів</span></div>
+                        </div>
+                        <a asp-page="/Dashboard/Subscription/Index" class="btn btn-primary btn-lg px-4">
+                            <i class="bi bi-arrow-up-circle me-1"></i> Перейти на Pro
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="ai-demo-phone">
+                            <div class="ai-demo-top">
+                                <div class="ai-demo-ava">AI</div>
+                                <div>
+                                    <div class="ai-demo-name">@(Model.Business?.Name ?? "Ваш салон")</div>
+                                    <div class="ai-demo-sub">бот • онлайн</div>
+                                </div>
+                                <i class="bi bi-telegram ms-auto" style="color:#2aabee;font-size:1.2rem"></i>
+                            </div>
+                            <div class="ai-demo-chat" id="aiDemoChat">
+                                <div class="ai-demo-msg in"  data-step="1">Привіт! 💅</div>
+                                <div class="ai-demo-msg out" data-step="2">Вітаю! Що вас цікавить?</div>
+                                <div class="ai-demo-chips out" data-step="3"><span>Манікюр</span><span>Педикюр</span><span>Брови</span></div>
+                                <div class="ai-demo-msg in"  data-step="4">Манікюр</div>
+                                <div class="ai-demo-msg out" data-step="5">Чудово! На завтра є вільні години:</div>
+                                <div class="ai-demo-chips out" data-step="6"><span>14:00</span><span>16:00</span><span>17:30</span></div>
+                                <div class="ai-demo-msg in"  data-step="7">16:00</div>
+                                <div class="ai-demo-msg out" data-step="8">Запишіть, будь ласка, імʼя та телефон 🙂</div>
+                                <div class="ai-demo-msg in"  data-step="9">Олена, +380 67 123 45 67</div>
+                                <div class="ai-demo-done out" data-step="10"><i class="bi bi-check-circle-fill"></i> Запис підготовлено!</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+
             @* ── Status checklist ── *@
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
@@ -355,6 +407,7 @@
                     </div>
                 </div>
             </div>
+            }
         </div>
     </div>
 </div>

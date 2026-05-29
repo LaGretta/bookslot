@@ -190,28 +190,52 @@
             <h2>Basic для запису. Pro / AI для автоматизації переписок.</h2>
         </div>
 
-        <div class="ai-pricing-grid">
-            <div class="ai-plan">
-                <h3>BookSlot Basic</h3>
-                <div class="ai-plan-price">299 грн<span>/міс</span></div>
-                <p>Онлайн-запис по посиланню для малого бізнесу.</p>
-                <ul>
-                    <li>Сторінка запису</li>
-                    <li>Послуги, ціни, розклад</li>
-                    <li>Email-підтвердження</li>
+        <div class="lp-price-grid">
+
+            <!-- FREE -->
+            <div class="lp-p-card">
+                <div class="lp-p-plan lp-plan-free">БЕЗКОШТОВНО</div>
+                <div class="lp-p-price">0<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">Щоб почати і спробувати</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>До 30 записів/міс</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Сторінка запису</span></li>
+                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Email-сповіщення</span></li>
+                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">AI Receptionist</span></li>
                 </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-outline w-100">Почати безкоштовно</a>
             </div>
-            <div class="ai-plan ai-plan-featured">
-                <div class="ai-plan-badge">Новий premium напрям</div>
-                <h3>BookSlot Pro / AI</h3>
-                <div class="ai-plan-price">599 грн<span>/міс</span></div>
-                <p>AI Receptionist, який відповідає клієнтам і готує записи автоматично.</p>
-                <ul>
-                    <li>Telegram AI Receptionist MVP</li>
-                    <li>AI conversation drafts</li>
-                    <li>Dashboard review перед створенням booking</li>
+
+            <!-- BASIC -->
+            <div class="lp-p-card">
+                <div class="lp-p-plan lp-plan-basic">BASIC</div>
+                <div class="lp-p-price">299<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">Для активного бізнесу</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>До 200 записів/міс</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені послуги</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Email-сповіщення</span></li>
+                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">AI Receptionist</span></li>
                 </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-outline w-100">Обрати Basic</a>
             </div>
+
+            <!-- PRO / AI (featured) -->
+            <div class="lp-p-card lp-featured">
+                <div class="lp-p-badge">🤖 З AI-ботом</div>
+                <div class="lp-p-plan lp-plan-pro">PRO / AI</div>
+                <div class="lp-p-price">599<sub> грн/міс</sub></div>
+                <p class="lp-p-desc">AI відповідає клієнтам за вас</p>
+                <ul class="lp-p-list">
+                    <li><i class="bi bi-stars lp-ok-f"></i><span><strong>AI Receptionist у Telegram</strong></span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Необмежені записи й послуги</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Кнопки послуг і вільних годин</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Готові чернетки записів</span></li>
+                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Email + нагадування за 24 год</span></li>
+                </ul>
+                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-white w-100">Спробувати Pro / AI</a>
+            </div>
+
         </div>
     </div>
 </section>
@@ -232,3 +256,29 @@
         </div>
     </div>
 </section>
+
+@section Scripts {
+<script>
+    // 3D mouse-tilt on pricing cards
+    document.querySelectorAll('.lp-p-card').forEach(function (card) {
+        var f = card.classList.contains('lp-featured');
+        card.addEventListener('mousemove', function (e) {
+            var r = card.getBoundingClientRect();
+            var x = e.clientX - r.left - r.width / 2;
+            var y = e.clientY - r.top - r.height / 2;
+            var rx = (-y / (r.height / 2)) * 12;
+            var ry = (x / (r.width / 2)) * 12;
+            card.style.transition = 'transform .1s ease, box-shadow .1s ease';
+            card.style.transform = 'translateY(' + (f ? -10 : -16) + 'px) scale(' + (f ? 1.08 : 1.05) + ') rotateX(' + rx + 'deg) rotateY(' + ry + 'deg)';
+            card.style.boxShadow = f
+                ? '0 70px 120px rgba(79,70,229,.6), 0 0 100px rgba(79,70,229,.25)'
+                : '0 40px 90px rgba(79,70,229,.18)';
+        });
+        card.addEventListener('mouseleave', function () {
+            card.style.transition = 'transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease';
+            card.style.transform = f ? 'scale(1.04)' : '';
+            card.style.boxShadow = f ? '0 30px 70px rgba(79,70,229,.45)' : '';
+        });
+    });
+</script>
+}
