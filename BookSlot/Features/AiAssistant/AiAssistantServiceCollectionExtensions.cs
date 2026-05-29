@@ -19,6 +19,7 @@ public static class AiAssistantServiceCollectionExtensions
         services.AddScoped<IAiAvailabilityService, AiAvailabilityService>();
         services.AddScoped<IAiBookingOrchestrator, AiBookingOrchestrator>();
         services.AddScoped<ITelegramAssistantHandler, SafeTelegramAssistantHandler>();
+        services.AddSingleton<ITelegramTokenProtector, TelegramTokenProtector>();
         services.AddHttpClient<ITelegramMessageSender, TelegramMessageSender>();
         services.AddHttpClient(nameof(TelegramPollingWorker));
         services.AddHostedService<TelegramPollingWorker>();

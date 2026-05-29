@@ -17,17 +17,20 @@ public class TelegramWebhookModel : PageModel
     private readonly AiAssistantOptions _options;
     private readonly ITelegramAssistantHandler _handler;
     private readonly ITelegramMessageSender _sender;
+    private readonly ITelegramTokenProtector _tokenProtector;
     private readonly ApplicationDbContext _db;
 
     public TelegramWebhookModel(
         IOptions<AiAssistantOptions> options,
         ITelegramAssistantHandler handler,
         ITelegramMessageSender sender,
+        ITelegramTokenProtector tokenProtector,
         ApplicationDbContext db)
     {
         _options = options.Value;
         _handler = handler;
         _sender = sender;
+        _tokenProtector = tokenProtector;
         _db = db;
     }
 
@@ -43,18 +46,28 @@ public class TelegramWebhookModel : PageModel
             return BadRequest("Telegram webhook business mapping is not configured.");
 
         var businessId = _options.TelegramWebhookBusinessId.Value;
-        var connectionIsActive = await _db.TelegramBotConnections
+        var connection = await _db.TelegramBotConnections
             .AsNoTracking()
-            .AnyAsync(
+            .FirstOrDefaultAsync(
                 c => c.BusinessId == businessId && c.IsActive,
                 HttpContext.RequestAborted);
 
-        if (!connectionIsActive)
+        if (connection == null)
         {
             return new JsonResult(new
             {
                 skipped = true,
                 reason = "Telegram connection is not active for this business."
+            });
+        }
+
+        var botToken = _tokenProtector.TryUnprotect(connection.BotToken);
+        if (string.IsNullOrWhiteSpace(botToken))
+        {
+            return new JsonResult(new
+            {
+                skipped = true,
+                reason = "Telegram bot token is not configured for this business."
             });
         }
 
@@ -83,6 +96,7 @@ public class TelegramWebhookModel : PageModel
         if (result.ShouldSendMessage && result.ExternalChatId.HasValue)
         {
             sendResult = await _sender.SendMessageAsync(
+                botToken,
                 result.ExternalChatId.Value,
                 result.MessageToSend,
                 HttpContext.RequestAborted);

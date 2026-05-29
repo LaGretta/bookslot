@@ -119,30 +119,30 @@
                             {
                                 <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
                                     <i class="bi bi-check-circle-fill text-success"></i>
-                                    <span class="small fw-semibold">Bot Token у змінних середовища</span>
+                                    <span class="small fw-semibold">Токен бота збережено</span>
                                 </div>
                             }
                             else
                             {
-                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f1f5f9">
-                                    <i class="bi bi-dash-circle" style="color:#94a3b8"></i>
-                                    <span class="small fw-semibold text-muted">Bot Token не задано в env</span>
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#fff7ed">
+                                    <i class="bi bi-x-circle-fill" style="color:#f97316"></i>
+                                    <span class="small fw-semibold" style="color:#9a3412">Встав токен бота →</span>
                                 </div>
                             }
                         </div>
                         <div class="col-sm-6 col-lg-4">
-                            @if (Model.TelegramWebhookEnabled)
+                            @if (Model.TelegramConnectionMetadataActive)
                             {
                                 <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
                                     <i class="bi bi-check-circle-fill text-success"></i>
-                                    <span class="small fw-semibold">Webhook активний</span>
+                                    <span class="small fw-semibold">Бот відповідає клієнтам</span>
                                 </div>
                             }
                             else
                             {
                                 <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f1f5f9">
                                     <i class="bi bi-dash-circle" style="color:#94a3b8"></i>
-                                    <span class="small fw-semibold text-muted">Webhook вимкнений</span>
+                                    <span class="small fw-semibold text-muted">Бот ще не активний</span>
                                 </div>
                             }
                         </div>
@@ -239,7 +239,7 @@
                                 </div>
                                 <div>
                                     <h5 class="fw-bold mb-0">Як підключити Telegram-бота</h5>
-                                    <p class="text-muted small mb-0">Покрокова інструкція для живого бота</p>
+                                    <p class="text-muted small mb-0">3 простих кроки — без жодного коду</p>
                                 </div>
                             </div>
 
@@ -247,46 +247,45 @@
                                 <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
                                     <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">1</div>
                                     <div>
-                                        <div class="fw-semibold small mb-1">Створи бота через @@BotFather</div>
-                                        <div class="text-muted" style="font-size:.8rem">Знайди в Telegram @@BotFather → /newbot → вкажи назву і username → скопіюй токен</div>
+                                        <div class="fw-semibold small mb-1">Створи бота в Telegram</div>
+                                        <div class="text-muted" style="font-size:.8rem">Відкрий <strong>@@BotFather</strong> → напиши <code style="background:#e2e8f0" class="px-1 rounded">/newbot</code> → дай назву і username → він пришле тобі <strong>токен</strong> (довгий рядок з «:»)</div>
                                     </div>
                                 </div>
                                 <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
                                     <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">2</div>
                                     <div>
-                                        <div class="fw-semibold small mb-1">Додай Bot Token у Railway → Variables</div>
-                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem;word-break:break-all">AiAssistant__TelegramBotToken=1234567:AAF...</code>
+                                        <div class="fw-semibold small mb-1">Встав токен у форму праворуч →</div>
+                                        <div class="text-muted" style="font-size:.8rem">Скопіюй токен від BotFather і встав у поле «Токен бота». Зберігається безпечно й зашифровано.</div>
                                     </div>
                                 </div>
                                 <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
                                     <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">3</div>
                                     <div>
-                                        <div class="fw-semibold small mb-1">Увімкни polling у Railway → Variables</div>
-                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem">AiAssistant__TelegramPollingEnabled=true</code>
-                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem">AiAssistant__TelegramPollingBusinessId=@(Model.Business?.Id.ToString() ?? "YOUR_BUSINESS_ID")</code>
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
-                                    <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">4</div>
-                                    <div>
-                                        <div class="fw-semibold small mb-1">Збережи username бота і увімкни підключення →</div>
-                                        <div class="text-muted" style="font-size:.8rem">Форма у правій колонці. Після цього бот почне відповідати клієнтам.</div>
+                                        <div class="fw-semibold small mb-1">Увімкни перемикач і збережи</div>
+                                        <div class="text-muted" style="font-size:.8rem">Готово! Бот одразу почне сам відповідати клієнтам у Telegram.</div>
                                     </div>
                                 </div>
                             </div>
 
-                            @if (Model.TelegramBotTokenConfigured)
+                            @if (Model.TelegramConnectionMetadataActive)
                             {
                                 <div class="alert alert-success d-flex align-items-center gap-2 py-2 mb-0 small">
                                     <i class="bi bi-check-circle-fill"></i>
-                                    Bot Token знайдено в env — крок 2 виконано!
+                                    Бот підключений і відповідає клієнтам 🎉
+                                </div>
+                            }
+                            else if (Model.TelegramBotTokenConfigured)
+                            {
+                                <div class="alert alert-warning d-flex align-items-center gap-2 py-2 mb-0 small">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    Токен збережено. Увімкни перемикач «Підключення активне», щоб бот запрацював.
                                 </div>
                             }
                             else
                             {
-                                <div class="alert alert-warning d-flex align-items-center gap-2 py-2 mb-0 small">
-                                    <i class="bi bi-info-circle-fill"></i>
-                                    Bot Token не задано. Telegram-бот поки не відповідатиме клієнтам.
+                                <div class="alert alert-light border d-flex align-items-center gap-2 py-2 mb-0 small">
+                                    <i class="bi bi-arrow-right-circle"></i>
+                                    Встав токен бота у формі праворуч, щоб почати.
                                 </div>
                             }
                         </div>
@@ -395,10 +394,30 @@
                                     <label asp-for="TelegramInput.BotUsername" class="form-label small fw-semibold text-muted">Username бота</label>
                                     <div class="input-group">
                                         <span class="input-group-text">@@</span>
-                                        <input asp-for="TelegramInput.BotUsername" class="form-control" placeholder="BookSlot_AI_Bot">
+                                        <input asp-for="TelegramInput.BotUsername" class="form-control" placeholder="BookSlot_AI_Assistant_Bot">
                                     </div>
                                     <span asp-validation-for="TelegramInput.BotUsername" class="text-danger small"></span>
-                                    <div class="form-text">Username з @@BotFather</div>
+                                    <div class="form-text">Username бота з @@BotFather (без @@)</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="TelegramInput.BotToken" class="form-label small fw-semibold text-muted">
+                                        Токен бота
+                                        @if (Model.TelegramInput.HasToken)
+                                        {
+                                            <span class="badge bg-success ms-1" style="font-size:.65rem"><i class="bi bi-check"></i> збережено</span>
+                                        }
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                        <input asp-for="TelegramInput.BotToken" type="password" class="form-control"
+                                               autocomplete="off"
+                                               placeholder="@(Model.TelegramInput.HasToken ? "•••••••• (залиш порожнім, щоб не міняти)" : "1234567:AAF...встав токен від BotFather")">
+                                    </div>
+                                    <span asp-validation-for="TelegramInput.BotToken" class="text-danger small"></span>
+                                    <div class="form-text">
+                                        <i class="bi bi-shield-lock me-1"></i>Зберігається зашифровано. Ніхто, включно з нами, не бачить його у відкритому вигляді.
+                                    </div>
                                 </div>
 
                                 <div class="form-check form-switch mb-3">
@@ -406,32 +425,18 @@
                                     <label asp-for="TelegramInput.IsActive" class="form-check-label fw-semibold ms-2">Підключення активне</label>
                                 </div>
 
-                                <div class="p-3 rounded-3 mb-3 small text-muted" style="background:#f8fafc;border:1px solid #e2e8f0">
-                                    <i class="bi bi-shield-lock me-1"></i>
-                                    Токен тут не вводиться. Він зберігається тільки в environment variables.
-                                </div>
-
                                 @if (Model.TelegramConnectionMetadataActive)
                                 {
                                     <div class="d-flex align-items-center gap-2 p-2 rounded-3 mb-3" style="background:#f0fdf4;border:1px solid #bbf7d0">
                                         <i class="bi bi-check-circle-fill text-success"></i>
-                                        <span class="small fw-semibold text-success">@@<strong>@Model.TelegramInput.BotUsername</strong> активний</span>
+                                        <span class="small fw-semibold text-success">@@<strong>@Model.TelegramInput.BotUsername</strong> відповідає клієнтам</span>
                                     </div>
                                 }
 
-                                <button type="submit" class="btn btn-outline-primary w-100">
-                                    <i class="bi bi-telegram me-1"></i> Зберегти Telegram
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-telegram me-1"></i> Підключити бота
                                 </button>
                             </form>
-
-                            @if (Model.TelegramWebhookEnabled && !string.IsNullOrWhiteSpace(Model.TelegramWebhookBusinessStatus))
-                            {
-                                <hr class="my-3">
-                                <div class="small text-muted">
-                                    <i class="bi bi-info-circle me-1"></i>
-                                    Webhook: <strong>@Model.TelegramWebhookBusinessStatus</strong>
-                                </div>
-                            }
                         </div>
                     </div>
 

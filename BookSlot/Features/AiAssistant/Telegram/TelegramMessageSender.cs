@@ -1,32 +1,28 @@
 using System.Text;
 using System.Text.Json;
-using BookSlot.Features.AiAssistant.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace BookSlot.Features.AiAssistant.Telegram;
 
 public class TelegramMessageSender : ITelegramMessageSender
 {
     private readonly HttpClient _httpClient;
-    private readonly AiAssistantOptions _options;
     private readonly ILogger<TelegramMessageSender> _logger;
 
     public TelegramMessageSender(
         HttpClient httpClient,
-        IOptions<AiAssistantOptions> options,
         ILogger<TelegramMessageSender> logger)
     {
         _httpClient = httpClient;
-        _options = options.Value;
         _logger = logger;
     }
 
     public async Task<TelegramSendResult> SendMessageAsync(
+        string botToken,
         long chatId,
         string text,
         CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(_options.TelegramBotToken))
+        if (string.IsNullOrWhiteSpace(botToken))
         {
             return new TelegramSendResult
             {
@@ -55,7 +51,7 @@ public class TelegramMessageSender : ITelegramMessageSender
         {
             using var request = new HttpRequestMessage(
                 HttpMethod.Post,
-                $"https://api.telegram.org/bot{_options.TelegramBotToken}/sendMessage");
+                $"https://api.telegram.org/bot{botToken}/sendMessage");
 
             request.Content = new StringContent(
                 JsonSerializer.Serialize(payload),
