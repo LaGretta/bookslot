@@ -1,0 +1,442 @@
+@page
+@model BookSlot.Pages.Dashboard.AiAssistant.IndexModel
+@{
+    ViewData["Title"] = "AI-помічник";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <partial name="_DashboardNav" />
+        </div>
+
+        <div class="col-md-10 py-4 px-4">
+
+            <div class="d-flex justify-content-between align-items-start gap-3 mb-4 flex-wrap">
+                <div>
+                    <div class="text-uppercase fw-semibold mb-1" style="font-size:.72rem;color:#6366f1;letter-spacing:.08em">
+                        AI Receptionist
+                    </div>
+                    <h4 class="fw-bold mb-1">AI-помічник BookSlot</h4>
+                    <p class="text-muted mb-0">@Model.Business?.Name</p>
+                </div>
+                @if (Model.SettingsInput.IsEnabled && Model.IsReadyForAiPilot)
+                {
+                    <span class="badge px-3 py-2 fw-semibold" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0">
+                        <i class="bi bi-check-circle-fill me-1"></i> Активний
+                    </span>
+                }
+                else
+                {
+                    <span class="badge px-3 py-2 fw-semibold" style="background:#fef3c7;color:#92400e;border:1px solid #fde68a">
+                        <i class="bi bi-exclamation-circle me-1"></i> Потребує налаштування
+                    </span>
+                }
+            </div>
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success d-flex align-items-center gap-2 mb-4">
+                    <i class="bi bi-check-circle-fill"></i> @TempData["Success"]
+                </div>
+            }
+
+            @* ── Status checklist ── *@
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3 text-uppercase" style="font-size:.75rem;letter-spacing:.06em;color:#6366f1">
+                        <i class="bi bi-list-check me-2"></i>Статус налаштування
+                    </h6>
+                    <div class="row g-2">
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.HasActiveServices)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">Послуги (@Model.ActiveServicesCount)</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <a asp-page="/Dashboard/Services/Index" class="d-flex align-items-center gap-2 p-2 rounded-3 text-decoration-none" style="background:#fff7ed">
+                                    <i class="bi bi-x-circle-fill" style="color:#f97316"></i>
+                                    <span class="small fw-semibold" style="color:#9a3412">Додати послуги</span>
+                                    <i class="bi bi-arrow-right-short ms-auto" style="color:#9a3412"></i>
+                                </a>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.HasWorkingSchedule)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">Розклад (@Model.WorkingDaysCount дн.)</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <a asp-page="/Dashboard/Schedule/Index" class="d-flex align-items-center gap-2 p-2 rounded-3 text-decoration-none" style="background:#fff7ed">
+                                    <i class="bi bi-x-circle-fill" style="color:#f97316"></i>
+                                    <span class="small fw-semibold" style="color:#9a3412">Налаштувати розклад</span>
+                                    <i class="bi bi-arrow-right-short ms-auto" style="color:#9a3412"></i>
+                                </a>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.SettingsInput.IsEnabled)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">AI-помічник увімкнений</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#fff7ed">
+                                    <i class="bi bi-x-circle-fill" style="color:#f97316"></i>
+                                    <span class="small fw-semibold" style="color:#9a3412">AI-помічник вимкнений</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.TelegramConnectionMetadataActive)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">Telegram @@<strong>@Model.TelegramInput.BotUsername</strong></span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f1f5f9">
+                                    <i class="bi bi-dash-circle" style="color:#94a3b8"></i>
+                                    <span class="small fw-semibold text-muted">Telegram не налаштовано</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.TelegramBotTokenConfigured)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">Bot Token у змінних середовища</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f1f5f9">
+                                    <i class="bi bi-dash-circle" style="color:#94a3b8"></i>
+                                    <span class="small fw-semibold text-muted">Bot Token не задано в env</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            @if (Model.TelegramWebhookEnabled)
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f0fdf4">
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    <span class="small fw-semibold">Webhook активний</span>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-flex align-items-center gap-2 p-2 rounded-3" style="background:#f1f5f9">
+                                    <i class="bi bi-dash-circle" style="color:#94a3b8"></i>
+                                    <span class="small fw-semibold text-muted">Webhook вимкнений</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-7">
+
+                    @* ── Test AI message ── *@
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">Тест AI-помічника</h5>
+                                    <p class="text-muted mb-0 small">Перевір відповідь без реального Telegram. Запис не створюється.</p>
+                                </div>
+                                <span class="badge bg-light text-dark border">Безпечний тест</span>
+                            </div>
+
+                            <form method="post" asp-page-handler="TestMessage">
+                                <label asp-for="TestMessage" class="form-label small fw-semibold text-muted">Напиши як клієнт</label>
+                                <div class="input-group mb-2">
+                                    <input asp-for="TestMessage" class="form-control" placeholder="Привіт, є завтра на манікюр о 16:00?">
+                                    <button type="submit" class="btn btn-primary px-3">
+                                        <i class="bi bi-play-fill me-1"></i> Перевірити
+                                    </button>
+                                </div>
+                                <span asp-validation-for="TestMessage" class="text-danger small"></span>
+                            </form>
+
+                            @if (Model.TestReply != null)
+                            {
+                                <div class="border rounded-3 p-3 mt-3" style="background:#f8fafc">
+                                    <div class="d-flex align-items-center justify-content-between gap-3 mb-3 flex-wrap">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center">
+                                                <i class="bi bi-stars text-white" style="font-size:.8rem"></i>
+                                            </div>
+                                            <strong class="small">AI Receptionist</strong>
+                                        </div>
+                                        <span class="badge @(Model.TestReply.CanCreateBooking ? "bg-success" : "bg-secondary") small">
+                                            @(Model.TestReply.CanCreateBooking ? "Готово до запису" : "Збираю дані")
+                                        </span>
+                                    </div>
+
+                                    <div class="p-3 rounded-3 mb-3" style="background:white;border:1px solid #e2e8f0">
+                                        <div class="text-muted mb-1" style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Відповідь клієнту</div>
+                                        <div>@Model.TestReply.MessageToCustomer</div>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap gap-3">
+                                        <div>
+                                            <div class="text-muted mb-1" style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Інтент</div>
+                                            <span class="badge bg-white text-dark border">@Model.TestReply.Intent</span>
+                                        </div>
+                                        @if (Model.TestReply.SuggestedSlots.Any())
+                                        {
+                                            <div>
+                                                <div class="text-muted mb-1" style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Вільні слоти</div>
+                                                <div class="d-flex gap-1 flex-wrap">
+                                                    @foreach (var slot in Model.TestReply.SuggestedSlots)
+                                                    {
+                                                        <span class="badge bg-white text-dark border">@slot</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        @if (Model.TestReply.MissingFields.Any())
+                                        {
+                                            <div>
+                                                <div class="text-muted mb-1" style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em">Не вистачає</div>
+                                                <div class="d-flex gap-1 flex-wrap">
+                                                    @foreach (var field in Model.TestReply.MissingFields)
+                                                    {
+                                                        <span class="badge bg-warning text-dark">@field</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    @* ── Telegram setup guide ── *@
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-3 mb-3">
+                                <div style="width:40px;height:40px;border-radius:12px;background:#e8f4fd;display:flex;align-items:center;justify-content:center">
+                                    <i class="bi bi-telegram" style="color:#2196f3;font-size:1.2rem"></i>
+                                </div>
+                                <div>
+                                    <h5 class="fw-bold mb-0">Як підключити Telegram-бота</h5>
+                                    <p class="text-muted small mb-0">Покрокова інструкція для живого бота</p>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mb-3">
+                                <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
+                                    <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">1</div>
+                                    <div>
+                                        <div class="fw-semibold small mb-1">Створи бота через @@BotFather</div>
+                                        <div class="text-muted" style="font-size:.8rem">Знайди в Telegram @@BotFather → /newbot → вкажи назву і username → скопіюй токен</div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
+                                    <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">2</div>
+                                    <div>
+                                        <div class="fw-semibold small mb-1">Додай Bot Token у Railway → Variables</div>
+                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem;word-break:break-all">AiAssistant__TelegramBotToken=1234567:AAF...</code>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
+                                    <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">3</div>
+                                    <div>
+                                        <div class="fw-semibold small mb-1">Увімкни polling у Railway → Variables</div>
+                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem">AiAssistant__TelegramPollingEnabled=true</code>
+                                        <code class="d-block px-2 py-1 rounded mt-1" style="background:#e2e8f0;font-size:.75rem">AiAssistant__TelegramPollingBusinessId=@(Model.Business?.Id.ToString() ?? "YOUR_BUSINESS_ID")</code>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
+                                    <div class="fw-bold" style="min-width:22px;font-size:.85rem;color:#6366f1">4</div>
+                                    <div>
+                                        <div class="fw-semibold small mb-1">Збережи username бота і увімкни підключення →</div>
+                                        <div class="text-muted" style="font-size:.8rem">Форма у правій колонці. Після цього бот почне відповідати клієнтам.</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (Model.TelegramBotTokenConfigured)
+                            {
+                                <div class="alert alert-success d-flex align-items-center gap-2 py-2 mb-0 small">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Bot Token знайдено в env — крок 2 виконано!
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning d-flex align-items-center gap-2 py-2 mb-0 small">
+                                    <i class="bi bi-info-circle-fill"></i>
+                                    Bot Token не задано. Telegram-бот поки не відповідатиме клієнтам.
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    @* ── Recent conversations ── *@
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">Останні AI-розмови</h5>
+                                    <p class="text-muted mb-0 small">Діалоги через Telegram або тест</p>
+                                </div>
+                                <span class="badge bg-light text-dark border">@Model.RecentConversations.Count</span>
+                            </div>
+
+                            @if (!Model.RecentConversations.Any())
+                            {
+                                <div class="text-center py-4 text-muted">
+                                    <i class="bi bi-chat-dots" style="font-size:2rem;opacity:.3;display:block;margin-bottom:.5rem"></i>
+                                    <p class="small mb-0">Поки немає AI-розмов. Спробуй тест вище або підключи Telegram-бота.</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="d-grid gap-2">
+                                    @foreach (var conversation in Model.RecentConversations)
+                                    {
+                                        <a class="border rounded-3 px-3 py-2 text-decoration-none text-dark"
+                                           asp-page="/Dashboard/AiAssistant/Conversations/Details"
+                                           asp-route-id="@conversation.Id">
+                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <i class="bi bi-telegram text-primary small"></i>
+                                                    <span class="fw-semibold small">@conversation.ExternalChatId</span>
+                                                </div>
+                                                <span class="badge bg-light text-dark border small">@conversation.Status</span>
+                                            </div>
+                                            <div class="text-muted small text-truncate mt-1">
+                                                @(conversation.LastMessage ?? "Повідомлень ще немає")
+                                            </div>
+                                            <div class="text-muted mt-1" style="font-size:.72rem">
+                                                @conversation.UpdatedAt.ToString("dd.MM.yyyy HH:mm")
+                                            </div>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-5">
+
+                    @* ── AI settings form ── *@
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h5 class="fw-bold mb-4">Налаштування AI</h5>
+
+                            <form method="post" asp-page-handler="SaveSettings">
+                                <div class="form-check form-switch mb-4">
+                                    <input asp-for="SettingsInput.IsEnabled" class="form-check-input" type="checkbox" role="switch" style="width:2.5em;height:1.4em">
+                                    <label asp-for="SettingsInput.IsEnabled" class="form-check-label fw-semibold ms-2">AI-помічник увімкнений</label>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="SettingsInput.WelcomeMessage" class="form-label small fw-semibold text-muted">Привітальне повідомлення</label>
+                                    <textarea asp-for="SettingsInput.WelcomeMessage" class="form-control" rows="3" maxlength="500"
+                                              placeholder="Привіт! Я допоможу обрати послугу та підготувати запис."></textarea>
+                                    <div class="form-text">Перше повідомлення клієнту від бота</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="SettingsInput.BusinessDescription" class="form-label small fw-semibold text-muted">Опис бізнесу для AI</label>
+                                    <textarea asp-for="SettingsInput.BusinessDescription" class="form-control" rows="3" maxlength="1000"
+                                              placeholder="Beauty-студія, манікюр, брови, дружній тон…"></textarea>
+                                    <div class="form-text">Контекст для кращих відповідей AI</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label asp-for="SettingsInput.ToneOfVoice" class="form-label small fw-semibold text-muted">Тон спілкування</label>
+                                    <select asp-for="SettingsInput.ToneOfVoice" class="form-select">
+                                        <option>Дружній, чіткий і короткий</option>
+                                        <option>Преміальний і ввічливий</option>
+                                        <option>Неформальний і теплий</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="bi bi-save me-1"></i> Зберегти налаштування
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    @* ── Telegram connection form ── *@
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center gap-2 mb-4">
+                                <i class="bi bi-telegram" style="color:#2196f3;font-size:1.2rem"></i>
+                                <h5 class="fw-bold mb-0">Telegram-підключення</h5>
+                            </div>
+
+                            <form method="post" asp-page-handler="SaveTelegram">
+                                <div class="mb-3">
+                                    <label asp-for="TelegramInput.BotUsername" class="form-label small fw-semibold text-muted">Username бота</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">@@</span>
+                                        <input asp-for="TelegramInput.BotUsername" class="form-control" placeholder="BookSlot_AI_Bot">
+                                    </div>
+                                    <span asp-validation-for="TelegramInput.BotUsername" class="text-danger small"></span>
+                                    <div class="form-text">Username з @@BotFather</div>
+                                </div>
+
+                                <div class="form-check form-switch mb-3">
+                                    <input asp-for="TelegramInput.IsActive" class="form-check-input" type="checkbox" role="switch" style="width:2.5em;height:1.4em">
+                                    <label asp-for="TelegramInput.IsActive" class="form-check-label fw-semibold ms-2">Підключення активне</label>
+                                </div>
+
+                                <div class="p-3 rounded-3 mb-3 small text-muted" style="background:#f8fafc;border:1px solid #e2e8f0">
+                                    <i class="bi bi-shield-lock me-1"></i>
+                                    Токен тут не вводиться. Він зберігається тільки в environment variables.
+                                </div>
+
+                                @if (Model.TelegramConnectionMetadataActive)
+                                {
+                                    <div class="d-flex align-items-center gap-2 p-2 rounded-3 mb-3" style="background:#f0fdf4;border:1px solid #bbf7d0">
+                                        <i class="bi bi-check-circle-fill text-success"></i>
+                                        <span class="small fw-semibold text-success">@@<strong>@Model.TelegramInput.BotUsername</strong> активний</span>
+                                    </div>
+                                }
+
+                                <button type="submit" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-telegram me-1"></i> Зберегти Telegram
+                                </button>
+                            </form>
+
+                            @if (Model.TelegramWebhookEnabled && !string.IsNullOrWhiteSpace(Model.TelegramWebhookBusinessStatus))
+                            {
+                                <hr class="my-3">
+                                <div class="small text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Webhook: <strong>@Model.TelegramWebhookBusinessStatus</strong>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

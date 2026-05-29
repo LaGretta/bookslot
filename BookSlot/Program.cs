@@ -1,4 +1,5 @@
 using BookSlot.Data;
+using BookSlot.Features.AiAssistant;
 using BookSlot.Services;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
 
 var rawConnection =
     Environment.GetEnvironmentVariable("DATABASE_URL")
@@ -50,6 +52,7 @@ builder.Services.AddHttpClient<ResendEmailService>();
 builder.Services.AddScoped<IEmailService, ResendEmailService>();
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<StripeService>();
+builder.Services.AddAiAssistantFeature(builder.Configuration);
 
 var app = builder.Build();
 

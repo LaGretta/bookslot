@@ -4,314 +4,90 @@
 @using BookSlot.Data
 @inject SignInManager<ApplicationUser> SignInManager
 @{
-    ViewData["Title"] = "Онлайн-запис для вашого бізнесу";
+    ViewData["Title"] = "AI Receptionist для онлайн-запису";
     Layout = "_Layout";
     var isLoggedIn = SignInManager.IsSignedIn(User);
 }
 
-<style>
-/* ── Glass navbar on landing page ── */
-#main-nav { background: transparent !important; box-shadow: none !important; border-bottom: none !important; }
-#main-nav.lp-scrolled { background: rgba(255,255,255,.92) !important; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 1px 0 #e2e8f0 !important; }
-#main-nav:not(.lp-scrolled) .nav-link { color: rgba(255,255,255,.8) !important; }
-#main-nav:not(.lp-scrolled) .nav-link:hover { color: #fff !important; background: rgba(255,255,255,.08) !important; }
-#main-nav:not(.lp-scrolled) .navbar-toggler { border-color: rgba(255,255,255,.3) !important; }
-#main-nav:not(.lp-scrolled) .navbar-toggler-icon { filter: invert(1); }
-#main-nav:not(.lp-scrolled) .btn-outline-primary { border-color: rgba(255,255,255,.3) !important; color: rgba(255,255,255,.9) !important; }
-#main-nav:not(.lp-scrolled) .btn-outline-primary:hover { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.5) !important; }
-#main-nav:not(.lp-scrolled) .btn-primary { background: rgba(255,255,255,.12) !important; border-color: rgba(255,255,255,.25) !important; }
-</style>
-
-<!-- ══ HERO ══════════════════════════════════════════════════════════ -->
-<section class="lp-hero">
-    <div class="lp-blob1"></div>
-    <div class="lp-blob2"></div>
-    <div class="container position-relative" style="z-index:2">
-        <div class="lp-hero-inner">
-
-            <!-- Left: text -->
-            <div class="lp-hero-text">
-                <div class="lp-badge">
-                    <span class="lp-dot"></span>
-                    Запуск за 5 хвилин · Без технічних знань
+<section class="ai-hero">
+    <div class="container">
+        <div class="ai-hero-grid">
+            <div class="ai-hero-copy">
+                <div class="ai-kicker">
+                    <i class="bi bi-stars"></i>
+                    Новий крок BookSlot
                 </div>
-                <h1 class="lp-h1">Клієнти записуються <em class="lp-em">самі.</em><br>Ви просто зустрічаєте.</h1>
-                <p class="lp-sub">BookSlot — онлайн-запис для барбершопів, косметологів, репетиторів та інших малих бізнесів. Замість дзвінків — посилання.</p>
-                <div class="lp-actions">
+                <h1>Онлайн-запис + AI Receptionist для малого бізнесу</h1>
+                <p class="ai-lead">
+                    BookSlot допомагає клієнтам записуватись самостійно, а AI Receptionist відповідає в Telegram,
+                    уточнює послугу, дату, час і готує запис для власника.
+                </p>
+                <div class="ai-hero-actions">
                     @if (isLoggedIn)
                     {
-                        <a asp-page="/Dashboard/Index" class="lp-btn-prim">
-                            <i class="bi bi-grid me-2"></i>Мій дашборд
+                        <a asp-page="/Dashboard/AiAssistant/Index" class="ai-btn-primary">
+                            <i class="bi bi-stars"></i> Відкрити AI Receptionist
                         </a>
+                        <a asp-page="/Dashboard/Index" class="ai-btn-secondary">Дашборд</a>
                     }
                     else
                     {
-                        <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim">
-                            Спробувати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
+                        <a asp-page="/Account/Register" asp-area="Identity" class="ai-btn-primary">
+                            Спробувати BookSlot <i class="bi bi-arrow-right"></i>
                         </a>
-                        <a href="#features" class="lp-btn-sec"><i class="bi bi-play-circle me-2"></i>Як це працює</a>
+                        <a href="#ai" class="ai-btn-secondary">Подивитись AI flow</a>
                     }
                 </div>
-                <div class="lp-trust">
-                    <i class="bi bi-gift"></i> Є безкоштовний план &nbsp;·&nbsp;
-                    <i class="bi bi-lightning-charge"></i> Готово за 5 хв &nbsp;·&nbsp;
-                    <i class="bi bi-shield-check"></i> Безпечна оплата
-                </div>
-                <div class="lp-stats">
-                    <div class="lp-stat"><div class="lp-stat-n">200+</div><div class="lp-stat-l">Акаунтів</div></div>
-                    <div class="lp-stat"><div class="lp-stat-n">15 000+</div><div class="lp-stat-l">Записів</div></div>
-                    <div class="lp-stat"><div class="lp-stat-n">4.9 ★</div><div class="lp-stat-l">Оцінка</div></div>
+                <div class="ai-proof">
+                    <span><i class="bi bi-link-45deg"></i> Посилання для запису</span>
+                    <span><i class="bi bi-telegram"></i> Telegram AI MVP</span>
+                    <span><i class="bi bi-shield-check"></i> Безпечне підтвердження власником</span>
                 </div>
             </div>
 
-            <!-- Right: animated phone mockup (hidden below lg) -->
-            <div class="lp-mockup-wrap d-none d-lg-block">
-
-                <!-- Dark overlay card — phase 2: "Запис підтверджено" -->
-                <div class="lp-screen2">
-                    <!-- Status bar -->
-                    <div class="lp-screen2-status">
-                        <div class="lp-screen2-time">18:43</div>
-                        <div class="lp-screen2-icons">
-                            <i class="bi bi-wifi"></i>
-                            <i class="bi bi-battery-full"></i>
-                        </div>
-                    </div>
-                    <!-- Notification banner -->
-                    <div class="lp-screen2-card">
-                        <div class="lp-screen2-ico"><i class="bi bi-check2"></i></div>
-                        <div>
-                            <div class="lp-screen2-app">BookSlot · щойно</div>
-                            <div class="lp-screen2-msg">Запис підтверджено!</div>
-                            <div class="lp-screen2-sub">Максим · Стрижка · 14:00</div>
-                        </div>
-                    </div>
-                    <!-- Big success checkmark -->
-                    <div style="text-align:center;padding:1.1rem 0 1rem">
-                        <div style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#10b981,#0ea5e9);display:inline-flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;box-shadow:0 6px 22px rgba(16,185,129,.4);margin-bottom:.7rem">
-                            <i class="bi bi-check-lg"></i>
-                        </div>
-                        <div style="color:#fff;font-weight:700;font-size:1rem;margin-bottom:.2rem">Записано успішно!</div>
-                        <div style="color:rgba(255,255,255,.4);font-size:.78rem">Деталі надіслано на email</div>
-                    </div>
-                    <!-- Appointment summary -->
-                    <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:.9rem 1rem">
-                        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.5rem">
-                            <i class="bi bi-scissors" style="color:#a5b4fc;font-size:.85rem"></i>
-                            <span style="color:#fff;font-size:.85rem;font-weight:600">Стрижка</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:.6rem">
-                            <i class="bi bi-clock" style="color:#a5b4fc;font-size:.85rem"></i>
-                            <span style="color:rgba(255,255,255,.55);font-size:.8rem">Вт, 28 трав · 14:00 – 14:45</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main booking card -->
-                <div class="lp-mockup-card">
-                    <!-- Live notification — phase 1 -->
-                    <div class="lp-card-live-notif">
-                        <div class="lp-card-notif-ico"><i class="bi bi-bell-fill"></i></div>
-                        <div>
-                            <div class="lp-card-notif-app">BookSlot · щойно</div>
-                            <div class="lp-card-notif-msg">Новий запис — Аліна, 11:00</div>
-                        </div>
-                    </div>
-                    <div class="lp-mockup-header">
-                        <div class="lp-mockup-avatar"><i class="bi bi-scissors"></i></div>
-                        <div>
-                            <div class="lp-mockup-name">Барбершоп Іван</div>
-                            <div class="lp-mockup-sub">bookslot.com/book/barber-ivan</div>
-                        </div>
-                    </div>
-                    <div class="lp-day-label">Середа, 28 травня 2026</div>
-                    <div class="lp-t-slot busy"><span>09:00 — Стрижка</span><span class="lp-t-badge no">Зайнято</span></div>
-                    <div class="lp-t-slot busy"><span>10:00 — Борода</span><span class="lp-t-badge no">Зайнято</span></div>
-                    <div class="lp-t-slot sel"><span>11:00 — Стрижка</span><span class="lp-t-badge go">Обрано ✓</span></div>
-                    <div class="lp-t-slot free"><span>12:00 — Будь-яка</span><span class="lp-t-badge ok">Вільно</span></div>
-                    <div class="lp-t-slot free"><span>14:00 — Стрижка</span><span class="lp-t-badge ok">Вільно</span></div>
-                    <div class="lp-t-slot free"><span>15:30 — Борода</span><span class="lp-t-badge ok">Вільно</span></div>
-                    <button class="lp-mockup-btn" disabled>Підтвердити запис →</button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ══ MARQUEE ════════════════════════════════════════════════════════ -->
-<div class="lp-trust-strip">
-    <p class="lp-strip-lbl">Ідеально підходить для</p>
-    <div class="lp-marquee-wrap">
-        <div class="lp-marquee">
-            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
-            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
-            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
-            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
-            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
-            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
-            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
-            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
-            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
-            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
-            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
-            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
-            <!-- copy 2 -->
-            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
-            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
-            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
-            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
-            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
-            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
-            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
-            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
-            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
-            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
-            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
-            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
-            <!-- copy 3 -->
-            <span class="m-pill"><i class="bi bi-scissors" style="color:#4F46E5"></i> Барбершоп</span>
-            <span class="m-pill"><i class="bi bi-stars" style="color:#f59e0b"></i> Косметолог</span>
-            <span class="m-pill"><i class="bi bi-hand-index-thumb" style="color:#10b981"></i> Манікюр</span>
-            <span class="m-pill"><i class="bi bi-book" style="color:#6366f1"></i> Репетитор</span>
-            <span class="m-pill"><i class="bi bi-heart-pulse" style="color:#ef4444"></i> Масажист</span>
-            <span class="m-pill"><i class="bi bi-bicycle" style="color:#0ea5e9"></i> Фітнес-тренер</span>
-            <span class="m-pill"><i class="bi bi-eye" style="color:#8b5cf6"></i> Окуліст</span>
-            <span class="m-pill"><i class="bi bi-palette" style="color:#f97316"></i> Тату-майстер</span>
-            <span class="m-pill"><i class="bi bi-camera" style="color:#ec4899"></i> Фотограф</span>
-            <span class="m-pill"><i class="bi bi-person-badge" style="color:#14b8a6"></i> Психолог</span>
-            <span class="m-pill"><i class="bi bi-clipboard2-pulse" style="color:#ef4444"></i> Лікар</span>
-            <span class="m-pill"><i class="bi bi-building" style="color:#64748b"></i> Перукарня</span>
-        </div>
-    </div>
-</div>
-
-<!-- ══ FEATURES ══════════════════════════════════════════════════════ -->
-<section id="features" class="lp-section">
-    <div class="container">
-        <div class="text-center mb-5">
-            <div class="lp-eyebrow"><i class="bi bi-stars"></i> Можливості</div>
-            <h2 class="lp-sec-title">Все що потрібно — вже всередині</h2>
-            <p class="lp-sec-sub" style="max-width:500px;margin:.75rem auto 0">Налаштуйте за 10 хвилин і отримуйте нових клієнтів без дзвінків</p>
-        </div>
-        <div class="lp-feat-grid">
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-calendar2-week-fill"></i></div>
-                <h5 class="lp-feat-h">Розклад роботи</h5>
-                <p class="lp-feat-p">Налаштуйте робочі години для кожного дня. Клієнти бачать лише вільні слоти — ніякої плутанини.</p>
-            </div>
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-grid-fill"></i></div>
-                <h5 class="lp-feat-h">Управління послугами</h5>
-                <p class="lp-feat-p">Додавайте послуги з ціною та тривалістю. Клієнт сам обирає що йому потрібно.</p>
-            </div>
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-envelope-check-fill"></i></div>
-                <h5 class="lp-feat-h">Email-підтвердження</h5>
-                <p class="lp-feat-p">Клієнт отримує підтвердження одразу після запису. Ви — сповіщення про кожен новий запис.</p>
-            </div>
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-link-45deg"></i></div>
-                <h5 class="lp-feat-h">Ваша унікальна сторінка</h5>
-                <p class="lp-feat-p">Отримайте посилання <code style="background:#EEF2FF;color:#4F46E5;padding:.1rem .4rem;border-radius:5px;font-size:.78rem">bookslot.com/book/ваш-бізнес</code> і діліться в Instagram.</p>
-            </div>
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-bar-chart-line-fill"></i></div>
-                <h5 class="lp-feat-h">Аналітика</h5>
-                <p class="lp-feat-p">Кількість записів, скасувань і популярні послуги — все в одному дашборді.</p>
-            </div>
-            <div class="lp-feat-card">
-                <div class="lp-feat-ico"><i class="bi bi-phone-fill"></i></div>
-                <h5 class="lp-feat-h">100% мобільний</h5>
-                <p class="lp-feat-p">Клієнти записуються з телефону за 30 секунд. Ви керуєте бізнесом з будь-якого пристрою.</p>
-            </div>
-        </div>
-
-        <!-- No account needed -->
-        <div class="lp-noaccnt-card mt-4">
-            <div>
-                <div class="lp-feat-ico"><i class="bi bi-person-check-fill"></i></div>
-                <h5 class="lp-feat-h" style="font-size:1.05rem">Клієнту не потрібен акаунт</h5>
-                <p class="lp-feat-p mt-2" style="max-width:420px">Клієнт переходить по посиланню, обирає час і залишає ім'я та телефон. Жодної реєстрації, жодних додатків — просто записується за 30 секунд.</p>
-            </div>
-            <div class="lp-timer-card">
-                <div class="lp-timer-ico"><i class="bi bi-stopwatch-fill"></i></div>
-                <div class="lp-timer-label">Середній час запису</div>
-                <div class="lp-timer-num">28<span class="lp-timer-unit">сек</span></div>
-                <div class="lp-timer-sub">від переходу до підтвердження</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ══ HOW IT WORKS ═══════════════════════════════════════════════════ -->
-<section class="lp-section lp-gray">
-    <div class="container">
-        <div class="text-center mb-5">
-            <div class="lp-eyebrow"><i class="bi bi-arrow-right-circle"></i> Як це працює</div>
-            <h2 class="lp-sec-title">Три кроки до першого запису</h2>
-        </div>
-        <div class="lp-steps-grid">
-            <div class="lp-step-card">
-                <div class="lp-step-n">1</div>
-                <div class="lp-step-ico" style="background:#EEF2FF;color:#4F46E5"><i class="bi bi-shop-window"></i></div>
-                <h5 class="lp-feat-h">Реєструєтесь</h5>
-                <p class="lp-feat-p">Створюєте акаунт і налаштовуєте профіль: назва бізнесу, послуги, ціни, розклад роботи.</p>
-            </div>
-            <div class="lp-step-card">
-                <div class="lp-step-n">2</div>
-                <div class="lp-step-ico" style="background:#F0FDF4;color:#16a34a"><i class="bi bi-share-fill"></i></div>
-                <h5 class="lp-feat-h">Ділитесь посиланням</h5>
-                <p class="lp-feat-p">Публікуєте унікальне посилання в Instagram Stories, Telegram, шапці профілю або на сайті.</p>
-            </div>
-            <div class="lp-step-card">
-                <div class="lp-step-n">3</div>
-                <div class="lp-step-ico" style="background:#FEF3C7;color:#d97706"><i class="bi bi-calendar2-check-fill"></i></div>
-                <h5 class="lp-feat-h">Отримуєте клієнтів</h5>
-                <p class="lp-feat-p">Клієнти самі обирають час і записуються. Ви отримуєте сповіщення на пошту і зустрічаєте гостя.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- ══ TESTIMONIALS ═══════════════════════════════════════════════════ -->
-<section class="lp-section">
-    <div class="container">
-        <div class="text-center mb-5">
-            <div class="lp-eyebrow"><i class="bi bi-chat-quote"></i> Відгуки</div>
-            <h2 class="lp-sec-title">Що кажуть наші клієнти</h2>
-        </div>
-        <div class="lp-testi-grid">
-            <div class="lp-testi-card">
-                <div class="lp-testi-stars">★★★★★</div>
-                <p class="lp-testi-q">"Раніше щодня відповідала на 20+ повідомлень «коли можна?». Тепер просто скидаю посилання і все. Економлю 2 години щодня."</p>
-                <div class="lp-testi-author">
-                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#f97316,#ef4444)">О</div>
+            <div class="ai-flow-demo" aria-label="AI Receptionist booking flow preview">
+                <div class="ai-chat-top">
                     <div>
-                        <div class="lp-testi-name">Олена Захаренко</div>
-                        <div class="lp-testi-role">Косметолог, Київ</div>
+                        <strong>BookSlot AI</strong>
+                        <span>Telegram Receptionist</span>
+                    </div>
+                    <i class="bi bi-telegram"></i>
+                </div>
+
+                <div class="ai-flow-stage ai-flow-booking">
+                    <div class="ai-flow-label"><i class="bi bi-link-45deg"></i> Посилання BookSlot</div>
+                    <div class="ai-mini-booking">
+                        <div class="ai-mini-row">
+                            <span>Клієнт обирає</span>
+                            <strong>Манікюр</strong>
+                        </div>
+                        <div class="ai-mini-slots">
+                            <span>14:30</span>
+                            <span class="active">16:00</span>
+                            <span>17:30</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="lp-testi-card">
-                <div class="lp-testi-stars">★★★★★</div>
-                <p class="lp-testi-q">"Клієнти в захваті — записались навіть вночі поки я спав. Зранку прокинувся і вже 4 нових записи. Це магія 🔥"</p>
-                <div class="lp-testi-author">
-                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#3b82f6,#6366f1)">М</div>
-                    <div>
-                        <div class="lp-testi-name">Максим Коваль</div>
-                        <div class="lp-testi-role">Барбер, Харків</div>
-                    </div>
+
+                <div class="ai-flow-arrow">
+                    <span></span>
+                    <i class="bi bi-arrow-down"></i>
                 </div>
-            </div>
-            <div class="lp-testi-card">
-                <div class="lp-testi-stars">★★★★★</div>
-                <p class="lp-testi-q">"Налаштувала за 10 хвилин і відразу розмістила в шапці Instagram. За перший тиждень — 18 нових клієнтів. Раджу всім!"</p>
-                <div class="lp-testi-author">
-                    <div class="lp-testi-av" style="background:linear-gradient(135deg,#ec4899,#8b5cf6)">В</div>
-                    <div>
-                        <div class="lp-testi-name">Вікторія Бондар</div>
-                        <div class="lp-testi-role">Майстер манікюру, Одеса</div>
+
+                <div class="ai-flow-stage ai-flow-telegram">
+                    <div class="ai-flow-label"><i class="bi bi-telegram"></i> Telegram-розмова</div>
+                    <div class="ai-message customer">Привіт, є сьогодні на манікюр о 16:00?</div>
+                    <div class="ai-message assistant">Так, час вільний. Напишіть, будь ласка, ім'я та телефон.</div>
+                    <div class="ai-message customer">Олена, +380...</div>
+                </div>
+
+                <div class="ai-flow-stage ai-flow-confirmed">
+                    <div class="ai-draft-card">
+                        <div class="ai-draft-title"><i class="bi bi-calendar2-check"></i> Запис підготовлено</div>
+                        <div class="ai-draft-row"><span>Послуга</span><strong>Манікюр</strong></div>
+                        <div class="ai-draft-row"><span>Час</span><strong>16:00</strong></div>
+                        <div class="ai-draft-row"><span>Клієнт</span><strong>Олена</strong></div>
+                        <div class="ai-flow-status"><i class="bi bi-check2-circle"></i> Готово до підтвердження</div>
                     </div>
                 </div>
             </div>
@@ -319,116 +95,140 @@
     </div>
 </section>
 
-<!-- ══ PRICING ════════════════════════════════════════════════════════ -->
-<section id="pricing" class="lp-section lp-gray">
+<section id="ai" class="ai-section">
     <div class="container">
-        <div class="text-center mb-2">
-            <div class="lp-eyebrow"><i class="bi bi-tag"></i> Ціни</div>
-            <h2 class="lp-sec-title">Починайте безкоштовно</h2>
-            <p class="lp-sec-sub" style="max-width:440px;margin:.75rem auto 0">Масштабуйте по мірі росту бізнесу. Без прихованих платежів.</p>
+        <div class="ai-section-head">
+            <div class="ai-kicker"><i class="bi bi-robot"></i> Premium upgrade</div>
+            <h2>Не просто чатбот. Віртуальна рецепція для записів.</h2>
+            <p>AI не “балакає заради балачки”. Він збирає структуровані дані для запису і не створює booking, якщо бракує важливої інформації.</p>
         </div>
-        <div class="lp-price-grid">
-            <!-- FREE -->
-            <div class="lp-p-card">
-                <div class="lp-p-plan lp-plan-free">БЕЗКОШТОВНО</div>
-                <div class="lp-p-price">0<sub> грн/міс</sub></div>
-                <p class="lp-p-desc">Щоб почати і спробувати</p>
-                <ul class="lp-p-list">
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>До 30 записів/міс</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Сторінка запису</span></li>
-                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Email-сповіщення</span></li>
-                    <li><i class="bi bi-x-circle lp-no"></i><span class="text-muted">Аналітика</span></li>
-                </ul>
-                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-outline">Почати безкоштовно</a>
+
+        <div class="ai-feature-grid">
+            <div class="ai-feature">
+                <i class="bi bi-chat-dots"></i>
+                <h3>Відповідає клієнтам</h3>
+                <p>Українською або російською, залежно від мови повідомлення клієнта.</p>
             </div>
-            <!-- BASIC (featured) -->
-            <div class="lp-p-card lp-featured">
-                <div class="lp-p-badge">⭐ Найпопулярніший</div>
-                <div class="lp-p-plan lp-plan-basic">BASIC</div>
-                <div class="lp-p-price">299<sub> грн/міс</sub></div>
-                <p class="lp-p-desc">Для активного бізнесу</p>
-                <ul class="lp-p-list">
-                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>До 200 записів/міс</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Необмежені послуги</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Email-сповіщення</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok-f"></i><span>Статистика записів</span></li>
-                </ul>
-                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-white">Обрати Basic</a>
+            <div class="ai-feature">
+                <i class="bi bi-ui-checks-grid"></i>
+                <h3>Уточнює деталі</h3>
+                <p>Послуга, дата, час, ім'я та контакт збираються окремо й обережно.</p>
             </div>
-            <!-- PRO -->
-            <div class="lp-p-card">
-                <div class="lp-p-plan lp-plan-pro">PRO</div>
-                <div class="lp-p-price">599<sub> грн/міс</sub></div>
-                <p class="lp-p-desc">Для масштабу без обмежень</p>
-                <ul class="lp-p-list">
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені записи</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Необмежені послуги</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Email власнику та клієнту</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Детальна статистика</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>Нагадування за 24 год</span></li>
-                    <li><i class="bi bi-check-circle-fill lp-ok"></i><span>QR-код сторінки</span></li>
-                </ul>
-                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-price lp-price-pout">Обрати Pro</a>
+            <div class="ai-feature">
+                <i class="bi bi-calendar-week"></i>
+                <h3>Перевіряє слоти</h3>
+                <p>AI використовує існуючу логіку BookSlot, а не обходить розклад напряму.</p>
+            </div>
+            <div class="ai-feature">
+                <i class="bi bi-person-check"></i>
+                <h3>Власник контролює</h3>
+                <p>На MVP етапі запис із AI draft підтверджується вручну в dashboard.</p>
             </div>
         </div>
-        <p class="text-center mt-3" style="color:#64748b;font-size:.82rem">
-            <i class="bi bi-shield-check" style="color:#10b981"></i> Оплата через Stripe — Visa, Mastercard, Apple Pay, Google Pay
-        </p>
     </div>
 </section>
 
-<!-- ══ CTA ════════════════════════════════════════════════════════════ -->
-<section class="lp-cta-outer">
+<section id="features" class="ai-section ai-soft">
     <div class="container">
-        <div class="lp-cta-box">
-            <h2 class="lp-cta-h">Готові перестати<br>відповідати на дзвінки?</h2>
-            <p class="lp-cta-p">Приєднуйтесь до бізнесів, які вже автоматизували запис і витрачають час на клієнтів, а не на телефон.</p>
+        <div class="ai-section-head">
+            <div class="ai-kicker"><i class="bi bi-shop"></i> Для кого</div>
+            <h2>Для бізнесів, де кожне повідомлення може стати записом</h2>
+            <p>
+                BookSlot Basic закриває простий онлайн-запис. BookSlot Pro / AI додає receptionist layer:
+                клієнт пише в Telegram, а система доводить розмову до готового запису.
+            </p>
+        </div>
+
+        <div class="ai-profession-marquee" aria-label="Професії та бізнеси для BookSlot">
+            <div class="ai-profession-track">
+                <span><i class="bi bi-scissors"></i> Барбери</span>
+                <span><i class="bi bi-stars"></i> Майстри манікюру</span>
+                <span><i class="bi bi-eye"></i> Брові та вії</span>
+                <span><i class="bi bi-heart-pulse"></i> Масажисти</span>
+                <span><i class="bi bi-shop"></i> Салони краси</span>
+                <span><i class="bi bi-activity"></i> Тренери</span>
+                <span><i class="bi bi-person-video3"></i> Консультанти</span>
+                <span><i class="bi bi-brush"></i> Тату-майстри</span>
+                <span><i class="bi bi-camera"></i> Фотографи</span>
+                <span><i class="bi bi-mortarboard"></i> Репетитори</span>
+                <span><i class="bi bi-scissors"></i> Барбери</span>
+                <span><i class="bi bi-stars"></i> Майстри манікюру</span>
+                <span><i class="bi bi-eye"></i> Брові та вії</span>
+                <span><i class="bi bi-heart-pulse"></i> Масажисти</span>
+                <span><i class="bi bi-shop"></i> Салони краси</span>
+                <span><i class="bi bi-activity"></i> Тренери</span>
+                <span><i class="bi bi-person-video3"></i> Консультанти</span>
+                <span><i class="bi bi-brush"></i> Тату-майстри</span>
+                <span><i class="bi bi-camera"></i> Фотографи</span>
+                <span><i class="bi bi-mortarboard"></i> Репетитори</span>
+            </div>
+        </div>
+
+        <div class="ai-profession-marquee reverse" aria-hidden="true">
+            <div class="ai-profession-track">
+                <span><i class="bi bi-calendar-heart"></i> Wellness</span>
+                <span><i class="bi bi-clipboard2-pulse"></i> Локальні клініки</span>
+                <span><i class="bi bi-person-heart"></i> Психологи</span>
+                <span><i class="bi bi-flower1"></i> SPA</span>
+                <span><i class="bi bi-gem"></i> Beauty studio</span>
+                <span><i class="bi bi-lightning-charge"></i> Сервісні бізнеси</span>
+                <span><i class="bi bi-calendar-heart"></i> Wellness</span>
+                <span><i class="bi bi-clipboard2-pulse"></i> Локальні клініки</span>
+                <span><i class="bi bi-person-heart"></i> Психологи</span>
+                <span><i class="bi bi-flower1"></i> SPA</span>
+                <span><i class="bi bi-gem"></i> Beauty studio</span>
+                <span><i class="bi bi-lightning-charge"></i> Сервісні бізнеси</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="pricing" class="ai-section">
+    <div class="container">
+        <div class="ai-section-head">
+            <div class="ai-kicker"><i class="bi bi-credit-card"></i> Тарифи</div>
+            <h2>Basic для запису. Pro / AI для автоматизації переписок.</h2>
+        </div>
+
+        <div class="ai-pricing-grid">
+            <div class="ai-plan">
+                <h3>BookSlot Basic</h3>
+                <div class="ai-plan-price">299 грн<span>/міс</span></div>
+                <p>Онлайн-запис по посиланню для малого бізнесу.</p>
+                <ul>
+                    <li>Сторінка запису</li>
+                    <li>Послуги, ціни, розклад</li>
+                    <li>Email-підтвердження</li>
+                </ul>
+            </div>
+            <div class="ai-plan ai-plan-featured">
+                <div class="ai-plan-badge">Новий premium напрям</div>
+                <h3>BookSlot Pro / AI</h3>
+                <div class="ai-plan-price">599 грн<span>/міс</span></div>
+                <p>AI Receptionist, який відповідає клієнтам і готує записи автоматично.</p>
+                <ul>
+                    <li>Telegram AI Receptionist MVP</li>
+                    <li>AI conversation drafts</li>
+                    <li>Dashboard review перед створенням booking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="ai-cta">
+    <div class="container">
+        <div class="ai-cta-box">
+            <h2>Менше повідомлень. Більше записів.</h2>
+            <p>BookSlot переходить від простого booking-сайту до SaaS з AI receptionist для локальних бізнесів.</p>
             @if (isLoggedIn)
             {
-                <a asp-page="/Dashboard/Index" class="lp-btn-prim">
-                    <i class="bi bi-grid me-2"></i>Мій дашборд
-                </a>
+                <a asp-page="/Dashboard/AiAssistant/Index" class="ai-btn-primary">Налаштувати AI Receptionist</a>
             }
             else
             {
-                <a asp-page="/Account/Register" asp-area="Identity" class="lp-btn-prim" style="font-size:1rem;padding:.9rem 2.25rem">
-                    Почати безкоштовно <i class="bi bi-arrow-right ms-2"></i>
-                </a>
+                <a asp-page="/Account/Register" asp-area="Identity" class="ai-btn-primary">Почати зараз</a>
             }
         </div>
     </div>
 </section>
-
-@section Scripts {
-<script>
-// Glass navbar
-(function(){
-  var nav = document.getElementById('main-nav');
-  function upd(){ nav.classList.toggle('lp-scrolled', window.scrollY > 60); }
-  window.addEventListener('scroll', upd, { passive: true });
-  upd();
-})();
-
-// 3D tilt on pricing cards
-document.querySelectorAll('.lp-p-card').forEach(function(card){
-  var f = card.classList.contains('lp-featured');
-  card.addEventListener('mousemove', function(e){
-    var r = card.getBoundingClientRect();
-    var x = e.clientX - r.left  - r.width/2;
-    var y = e.clientY - r.top   - r.height/2;
-    var rx = (-y / (r.height/2)) * 13;
-    var ry = ( x / (r.width/2))  * 13;
-    card.style.transition = 'transform .1s ease, box-shadow .1s ease';
-    card.style.transform  = 'translateY('+(f?-10:-18)+'px) scale('+(f?1.08:1.05)+') rotateX('+rx+'deg) rotateY('+ry+'deg)';
-    card.style.boxShadow  = f
-      ? '0 70px 120px rgba(79,70,229,.65), 0 0 100px rgba(79,70,229,.28)'
-      : '0 40px 90px rgba(79,70,229,.18)';
-  });
-  card.addEventListener('mouseleave', function(){
-    card.style.transition = 'transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s ease';
-    card.style.transform  = f ? 'scale(1.04)' : '';
-    card.style.boxShadow  = f ? '0 30px 70px rgba(79,70,229,.45)' : '';
-  });
-});
-</script>
-}
