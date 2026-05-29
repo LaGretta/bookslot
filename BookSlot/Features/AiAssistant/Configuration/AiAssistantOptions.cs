@@ -12,6 +12,8 @@ public class AiAssistantOptions
     public int TelegramPollingIntervalSeconds { get; set; } = 3;
     public bool TelegramPollingDropPendingUpdatesOnStart { get; set; } = true;
     public string? TelegramBotToken { get; set; }
+    /// <summary>Public @username of the single platform bot (without @). Used to build per-business share links.</summary>
+    public string? TelegramBotUsername { get; set; }
     public string? TelegramWebhookSecretToken { get; set; }
     public string? SetupSecretToken { get; set; }
     public string DefaultWelcomeMessage { get; set; } =

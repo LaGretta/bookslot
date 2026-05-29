@@ -1,39 +1,33 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BookSlot.Data;
 using BookSlot.Features.AiAssistant.Configuration;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace BookSlot.Features.AiAssistant.Telegram;
 
 /// <summary>
-/// Multi-tenant Telegram poller. Every interval it loads ALL active bot connections
-/// from the database and polls each bot with its own per-business token.
-/// No environment variables required — owners just paste their token in the dashboard.
+/// Single platform-bot poller. There is ONE bot for the whole platform (token in config).
+/// Each business is identified by the /start &lt;businessId&gt; deep-link; the handler routes
+/// every message to the correct business. Owners never deal with tokens.
 /// </summary>
 public class TelegramPollingWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly ITelegramTokenProtector _tokenProtector;
     private readonly IOptionsMonitor<AiAssistantOptions> _options;
     private readonly ILogger<TelegramPollingWorker> _logger;
 
-    // Per-business polling state (worker is a singleton, so this is safe in-memory state).
-    private readonly Dictionary<int, long> _offsets = new();
-    private readonly HashSet<int> _initialized = new();
+    private long? _nextOffset;
+    private bool _initialized;
 
     public TelegramPollingWorker(
         IServiceScopeFactory scopeFactory,
         IHttpClientFactory httpClientFactory,
-        ITelegramTokenProtector tokenProtector,
         IOptionsMonitor<AiAssistantOptions> options,
         ILogger<TelegramPollingWorker> logger)
     {
         _scopeFactory = scopeFactory;
         _httpClientFactory = httpClientFactory;
-        _tokenProtector = tokenProtector;
         _options = options;
         _logger = logger;
     }
@@ -42,29 +36,27 @@ public class TelegramPollingWorker : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var delay = TimeSpan.FromSeconds(
-                Math.Clamp(_options.CurrentValue.TelegramPollingIntervalSeconds, 1, 30));
+            var options = _options.CurrentValue;
+            var delay = TimeSpan.FromSeconds(Math.Clamp(options.TelegramPollingIntervalSeconds, 1, 30));
+            var token = options.TelegramBotToken;
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                _initialized = false;
+                _nextOffset = null;
+                await Task.Delay(delay, stoppingToken);
+                continue;
+            }
 
             try
             {
-                var bots = await LoadActiveBotsAsync(stoppingToken);
-
-                foreach (var bot in bots)
+                if (!_initialized)
                 {
-                    try
-                    {
-                        await PollBotAsync(bot, stoppingToken);
-                    }
-                    catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex,
-                            "Telegram polling failed for business {BusinessId}.", bot.BusinessId);
-                    }
+                    await DeleteWebhookAndDropPendingAsync(token, stoppingToken);
+                    _initialized = true;
                 }
+
+                await PollOnceAsync(token, stoppingToken);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {
@@ -72,59 +64,10 @@ public class TelegramPollingWorker : BackgroundService
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Telegram polling loop failed.");
+                _logger.LogWarning(ex, "Telegram polling failed.");
             }
 
             await Task.Delay(delay, stoppingToken);
-        }
-    }
-
-    private async Task<List<ActiveBot>> LoadActiveBotsAsync(CancellationToken cancellationToken)
-    {
-        using var scope = _scopeFactory.CreateScope();
-        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-        var connections = await db.TelegramBotConnections
-            .AsNoTracking()
-            .Where(c => c.IsActive && c.BotToken != null)
-            .Select(c => new { c.BusinessId, c.BotToken })
-            .ToListAsync(cancellationToken);
-
-        var bots = new List<ActiveBot>();
-        foreach (var connection in connections)
-        {
-            var token = _tokenProtector.TryUnprotect(connection.BotToken);
-            if (!string.IsNullOrWhiteSpace(token))
-                bots.Add(new ActiveBot(connection.BusinessId, token));
-        }
-
-        // Forget state for bots that are no longer active.
-        var activeIds = bots.Select(b => b.BusinessId).ToHashSet();
-        foreach (var staleId in _offsets.Keys.Where(id => !activeIds.Contains(id)).ToList())
-        {
-            _offsets.Remove(staleId);
-            _initialized.Remove(staleId);
-        }
-
-        return bots;
-    }
-
-    private async Task PollBotAsync(ActiveBot bot, CancellationToken cancellationToken)
-    {
-        // First time we see this bot: drop any webhook + pending backlog so getUpdates works.
-        if (!_initialized.Contains(bot.BusinessId))
-        {
-            await DeleteWebhookAndDropPendingAsync(bot.Token, cancellationToken);
-            _initialized.Add(bot.BusinessId);
-        }
-
-        var offset = _offsets.TryGetValue(bot.BusinessId, out var stored) ? stored : (long?)null;
-        var response = await GetUpdatesAsync(bot.Token, offset, cancellationToken);
-
-        foreach (var update in response.Result)
-        {
-            _offsets[bot.BusinessId] = update.UpdateId + 1;
-            await HandleUpdateAsync(bot, update, cancellationToken);
         }
     }
 
@@ -134,12 +77,22 @@ public class TelegramPollingWorker : BackgroundService
         {
             var uri = $"https://api.telegram.org/bot{botToken}/deleteWebhook?drop_pending_updates=true";
             var httpClient = _httpClientFactory.CreateClient(nameof(TelegramPollingWorker));
-            using var response = await httpClient.GetAsync(uri, cancellationToken);
-            // Best-effort; ignore failures (e.g. invalid token surfaces on getUpdates).
+            using var _ = await httpClient.GetAsync(uri, cancellationToken);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
             _logger.LogDebug(ex, "deleteWebhook failed (non-fatal).");
+        }
+    }
+
+    private async Task PollOnceAsync(string botToken, CancellationToken cancellationToken)
+    {
+        var response = await GetUpdatesAsync(botToken, _nextOffset, cancellationToken);
+
+        foreach (var update in response.Result)
+        {
+            _nextOffset = update.UpdateId + 1;
+            await HandleUpdateAsync(botToken, update, cancellationToken);
         }
     }
 
@@ -151,7 +104,7 @@ public class TelegramPollingWorker : BackgroundService
         var query = new List<string>
         {
             "limit=10",
-            "timeout=0",
+            "timeout=10",
             "allowed_updates=%5B%22message%22%5D"
         };
 
@@ -174,7 +127,7 @@ public class TelegramPollingWorker : BackgroundService
     }
 
     private async Task HandleUpdateAsync(
-        ActiveBot bot,
+        string botToken,
         TelegramUpdate update,
         CancellationToken cancellationToken)
     {
@@ -182,16 +135,17 @@ public class TelegramPollingWorker : BackgroundService
         var handler = scope.ServiceProvider.GetRequiredService<ITelegramAssistantHandler>();
         var sender = scope.ServiceProvider.GetRequiredService<ITelegramMessageSender>();
 
+        // businessId is resolved inside the handler from the /start payload or chat history.
         var result = await handler.HandleUpdateAsync(
             update,
-            bot.BusinessId,
+            businessId: null,
             requireEnabledSettings: true,
             cancellationToken);
 
         if (result.ShouldSendMessage && result.ExternalChatId.HasValue)
         {
             var sendResult = await sender.SendMessageAsync(
-                bot.Token,
+                botToken,
                 result.ExternalChatId.Value,
                 result.MessageToSend,
                 cancellationToken);
@@ -200,8 +154,6 @@ public class TelegramPollingWorker : BackgroundService
                 _logger.LogWarning("Telegram polling send failed: {ErrorMessage}", sendResult.ErrorMessage);
         }
     }
-
-    private readonly record struct ActiveBot(int BusinessId, string Token);
 
     private sealed class TelegramGetUpdatesResponse
     {

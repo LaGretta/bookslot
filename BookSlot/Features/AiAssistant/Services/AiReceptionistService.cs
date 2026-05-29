@@ -399,7 +399,8 @@ public partial class AiReceptionistService : IAiReceptionistService
         if (normalized.Any(ch => ch >= '\u0400' && ch <= '\u04ff'))
             return CustomerLanguage.Russian;
 
-        return CustomerLanguage.English;
+        // Ukrainian-first product: default to Ukrainian when no clear marker is found.
+        return CustomerLanguage.Ukrainian;
     }
 
     private static string Localize(

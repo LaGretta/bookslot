@@ -1,8 +1,8 @@
 using BookSlot.Data;
+using BookSlot.Features.AiAssistant.Configuration;
 using BookSlot.Features.AiAssistant.Contracts;
 using BookSlot.Features.AiAssistant.Models;
 using BookSlot.Features.AiAssistant.Services;
-using BookSlot.Features.AiAssistant.Telegram;
 using BookSlot.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using BookSlot.Features.AiAssistant.Configuration;
 
 namespace BookSlot.Pages.Dashboard.AiAssistant;
 
@@ -20,20 +19,17 @@ public class IndexModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IAiReceptionistService _receptionistService;
-    private readonly ITelegramTokenProtector _tokenProtector;
     private readonly AiAssistantOptions _options;
 
     public IndexModel(
         ApplicationDbContext db,
         UserManager<ApplicationUser> userManager,
         IAiReceptionistService receptionistService,
-        ITelegramTokenProtector tokenProtector,
         IOptions<AiAssistantOptions> options)
     {
         _db = db;
         _userManager = userManager;
         _receptionistService = receptionistService;
-        _tokenProtector = tokenProtector;
         _options = options.Value;
     }
 
@@ -45,27 +41,20 @@ public class IndexModel : PageModel
     public bool HasWorkingSchedule => WorkingDaysCount > 0;
     public bool IsProPlan => CurrentPlan == SubscriptionPlan.Pro;
     public bool IsReadyForAiPilot => HasActiveServices && HasWorkingSchedule;
-    public bool TelegramWebhookEnabled => _options.TelegramWebhookEnabled;
-    // Token is now stored per-business in the DB (encrypted), set during load.
-    public bool TelegramBotTokenConfigured { get; set; }
-    public bool TelegramWebhookSecretConfigured => !string.IsNullOrWhiteSpace(_options.TelegramWebhookSecretToken);
-    public bool TelegramConnectionMetadataActive =>
-        TelegramInput.IsActive && !string.IsNullOrWhiteSpace(TelegramInput.BotUsername) && TelegramBotTokenConfigured;
-    public string TelegramWebhookBusinessStatus
-    {
-        get
-        {
-            if (!_options.TelegramWebhookBusinessId.HasValue)
-                return "Not mapped";
 
-            if (Business == null)
-                return "Unknown";
+    // Single platform bot — set once by the platform admin via config/env.
+    public string? BotUsername => _options.TelegramBotUsername;
+    public bool PlatformBotConfigured =>
+        !string.IsNullOrWhiteSpace(_options.TelegramBotToken) &&
+        !string.IsNullOrWhiteSpace(_options.TelegramBotUsername);
 
-            return _options.TelegramWebhookBusinessId.Value == Business.Id
-                ? "Mapped to this business"
-                : "Mapped to another business";
-        }
-    }
+    /// <summary>Shareable link the owner gives to clients: t.me/&lt;bot&gt;?start=&lt;businessId&gt;</summary>
+    public string? BotLink =>
+        PlatformBotConfigured && Business != null
+            ? $"https://t.me/{_options.TelegramBotUsername}?start={Business.Id}"
+            : null;
+
+    public bool IsLive => SettingsInput.IsEnabled && IsReadyForAiPilot && PlatformBotConfigured;
 
     public List<RecentAiConversationRow> RecentConversations { get; set; } = [];
 
@@ -77,9 +66,6 @@ public class IndexModel : PageModel
 
     public AiAssistantReply? TestReply { get; set; }
 
-    [BindProperty]
-    public TelegramConnectionInput TelegramInput { get; set; } = new();
-
     public class AiAssistantSettingsInput
     {
         public bool IsEnabled { get; set; }
@@ -87,19 +73,6 @@ public class IndexModel : PageModel
             "Привіт! Я допоможу обрати послугу та підготувати запис.";
         public string? BusinessDescription { get; set; }
         public string ToneOfVoice { get; set; } = "Дружній, чіткий і короткий";
-    }
-
-    public class TelegramConnectionInput
-    {
-        public string? BotUsername { get; set; }
-
-        /// <summary>New token entered by the owner. Leave blank to keep the existing one.</summary>
-        public string? BotToken { get; set; }
-
-        /// <summary>True if a token is already saved (for display only — never the actual value).</summary>
-        public bool HasToken { get; set; }
-
-        public bool IsActive { get; set; }
     }
 
     public class RecentAiConversationRow
@@ -131,8 +104,6 @@ public class IndexModel : PageModel
                 ToneOfVoice = settings.ToneOfVoice
             };
         }
-
-        await LoadTelegramInputAsync();
 
         return Page();
     }
@@ -169,69 +140,12 @@ public class IndexModel : PageModel
         return RedirectToPage();
     }
 
-    public async Task<IActionResult> OnPostSaveTelegramAsync()
-    {
-        if (!await LoadDashboardAsync())
-            return RedirectToPage("/Dashboard/Settings/Index");
-
-        await LoadSettingsInputAsync();
-        NormalizeTelegramInput();
-
-        if (string.IsNullOrWhiteSpace(TelegramInput.BotUsername))
-        {
-            ModelState.AddModelError("TelegramInput.BotUsername", "Вкажи username Telegram-бота.");
-            await LoadTelegramTokenStatusAsync();
-            return Page();
-        }
-
-        var connection = await _db.TelegramBotConnections
-            .FirstOrDefaultAsync(t => t.BusinessId == Business!.Id);
-
-        if (connection == null)
-        {
-            connection = new TelegramBotConnection
-            {
-                BusinessId = Business!.Id,
-                CreatedAt = DateTime.UtcNow
-            };
-            _db.TelegramBotConnections.Add(connection);
-        }
-
-        // Save a freshly entered token (encrypted). Blank input keeps the existing token.
-        var newToken = TelegramInput.BotToken?.Trim();
-        if (!string.IsNullOrWhiteSpace(newToken))
-            connection.BotToken = _tokenProtector.Protect(newToken);
-
-        var hasToken = !string.IsNullOrWhiteSpace(connection.BotToken);
-
-        // Can't activate without a token — the bot would have nothing to authenticate with.
-        if (TelegramInput.IsActive && !hasToken)
-        {
-            ModelState.AddModelError("TelegramInput.BotToken",
-                "Щоб увімкнути підключення, встав токен бота від @BotFather.");
-            await LoadTelegramTokenStatusAsync();
-            return Page();
-        }
-
-        connection.BotUsername = TelegramInput.BotUsername!;
-        connection.IsActive = TelegramInput.IsActive;
-        connection.UpdatedAt = DateTime.UtcNow;
-
-        await _db.SaveChangesAsync();
-        TempData["Success"] = hasToken && connection.IsActive
-            ? "Telegram-бота підключено! Він уже відповідає клієнтам."
-            : "Telegram-підключення збережено.";
-
-        return RedirectToPage();
-    }
-
     public async Task<IActionResult> OnPostTestMessageAsync()
     {
         if (!await LoadDashboardAsync())
             return RedirectToPage("/Dashboard/Settings/Index");
 
         await LoadSettingsInputAsync();
-        await LoadTelegramInputAsync();
 
         if (string.IsNullOrWhiteSpace(TestMessage))
         {
@@ -332,36 +246,6 @@ public class IndexModel : PageModel
         };
     }
 
-    private async Task LoadTelegramInputAsync()
-    {
-        var connection = await _db.TelegramBotConnections
-            .AsNoTracking()
-            .FirstOrDefaultAsync(t => t.BusinessId == Business!.Id);
-
-        if (connection == null)
-            return;
-
-        var hasToken = !string.IsNullOrWhiteSpace(connection.BotToken);
-        TelegramBotTokenConfigured = hasToken;
-
-        TelegramInput = new TelegramConnectionInput
-        {
-            BotUsername = connection.BotUsername,
-            IsActive = connection.IsActive,
-            HasToken = hasToken
-        };
-    }
-
-    private async Task LoadTelegramTokenStatusAsync()
-    {
-        var hasToken = await _db.TelegramBotConnections
-            .AsNoTracking()
-            .AnyAsync(t => t.BusinessId == Business!.Id && t.BotToken != null);
-
-        TelegramBotTokenConfigured = hasToken;
-        TelegramInput.HasToken = hasToken;
-    }
-
     private void NormalizeSettingsInput()
     {
         SettingsInput.WelcomeMessage = string.IsNullOrWhiteSpace(SettingsInput.WelcomeMessage)
@@ -375,18 +259,5 @@ public class IndexModel : PageModel
         SettingsInput.ToneOfVoice = string.IsNullOrWhiteSpace(SettingsInput.ToneOfVoice)
             ? "Дружній, чіткий і короткий"
             : SettingsInput.ToneOfVoice.Trim();
-    }
-
-    private void NormalizeTelegramInput()
-    {
-        var username = TelegramInput.BotUsername?.Trim();
-        if (string.IsNullOrWhiteSpace(username))
-        {
-            TelegramInput.BotUsername = null;
-            TelegramInput.IsActive = false;
-            return;
-        }
-
-        TelegramInput.BotUsername = username.TrimStart('@');
     }
 }

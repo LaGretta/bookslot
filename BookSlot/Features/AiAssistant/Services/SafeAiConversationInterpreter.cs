@@ -149,7 +149,9 @@ public class SafeAiConversationInterpreter : IAiConversationInterpreter
         if (normalized.Any(ch => ch >= '\u0400' && ch <= '\u04ff'))
             return CustomerLanguage.Russian;
 
-        return CustomerLanguage.English;
+        // Ukrainian-first product: default to Ukrainian for commands like /start
+        // and any message without clear Russian/Cyrillic markers.
+        return CustomerLanguage.Ukrainian;
     }
 
     private static string BuildSafeMessage(AiIntentType intent, CustomerLanguage language) =>

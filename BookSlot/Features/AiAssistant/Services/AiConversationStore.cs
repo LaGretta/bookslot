@@ -53,6 +53,30 @@ public class AiConversationStore : IAiConversationStore
         return conversation;
     }
 
+    public async Task<int?> FindBusinessByChatAsync(
+        AiConversationChannel channel,
+        string externalChatId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _db.AiConversations
+            .AsNoTracking()
+            .Where(c => c.Channel == channel && c.ExternalChatId == externalChatId)
+            .OrderByDescending(c => c.UpdatedAt)
+            .Select(c => (int?)c.BusinessId)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<string?> GetWelcomeMessageAsync(
+        int businessId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _db.AiAssistantSettings
+            .AsNoTracking()
+            .Where(s => s.BusinessId == businessId)
+            .Select(s => s.WelcomeMessage)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     public async Task AddMessageAsync(
         int conversationId,
         AiMessageSenderType senderType,
