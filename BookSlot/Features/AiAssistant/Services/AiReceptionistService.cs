@@ -107,9 +107,9 @@ public partial class AiReceptionistService : IAiReceptionistService
                     "У этого бизнеса пока нет активных услуг.")
                 : Localize(
                     language,
-                    $"Which service would you like? Available services: {string.Join(", ", services.Select(s => s.Name))}.",
-                    $"Яку послугу хочете? Доступні послуги: {string.Join(", ", services.Select(s => s.Name))}.",
-                    $"Какую услугу хотите? Доступные услуги: {string.Join(", ", services.Select(s => s.Name))}.");
+                    $"Which service would you like? Tap a button below: {string.Join(", ", services.Select(s => s.Name))}.",
+                    $"Яку послугу бажаєте? Оберіть кнопкою нижче 👇 Доступні послуги: {string.Join(", ", services.Select(s => s.Name))}.",
+                    $"Какую услугу хотите? Выберите кнопкой ниже 👇 Доступные услуги: {string.Join(", ", services.Select(s => s.Name))}.");
             return reply;
         }
 
@@ -117,9 +117,9 @@ public partial class AiReceptionistService : IAiReceptionistService
         {
             reply.MessageToCustomer = Localize(
                 language,
-                "What date would you like to book?",
-                "На яку дату вас записати?",
-                "На какую дату вас записать?");
+                "What date works for you? For example: «tomorrow» or «30.05.2026».",
+                "На яку дату вас записати? Напишіть, наприклад: «завтра» або «30.05.2026».",
+                "На какую дату вас записать? Напишите, например: «завтра» или «30.05.2026».");
             return reply;
         }
 
@@ -148,9 +148,9 @@ public partial class AiReceptionistService : IAiReceptionistService
         {
             reply.MessageToCustomer = Localize(
                 language,
-                $"Available times: {string.Join(", ", reply.SuggestedSlots)}. Which time works best?",
-                $"Є вільні години: {string.Join(", ", reply.SuggestedSlots)}. Який час вам зручний?",
-                $"Есть свободное время: {string.Join(", ", reply.SuggestedSlots)}. Какое время вам удобно?");
+                $"Available times: {string.Join(", ", reply.SuggestedSlots)}. Tap the time that suits you 👇",
+                $"Є вільні години: {string.Join(", ", reply.SuggestedSlots)}. Оберіть зручний час кнопкою нижче 👇",
+                $"Есть свободное время: {string.Join(", ", reply.SuggestedSlots)}. Выберите удобное время кнопкой ниже 👇");
             return reply;
         }
 
@@ -169,14 +169,14 @@ public partial class AiReceptionistService : IAiReceptionistService
         reply.MessageToCustomer = reply.CanCreateBooking
             ? Localize(
                 language,
-                "All booking details are collected and the slot is available. Booking creation is still disabled in the safe foundation.",
-                "Усі дані зібрані, слот вільний. У безпечному MVP запис ще підтверджує власник у dashboard.",
-                "Все данные собраны, слот свободен. В безопасном MVP запись еще подтверждает владелец в dashboard.")
+                "Thank you! Your booking request is ready — the owner will confirm it shortly. 🙌",
+                "Дякую! Запис готовий — майстер скоро підтвердить його. Гарного дня! 🙌",
+                "Спасибо! Запись готова — мастер скоро её подтвердит. Хорошего дня! 🙌")
             : Localize(
                 language,
-                "The slot is available. I still need the customer's name and contact before creating anything.",
-                "Цей час вільний. Напишіть, будь ласка, ваше ім'я та контакт.",
-                "Это время свободно. Напишите, пожалуйста, ваше имя и контакт.");
+                "Great, the time is free. Please send your name and phone, e.g.: Olena, +380671234567.",
+                "Чудово, час вільний! Напишіть, будь ласка, ваше імʼя та телефон. Наприклад: Олена, +380671234567.",
+                "Отлично, время свободно! Напишите, пожалуйста, ваше имя и телефон. Например: Олена, +380671234567.");
 
         return reply;
     }
@@ -264,13 +264,27 @@ public partial class AiReceptionistService : IAiReceptionistService
             return DateTime.SpecifyKind(new DateTime(year, month, day), DateTimeKind.Utc);
         }
 
-        var localDateMatch = LocalDatePattern().Match(customerMessage);
-        if (localDateMatch.Success)
+        // Accepts «30.05.2026», «30/05/2026», «30 05 2026», «30.05», «30 05» (year optional).
+        var flexibleMatch = FlexibleDatePattern().Match(customerMessage);
+        if (flexibleMatch.Success)
         {
-            var day = int.Parse(localDateMatch.Groups["day"].Value);
-            var month = int.Parse(localDateMatch.Groups["month"].Value);
-            var year = int.Parse(localDateMatch.Groups["year"].Value);
-            return DateTime.SpecifyKind(new DateTime(year, month, day), DateTimeKind.Utc);
+            var day = int.Parse(flexibleMatch.Groups["day"].Value);
+            var month = int.Parse(flexibleMatch.Groups["month"].Value);
+            var hasYear = flexibleMatch.Groups["year"].Success;
+            var year = hasYear ? int.Parse(flexibleMatch.Groups["year"].Value) : today.Year;
+
+            try
+            {
+                var date = DateTime.SpecifyKind(new DateTime(year, month, day), DateTimeKind.Utc);
+                // No year given and the date already passed → assume next year.
+                if (!hasYear && date < today)
+                    date = date.AddYears(1);
+                return date;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // Invalid day/month combination — fall through.
+            }
         }
 
         return DateTime.TryParse(customerMessage, out var parsed)
@@ -422,6 +436,9 @@ public partial class AiReceptionistService : IAiReceptionistService
 
     [GeneratedRegex(@"\b(?<day>0?[1-9]|[12]\d|3[01])[.\/](?<month>0?[1-9]|1[0-2])[.\/](?<year>20\d{2})\b")]
     private static partial Regex LocalDatePattern();
+
+    [GeneratedRegex(@"\b(?<day>0?[1-9]|[12]\d|3[01])[.\/\s-](?<month>0?[1-9]|1[0-2])(?:[.\/\s-](?<year>20\d{2}))?\b")]
+    private static partial Regex FlexibleDatePattern();
 
     [GeneratedRegex(@"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", RegexOptions.IgnoreCase)]
     private static partial Regex EmailPattern();
