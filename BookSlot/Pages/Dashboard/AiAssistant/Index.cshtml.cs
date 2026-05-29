@@ -81,8 +81,28 @@ public class IndexModel : PageModel
         public AiConversationChannel Channel { get; set; }
         public AiConversationStatus Status { get; set; }
         public string ExternalChatId { get; set; } = "";
+        public string? CustomerName { get; set; }
         public string? LastMessage { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public string Title => string.IsNullOrWhiteSpace(CustomerName)
+            ? "Клієнт у Telegram"
+            : CustomerName;
+
+        public string StatusLabel => Status switch
+        {
+            AiConversationStatus.BookingReady => "Готово до запису",
+            AiConversationStatus.WaitingForCustomer => "Чекаємо клієнта",
+            AiConversationStatus.Closed => "Завершено",
+            _ => "Активна"
+        };
+
+        public string StatusColor => Status switch
+        {
+            AiConversationStatus.BookingReady => "#16a34a",
+            AiConversationStatus.Closed => "#64748b",
+            _ => "#6366f1"
+        };
     }
 
     public async Task<IActionResult> OnGetAsync()
@@ -223,6 +243,7 @@ public class IndexModel : PageModel
             Channel = c.Channel,
             Status = c.Status,
             ExternalChatId = c.ExternalChatId,
+            CustomerName = c.CustomerName,
             UpdatedAt = c.UpdatedAt,
             LastMessage = latestMessages.GetValueOrDefault(c.Id)
         }).ToList();

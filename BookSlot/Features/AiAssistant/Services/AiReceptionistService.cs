@@ -390,16 +390,12 @@ public partial class AiReceptionistService : IAiReceptionistService
     private static CustomerLanguage DetectLanguage(string customerMessage)
     {
         var normalized = customerMessage.ToLowerInvariant();
-        if (normalized.Any(ch => ch is '\u0456' or '\u0457' or '\u0454' or '\u0491') ||
-            ContainsAny(normalized, ["\u043f\u0440\u0438\u0432\u0456\u0442", "\u0434\u044f\u043a\u0443\u044e", "\u0441\u044c\u043e\u0433\u043e\u0434\u043d\u0456"]))
-        {
-            return CustomerLanguage.Ukrainian;
-        }
 
-        if (normalized.Any(ch => ch >= '\u0400' && ch <= '\u04ff'))
+        // Russian only when clearly Russian-specific letters appear.
+        if (normalized.Any(ch => ch is '\u044b' or '\u044d' or '\u044a' or '\u0451'))
             return CustomerLanguage.Russian;
 
-        // Ukrainian-first product: default to Ukrainian when no clear marker is found.
+        // Ukrainian-first product: any Cyrillic (and anything else) defaults to Ukrainian.
         return CustomerLanguage.Ukrainian;
     }
 

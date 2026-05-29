@@ -148,6 +148,7 @@ public class TelegramPollingWorker : BackgroundService
                 botToken,
                 result.ExternalChatId.Value,
                 result.MessageToSend,
+                result.QuickReplies,
                 cancellationToken);
 
             if (!sendResult.Success)

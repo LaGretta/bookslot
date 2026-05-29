@@ -20,6 +20,7 @@ public class TelegramMessageSender : ITelegramMessageSender
         string botToken,
         long chatId,
         string text,
+        IReadOnlyCollection<string>? quickReplies = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(botToken))
@@ -40,12 +41,30 @@ public class TelegramMessageSender : ITelegramMessageSender
             };
         }
 
-        var payload = new
+        var payload = new Dictionary<string, object?>
         {
-            chat_id = chatId,
-            text,
-            disable_web_page_preview = true
+            ["chat_id"] = chatId,
+            ["text"] = text,
+            ["disable_web_page_preview"] = true
         };
+
+        if (quickReplies is { Count: > 0 })
+        {
+            // One button per row → clean, full-width, easy to tap.
+            payload["reply_markup"] = new
+            {
+                keyboard = quickReplies
+                    .Select(label => new[] { new { text = label } })
+                    .ToArray(),
+                resize_keyboard = true,
+                one_time_keyboard = true
+            };
+        }
+        else
+        {
+            // Clear stale buttons when we now expect free-text (name, phone…).
+            payload["reply_markup"] = new { remove_keyboard = true };
+        }
 
         try
         {

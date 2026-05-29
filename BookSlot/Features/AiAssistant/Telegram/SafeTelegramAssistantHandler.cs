@@ -98,12 +98,16 @@ public class SafeTelegramAssistantHandler : ITelegramAssistantHandler
             await _conversationStore.AddMessageAsync(
                 conversation.Id, AiMessageSenderType.Assistant, welcome, cancellationToken);
 
+            var serviceButtons = await _conversationStore.GetActiveServiceNamesAsync(
+                targetBusinessId.Value, cancellationToken);
+
             return new TelegramAssistantResult
             {
                 ConversationId = conversation.Id,
                 ExternalChatId = chatId,
                 MessageToSend = welcome,
-                ShouldSendMessage = true
+                ShouldSendMessage = true,
+                QuickReplies = serviceButtons
             };
         }
 
@@ -133,13 +137,22 @@ public class SafeTelegramAssistantHandler : ITelegramAssistantHandler
             reply.CanCreateBooking,
             cancellationToken);
 
+        // Helpful tap-to-send buttons: pick a service while none is chosen, or pick a free slot.
+        var quickReplies = new List<string>();
+        if (reply.SuggestedSlots.Count > 0)
+            quickReplies = reply.SuggestedSlots;
+        else if (reply.Draft.ServiceId == null)
+            quickReplies = await _conversationStore.GetActiveServiceNamesAsync(
+                targetBusinessId.Value, cancellationToken);
+
         return new TelegramAssistantResult
         {
             ConversationId = conversation.Id,
             ExternalChatId = chatId,
             MessageToSend = reply.MessageToCustomer,
             ShouldSendMessage = !string.IsNullOrWhiteSpace(reply.MessageToCustomer),
-            CanCreateBooking = reply.CanCreateBooking
+            CanCreateBooking = reply.CanCreateBooking,
+            QuickReplies = quickReplies
         };
     }
 

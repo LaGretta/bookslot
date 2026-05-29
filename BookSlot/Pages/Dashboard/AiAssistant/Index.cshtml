@@ -4,6 +4,22 @@
     ViewData["Title"] = "AI-помічник";
 }
 
+<style>
+    .ai-demo-phone { max-width:340px; margin:0 auto; border:1px solid #e2e8f0; border-radius:22px; overflow:hidden; box-shadow:0 18px 45px rgba(15,23,42,.16); }
+    .ai-demo-top { display:flex; align-items:center; gap:.6rem; padding:.8rem 1rem; background:#17212b; }
+    .ai-demo-ava { width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#6366f1,#22d3ee); color:#fff; font-size:.72rem; font-weight:700; display:flex; align-items:center; justify-content:center; }
+    .ai-demo-name { color:#fff; font-weight:600; font-size:.85rem; line-height:1.15; }
+    .ai-demo-sub { color:#7d8e9e; font-size:.72rem; }
+    .ai-demo-chat { padding:1rem; display:flex; flex-direction:column; gap:.45rem; height:370px; overflow:hidden; background:#0e1621; }
+    .ai-demo-msg { max-width:80%; padding:.5rem .8rem; border-radius:14px; font-size:.82rem; line-height:1.3; opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s ease; }
+    .ai-demo-msg.in  { align-self:flex-end; background:#2b5278; color:#fff; border-bottom-right-radius:4px; }
+    .ai-demo-msg.out { align-self:flex-start; background:#1e2a36; color:#e7eef5; border-bottom-left-radius:4px; }
+    .ai-demo-chips { display:flex; flex-wrap:wrap; gap:.35rem; align-self:flex-start; opacity:0; transform:translateY(10px); transition:opacity .45s ease, transform .45s ease; }
+    .ai-demo-chips span { background:#243443; color:#8fd0ff; border:1px solid #2f4a5e; border-radius:14px; padding:.28rem .7rem; font-size:.78rem; }
+    .ai-demo-done { align-self:center; background:rgba(16,185,129,.15); color:#34d399; border:1px solid rgba(16,185,129,.32); border-radius:12px; padding:.5rem .9rem; font-weight:600; font-size:.85rem; opacity:0; transform:scale(.9); transition:opacity .45s ease, transform .45s ease; margin-top:.2rem; }
+    .ai-demo-show { opacity:1 !important; transform:none !important; }
+</style>
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-2 sidebar">
@@ -214,26 +230,38 @@
                         </div>
                     </div>
 
-                    @* ── How it works ── *@
+                    @* ── Animated demo: what the client sees ── *@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-body p-4">
-                            <h5 class="fw-bold mb-3">Як це працює</h5>
-                            <div class="d-grid gap-2">
-                                <div class="d-flex align-items-center gap-3 border rounded-3 px-3 py-2">
-                                    <span class="fw-bold" style="color:#6366f1">1</span>
-                                    <span class="small">Клієнт відкриває ваше посилання й тисне «Старт»</span>
+                            <h5 class="fw-bold mb-1">Ось що бачить ваш клієнт</h5>
+                            <p class="text-muted small mb-3">Бот сам веде розмову — від «привіт» до готового запису</p>
+
+                            <div class="ai-demo-phone">
+                                <div class="ai-demo-top">
+                                    <div class="ai-demo-ava">AI</div>
+                                    <div>
+                                        <div class="ai-demo-name">@(Model.Business?.Name ?? "Ваш салон")</div>
+                                        <div class="ai-demo-sub">бот • онлайн</div>
+                                    </div>
+                                    <i class="bi bi-telegram ms-auto" style="color:#2aabee;font-size:1.2rem"></i>
                                 </div>
-                                <div class="d-flex align-items-center gap-3 border rounded-3 px-3 py-2">
-                                    <span class="fw-bold" style="color:#6366f1">2</span>
-                                    <span class="small">Бот вітається і допомагає обрати послугу, дату й час</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 border rounded-3 px-3 py-2">
-                                    <span class="fw-bold" style="color:#6366f1">3</span>
-                                    <span class="small">Готова чернетка запису зʼявляється у вас у дашборді</span>
-                                </div>
-                                <div class="d-flex align-items-center gap-3 border rounded-3 px-3 py-2">
-                                    <span class="fw-bold" style="color:#6366f1">4</span>
-                                    <span class="small">Ви підтверджуєте запис одним кліком</span>
+                                <div class="ai-demo-chat" id="aiDemoChat">
+                                    <div class="ai-demo-msg in"  data-step="1">Привіт! 💅</div>
+                                    <div class="ai-demo-msg out" data-step="2">Вітаю! Що вас цікавить?</div>
+                                    <div class="ai-demo-chips out" data-step="3">
+                                        <span>Манікюр</span><span>Педикюр</span><span>Брови</span>
+                                    </div>
+                                    <div class="ai-demo-msg in"  data-step="4">Манікюр</div>
+                                    <div class="ai-demo-msg out" data-step="5">Чудово! На завтра є вільні години:</div>
+                                    <div class="ai-demo-chips out" data-step="6">
+                                        <span>14:00</span><span>16:00</span><span>17:30</span>
+                                    </div>
+                                    <div class="ai-demo-msg in"  data-step="7">16:00</div>
+                                    <div class="ai-demo-msg out" data-step="8">Запишіть, будь ласка, імʼя та телефон 🙂</div>
+                                    <div class="ai-demo-msg in"  data-step="9">Олена, +380 67 123 45 67</div>
+                                    <div class="ai-demo-done out" data-step="10">
+                                        <i class="bi bi-check-circle-fill"></i> Запис підготовлено!
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -265,9 +293,9 @@
                                             <div class="d-flex align-items-center justify-content-between gap-2">
                                                 <div class="d-flex align-items-center gap-2">
                                                     <i class="bi bi-telegram text-primary small"></i>
-                                                    <span class="fw-semibold small">@conversation.ExternalChatId</span>
+                                                    <span class="fw-semibold small">@conversation.Title</span>
                                                 </div>
-                                                <span class="badge bg-light text-dark border small">@conversation.Status</span>
+                                                <span class="badge small" style="background:@(conversation.StatusColor)1a;color:@conversation.StatusColor">@conversation.StatusLabel</span>
                                             </div>
                                             <div class="text-muted small text-truncate mt-1">
                                                 @(conversation.LastMessage ?? "Повідомлень ще немає")
@@ -346,5 +374,26 @@
             setTimeout(function () { btn.innerHTML = original; }, 1500);
         });
     }
+
+    // Looping phone-chat demo
+    (function () {
+        var chat = document.getElementById('aiDemoChat');
+        if (!chat) return;
+        var steps = Array.prototype.slice.call(chat.querySelectorAll('[data-step]'));
+        var startDelay = 500, gap = 1050, holdAtEnd = 2800;
+
+        function reset() { steps.forEach(function (s) { s.classList.remove('ai-demo-show'); }); }
+        function run() {
+            reset();
+            steps.forEach(function (s, i) {
+                setTimeout(function () {
+                    s.classList.add('ai-demo-show');
+                    chat.scrollTop = chat.scrollHeight;
+                }, startDelay + i * gap);
+            });
+            setTimeout(run, startDelay + steps.length * gap + holdAtEnd);
+        }
+        run();
+    })();
 </script>
 }

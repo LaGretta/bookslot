@@ -7,4 +7,7 @@ public class TelegramAssistantResult
     public string MessageToSend { get; set; } = "";
     public bool ShouldSendMessage { get; set; }
     public bool CanCreateBooking { get; set; }
+
+    /// <summary>Tap-to-send button labels shown as a Telegram reply keyboard (services, time slots…).</summary>
+    public List<string> QuickReplies { get; set; } = [];
 }

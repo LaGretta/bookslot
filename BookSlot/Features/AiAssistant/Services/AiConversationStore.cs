@@ -77,6 +77,18 @@ public class AiConversationStore : IAiConversationStore
             .FirstOrDefaultAsync(cancellationToken);
     }
 
+    public async Task<List<string>> GetActiveServiceNamesAsync(
+        int businessId,
+        CancellationToken cancellationToken = default)
+    {
+        return await _db.Services
+            .AsNoTracking()
+            .Where(s => s.BusinessId == businessId && s.IsActive)
+            .OrderBy(s => s.Name)
+            .Select(s => s.Name)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task AddMessageAsync(
         int conversationId,
         AiMessageSenderType senderType,

@@ -99,6 +99,7 @@ public class TelegramWebhookModel : PageModel
                 botToken,
                 result.ExternalChatId.Value,
                 result.MessageToSend,
+                result.QuickReplies,
                 HttpContext.RequestAborted);
         }
 

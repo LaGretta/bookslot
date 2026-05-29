@@ -25,6 +25,11 @@ public interface IAiConversationStore
         int businessId,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Active service names for a business — used to build tap-to-pick buttons.</summary>
+    Task<List<string>> GetActiveServiceNamesAsync(
+        int businessId,
+        CancellationToken cancellationToken = default);
+
     Task AddMessageAsync(
         int conversationId,
         AiMessageSenderType senderType,

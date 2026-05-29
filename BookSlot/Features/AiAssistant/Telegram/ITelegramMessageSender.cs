@@ -6,5 +6,6 @@ public interface ITelegramMessageSender
         string botToken,
         long chatId,
         string text,
+        IReadOnlyCollection<string>? quickReplies = null,
         CancellationToken cancellationToken = default);
 }
