@@ -769,6 +769,7 @@ button.lp-btn-price { cursor: pointer; }
     align-items: center;
     padding: 96px 0 72px;
     color: #fff;
+    overflow-x: hidden;
     background:
         linear-gradient(135deg, rgba(15,23,42,.9), rgba(49,46,129,.88)),
         url("https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1800&q=80");
@@ -1310,35 +1311,12 @@ button.lp-btn-price { cursor: pointer; }
 @media (max-width: 640px) {
     .ai-hero {
         min-height: auto;
-        overflow-x: hidden;
-        padding: 64px 0 44px;
-    }
-    .ai-hero .container {
-        width: 100%;
-        max-width: 100%;
-        overflow: hidden;
-        padding-left: 0;
-        padding-right: 0;
-    }
-    .ai-hero-grid {
-        padding-left: 12px;
-        padding-right: 12px;
-        box-sizing: border-box;
-    }
-    .ai-hero-grid,
-    .ai-hero-copy,
-    .ai-hero-actions {
-        width: auto;
-        max-width: 100%;
-        margin-right: 24px;
-        overflow-x: hidden;
-    }
-    .ai-hero-copy {
-        padding-right: 24px;
+        padding: 56px 0 40px;
     }
     .ai-hero h1 {
-        font-size: 2.45rem;
-        line-height: 1.06;
+        font-size: 2.05rem;
+        line-height: 1.1;
+        margin: 18px 0 14px;
         overflow-wrap: anywhere;
     }
     .ai-lead {
@@ -1364,9 +1342,6 @@ button.lp-btn-price { cursor: pointer; }
         grid-template-columns: 1fr;
     }
     .ai-flow-demo {
-        width: auto;
-        max-width: 100%;
-        margin-right: 24px;
         min-height: auto;
         padding: 14px;
     }
