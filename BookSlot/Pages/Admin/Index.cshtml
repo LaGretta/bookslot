@@ -92,6 +92,64 @@
         <div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>@TempData["Error"]</div>
     }
 
+    <!-- Owner subscription tools -->
+    <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #16a34a !important;border-radius:12px">
+        <div class="card-body p-4">
+            <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+                <div>
+                    <h6 class="fw-bold mb-1">
+                        <i class="bi bi-person-gear me-2 text-success"></i>Моя підписка
+                    </h6>
+                    <p class="text-muted small mb-0">
+                        Цей блок працює тільки для <strong>sashagutsul2014@gmail.com</strong> і змінює підписку тільки твого бізнесу.
+                    </p>
+                </div>
+                <span class="badge bg-success px-3 py-2">@Model.OwnerPlanLabel</span>
+            </div>
+
+            @if (!Model.OwnerHasBusiness)
+            {
+                <div class="alert alert-warning mb-0">
+                    Спочатку створи бізнес у Dashboard → Налаштування, тоді тут можна буде видати собі тариф.
+                </div>
+            }
+            else
+            {
+                <div class="mb-3 small text-muted">
+                    Бізнес: <strong class="text-dark">@Model.OwnerBusinessName</strong>
+                </div>
+
+                <form method="post" asp-page-handler="SetOwnerPlan" class="row g-2 align-items-end">
+                    <div class="col-md-6">
+                        <label class="form-label small fw-semibold text-muted">Видати собі тариф</label>
+                        <select name="plan" class="form-select">
+                            <option value="Free">Free — безкоштовний</option>
+                            <option value="Basic">Basic — 299 грн/міс</option>
+                            <option value="Pro">Ultra AI — найкращий тариф</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-success w-100" type="submit"
+                                onclick="return confirm('Змінити тариф тільки для твого акаунта?')">
+                            <i class="bi bi-check2-circle me-1"></i> Застосувати
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-outline-danger w-100" type="submit"
+                                formaction="?handler=ClearOwnerPlan"
+                                onclick="return confirm('Забрати підписку і повернути твій акаунт на Free?')">
+                            <i class="bi bi-x-circle me-1"></i> Забрати
+                        </button>
+                    </div>
+                </form>
+
+                <div class="form-text mt-2">
+                    Ultra AI тут технічно зберігається як старий backend-план <code>Pro</code>, щоб не ламати Stripe і існуючу логіку.
+                </div>
+            }
+        </div>
+    </div>
+
     <!-- Promo info -->
     <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid var(--primary) !important;border-radius:12px">
         <div class="card-body p-4">
@@ -112,6 +170,117 @@
         </div>
     </form>
 
+    @if (Model.SelectedUserProfile != null)
+    {
+        var profile = Model.SelectedUserProfile;
+        var profilePlanLabel = profile.Plan switch {
+            BookSlot.Models.SubscriptionPlan.Basic => "Basic",
+            BookSlot.Models.SubscriptionPlan.Pro   => "Ultra AI",
+            _ => "Free"
+        };
+        var profilePlanBadge = profile.Plan switch {
+            BookSlot.Models.SubscriptionPlan.Basic => "bg-primary",
+            BookSlot.Models.SubscriptionPlan.Pro   => "bg-success",
+            _ => "bg-secondary"
+        };
+
+        <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #4F46E5 !important;border-radius:12px">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start justify-content-between gap-3 flex-wrap mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">
+                            <i class="bi bi-person-vcard me-2 text-primary"></i>Профіль акаунта
+                        </h5>
+                        <div class="text-muted small">@profile.UserId</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        <span class="badge @profilePlanBadge px-3 py-2">@profilePlanLabel</span>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           asp-page="/Admin/Index"
+                           asp-route-search="@Model.SearchEmail">
+                            <i class="bi bi-x-lg me-1"></i>Закрити
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Email</div>
+                            <div class="fw-semibold">@profile.Email</div>
+                            <div class="small mt-2">
+                                <span class="badge @(profile.EmailConfirmed ? "bg-success" : "bg-warning text-dark")">
+                                    @(profile.EmailConfirmed ? "Email підтверджено" : "Email не підтверджено")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 rounded-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Контакти акаунта</div>
+                            <div class="fw-semibold">@(profile.FullName ?? profile.UserName ?? "Без імені")</div>
+                            <div class="small text-muted mt-1">Телефон: @(profile.PhoneNumber ?? "не вказано")</div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="p-3 rounded-3 bg-light h-100">
+                            <div class="text-muted small mb-1">Бізнес</div>
+                            @if (profile.BusinessName != null)
+                            {
+                                <div class="fw-semibold">@profile.BusinessName</div>
+                                <div class="small text-muted">/book/@profile.BusinessSlug</div>
+                                <div class="small text-muted mt-2">Категорія: @(profile.BusinessCategory ?? "не вказано")</div>
+                                <div class="small text-muted">Телефон бізнесу: @(profile.BusinessPhone ?? "не вказано")</div>
+                                <div class="small text-muted">Адреса: @(profile.BusinessAddress ?? "не вказано")</div>
+                                @if (!string.IsNullOrWhiteSpace(profile.BusinessDescription))
+                                {
+                                    <div class="small mt-2">@profile.BusinessDescription</div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="text-muted">Бізнес ще не створено.</div>
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="p-3 rounded-3 bg-light h-100">
+                            <div class="text-muted small mb-2">Активність</div>
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Послуг</span><strong>@profile.ServicesCount</strong>
+                            </div>
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Записів</span><strong>@profile.BookingsCount</strong>
+                            </div>
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Акція</span><strong>@(profile.PromoUsed ? "використана" : "доступна")</strong>
+                            </div>
+                            <div class="small text-muted mt-2">
+                                Останній запис:
+                                @(profile.LatestBookingDate.HasValue ? profile.LatestBookingDate.Value.ToString("dd.MM.yyyy") : "немає")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (profile.BusinessSlug != null)
+                {
+                    <div class="mt-3 d-flex gap-2 flex-wrap">
+                        <a class="btn btn-sm btn-primary"
+                           asp-page="/Book/Index"
+                           asp-route-slug="@profile.BusinessSlug"
+                           target="_blank">
+                            <i class="bi bi-box-arrow-up-right me-1"></i>Відкрити сторінку запису
+                        </a>
+                        <span class="text-muted small align-self-center">
+                            Створено: @(profile.BusinessCreatedAt.HasValue ? profile.BusinessCreatedAt.Value.ToString("dd.MM.yyyy HH:mm") : "немає дати")
+                        </span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
     <!-- Users table -->
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
@@ -129,7 +298,7 @@
                     <tbody>
                         @foreach (var u in Model.Users)
                         {
-                            <tr>
+                            <tr class="@(Model.SelectedUserId == u.UserId ? "table-primary" : "")">
                                 <td>
                                     <div class="fw-semibold" style="font-size:.9rem">@u.Email</div>
                                 </td>
@@ -148,7 +317,7 @@
                                     @{
                                         var planLabel = u.Plan switch {
                                             BookSlot.Models.SubscriptionPlan.Basic => "Basic",
-                                            BookSlot.Models.SubscriptionPlan.Pro   => "Pro",
+                                            BookSlot.Models.SubscriptionPlan.Pro   => "Ultra AI",
                                             _ => "Free"
                                         };
                                         var badgeClass = u.Plan switch {
@@ -177,11 +346,17 @@
                                     }
                                 </td>
                                 <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-secondary fw-semibold me-1 mb-1"
+                                       asp-page="/Admin/Index"
+                                       asp-route-search="@Model.SearchEmail"
+                                       asp-route-userId="@u.UserId">
+                                        <i class="bi bi-person-vcard me-1"></i>Профіль
+                                    </a>
                                     @if (u.SubscriptionId.HasValue && !u.PromoUsed)
                                     {
                                         <form method="post" asp-page-handler="GrantPromo" style="display:inline">
                                             <input type="hidden" name="subscriptionId" value="@u.SubscriptionId" />
-                                            <button class="btn btn-sm btn-primary fw-semibold"
+                                            <button class="btn btn-sm btn-primary fw-semibold mb-1"
                                                     onclick="return confirm('Активувати 7 днів Basic для @u.Email?')">
                                                 <i class="bi bi-gift me-1"></i> Активувати акцію
                                             </button>
