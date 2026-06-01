@@ -258,14 +258,14 @@
 
                             @if (Model.TestReply != null)
                             {
-                                <div class="border rounded-3 p-3 mt-3" style="background:#f8fafc">
+                                <div class="ai-test-reply border rounded-3 p-3 mt-3" style="background:#f8fafc">
                                     <div class="d-flex align-items-center gap-2 mb-2">
                                         <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#4f46e5);display:flex;align-items:center;justify-content:center">
                                             <i class="bi bi-stars text-white" style="font-size:.75rem"></i>
                                         </div>
                                         <strong class="small">Відповідь бота</strong>
                                     </div>
-                                    <div class="p-3 rounded-3" style="background:white;border:1px solid #e2e8f0">
+                                    <div class="ai-test-bubble p-3 rounded-3" style="background:white;border:1px solid #e2e8f0">
                                         @Model.TestReply.MessageToCustomer
                                     </div>
                                     @if (Model.TestReply.SuggestedSlots.Any())
@@ -273,7 +273,7 @@
                                         <div class="d-flex gap-1 flex-wrap mt-3">
                                             @foreach (var slot in Model.TestReply.SuggestedSlots)
                                             {
-                                                <span class="badge bg-white text-dark border">@slot</span>
+                                                <span class="ai-test-slot badge bg-white text-dark border">@slot</span>
                                             }
                                         </div>
                                     }

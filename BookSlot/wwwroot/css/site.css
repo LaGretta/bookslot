@@ -1860,6 +1860,65 @@ html[data-theme="dark"] .ai-profession-track span {
     color: #D7DEE9 !important;
 }
 
+html[data-theme="dark"] .ai-message.assistant {
+    background: #1E293B !important;
+    border: 1px solid rgba(148,163,184,.18) !important;
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .ai-flow-label,
+html[data-theme="dark"] .ai-draft-title {
+    color: #A5B4FC !important;
+}
+
+html[data-theme="dark"] .ai-draft-row span {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .ai-test-reply {
+    background: #0F172A !important;
+    border-color: rgba(148,163,184,.24) !important;
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .ai-test-bubble {
+    background: #111827 !important;
+    border-color: rgba(148,163,184,.24) !important;
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .ai-test-slot {
+    background: #1E293B !important;
+    border-color: rgba(165,180,252,.35) !important;
+    color: #E0E7FF !important;
+}
+
+html[data-theme="dark"] .ai-demo-phone {
+    border-color: rgba(148,163,184,.24) !important;
+    box-shadow: 0 18px 45px rgba(2,6,23,.46) !important;
+}
+
+html[data-theme="dark"] .ai-demo-chat {
+    background: #07111F !important;
+}
+
+html[data-theme="dark"] .ai-demo-msg.out {
+    background: #1E293B !important;
+    border: 1px solid rgba(148,163,184,.18);
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .ai-demo-msg.in {
+    background: #2563EB !important;
+    color: #fff !important;
+}
+
+html[data-theme="dark"] .ai-demo-chips span {
+    background: #172033 !important;
+    border-color: rgba(96,165,250,.32) !important;
+    color: #BFDBFE !important;
+}
+
 html[data-theme="dark"] .ai-mini-slots span {
     background: #0F172A;
     border-color: var(--border);
