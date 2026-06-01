@@ -1733,6 +1733,66 @@ html[data-theme="dark"] .ai-plan li {
     color: #94A3B8 !important;
 }
 
+html[data-theme="dark"] .lp-p-card {
+    background: #111827 !important;
+    border-color: rgba(148,163,184,.24) !important;
+    color: #E5E7EB;
+    box-shadow: 0 18px 48px rgba(2,6,23,.34);
+}
+
+html[data-theme="dark"] .lp-featured {
+    background: linear-gradient(150deg, #3730A3 0%, #4F46E5 56%, #7C3AED 100%) !important;
+    border-color: rgba(255,255,255,.18) !important;
+    color: #fff;
+    box-shadow: 0 30px 70px rgba(79,70,229,.5);
+}
+
+html[data-theme="dark"] .lp-p-price,
+html[data-theme="dark"] .lp-p-list li,
+html[data-theme="dark"] .lp-p-list strong {
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] .lp-p-price sub,
+html[data-theme="dark"] .lp-p-desc,
+html[data-theme="dark"] .lp-p-card .text-muted {
+    color: #CBD5E1 !important;
+}
+
+html[data-theme="dark"] .lp-featured .lp-p-price,
+html[data-theme="dark"] .lp-featured .lp-p-list li,
+html[data-theme="dark"] .lp-featured .lp-p-list strong,
+html[data-theme="dark"] .lp-featured .lp-p-desc {
+    color: #fff !important;
+}
+
+html[data-theme="dark"] .lp-featured .lp-p-price sub {
+    color: rgba(255,255,255,.82) !important;
+}
+
+html[data-theme="dark"] .lp-plan-free,
+html[data-theme="dark"] .lp-plan-pro {
+    color: #A5B4FC !important;
+}
+
+html[data-theme="dark"] .lp-p-card .lp-no {
+    color: #64748B;
+}
+
+html[data-theme="dark"] .lp-price-outline,
+html[data-theme="dark"] .lp-price-pout {
+    background: #EEF2FF;
+    border-color: #C7D2FE;
+    color: #3730A3;
+}
+
+html[data-theme="dark"] .lp-price-outline:hover,
+html[data-theme="dark"] .lp-price-pout:hover {
+    background: #E0E7FF;
+    border-color: #A5B4FC;
+    color: #312E81;
+}
+
 html[data-theme="dark"] .form-control,
 html[data-theme="dark"] .form-select,
 html[data-theme="dark"] textarea,
