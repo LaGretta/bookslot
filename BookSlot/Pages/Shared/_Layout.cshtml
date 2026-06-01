@@ -41,20 +41,14 @@
                 <span class="brand-text">BookSlot</span>
             </a>
 
-            <div class="bs-nav-links d-none d-lg-flex">
-                @if (!isSignedIn)
-                {
+            @if (!isSignedIn)
+            {
+                <div class="bs-nav-links d-none d-lg-flex">
                     <a class="nav-link px-3" href="/#ai">AI Receptionist</a>
                     <a class="nav-link px-3" href="/#features">Можливості</a>
                     <a class="nav-link px-3" href="/#pricing">Тарифи</a>
-                }
-                else
-                {
-                    <a class="nav-link px-3" asp-page="/Dashboard/Index">Дашборд</a>
-                    <a class="nav-link px-3" asp-page="/Dashboard/Bookings/Index">Записи</a>
-                    <a class="nav-link px-3" asp-page="/Dashboard/Settings/Index">Налаштування</a>
-                }
-            </div>
+                </div>
+            }
 
             <div class="bs-nav-actions ms-auto">
                 <button class="bs-icon-button" type="button" data-theme-toggle aria-label="Змінити тему">
