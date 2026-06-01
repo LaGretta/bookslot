@@ -1770,6 +1770,25 @@ html[data-theme="dark"] .ai-cta {
     background: #0B1120 !important;
 }
 
+html[data-theme="dark"] footer {
+    background: #020617 !important;
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] footer .footer-brand,
+html[data-theme="dark"] footer h6 {
+    color: #F8FAFC !important;
+}
+
+html[data-theme="dark"] footer a,
+html[data-theme="dark"] footer p {
+    color: #94A3B8 !important;
+}
+
+html[data-theme="dark"] footer a:hover {
+    color: #F8FAFC !important;
+}
+
 html[data-theme="dark"] .lp-noaccnt-card,
 html[data-theme="dark"] .lp-timer-card,
 html[data-theme="dark"] .m-pill,
