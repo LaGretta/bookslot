@@ -1,0 +1,413 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
+
+:root {
+  --product-ink: #f7f2e9;
+  --product-muted: rgba(247, 242, 233, 0.62);
+  --product-faint: rgba(247, 242, 233, 0.36);
+  --product-line: rgba(247, 242, 233, 0.13);
+  --product-gold: #f2d391;
+  --product-blue: #9bd8ff;
+  --product-green: #b9ffd7;
+  --product-x: 72vw;
+  --product-y: 16vh;
+}
+
+body.bs-product-react-active {
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+body.bs-product-react-active h1,
+body.bs-product-react-active h2,
+body.bs-product-react-active h3,
+body.bs-product-react-active h4,
+body.bs-product-react-active .navbar-brand {
+  letter-spacing: -0.035em;
+}
+
+.bs-product-ambient {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 8%, rgba(242, 211, 145, 0.1), transparent 28rem),
+    radial-gradient(circle at 82% 4%, rgba(82, 116, 255, 0.24), transparent 34rem);
+}
+
+.bs-product-ambient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: linear-gradient(to bottom, #000, transparent 90%);
+  opacity: 0.56;
+}
+
+.bs-product-aurora {
+  position: absolute;
+  left: -16vw;
+  width: 130vw;
+  height: 36vh;
+  border-radius: 999px;
+  filter: blur(3px);
+  transform: rotate(-14deg);
+  mix-blend-mode: screen;
+}
+
+.bs-product-aurora-a {
+  top: 2vh;
+  opacity: 0.38;
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(155, 216, 255, 0.28), rgba(242, 211, 145, 0.22), transparent 74%),
+    repeating-linear-gradient(94deg, transparent 0 38px, rgba(255, 255, 255, 0.12) 40px, transparent 46px);
+  animation: productAurora 14s ease-in-out infinite;
+}
+
+.bs-product-aurora-b {
+  top: 20vh;
+  opacity: 0.18;
+  background:
+    linear-gradient(90deg, transparent, rgba(185, 255, 215, 0.2), rgba(242, 211, 145, 0.18), transparent),
+    repeating-linear-gradient(92deg, transparent 0 48px, rgba(255, 255, 255, 0.1) 50px, transparent 54px);
+  animation: productAurora 18s ease-in-out infinite reverse;
+}
+
+.bs-product-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0, rgba(247, 242, 233, 0.06) 48%, transparent 52%);
+  background-size: 100% 260px;
+  opacity: 0.22;
+  animation: productScan 7s linear infinite;
+}
+
+.bs-product-cursor-glow {
+  position: absolute;
+  left: var(--product-x);
+  top: var(--product-y);
+  width: 34rem;
+  height: 34rem;
+  translate: -50% -50%;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(242, 211, 145, 0.11), transparent 62%);
+  transition: left 0.18s ease, top 0.18s ease;
+}
+
+.bs-product-stage-host {
+  margin-bottom: 1.35rem;
+}
+
+body.bs-product-react-active .container-fluid > .row {
+  display: block;
+  min-height: auto;
+}
+
+body.bs-product-react-active .sidebar {
+  display: none !important;
+}
+
+body.bs-product-react-active .col-md-10.py-4,
+body.bs-product-react-active .col-md-10.py-4.px-4 {
+  width: min(calc(100% - 32px), 1240px) !important;
+  max-width: 1240px !important;
+  margin-inline: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.bs-product-stage {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  gap: 1rem;
+  padding: clamp(1.1rem, 3vw, 1.55rem);
+  border: 1px solid rgba(242, 211, 145, 0.2);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 86% 0%, rgba(155, 216, 255, 0.24), transparent 20rem),
+    linear-gradient(135deg, rgba(20, 20, 17, 0.92), rgba(9, 10, 9, 0.78));
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  backdrop-filter: blur(22px);
+  animation: productStageIn 0.75s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+}
+
+.bs-product-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(110deg, transparent 0 30%, rgba(247, 242, 233, 0.08), transparent 54%),
+    radial-gradient(circle at var(--product-x) var(--product-y), rgba(242, 211, 145, 0.12), transparent 20rem);
+  opacity: 0.72;
+}
+
+.bs-product-stage-copy,
+.bs-product-console,
+.bs-product-routebar {
+  position: relative;
+  z-index: 1;
+}
+
+.bs-product-eyebrow,
+.bs-product-flow span {
+  font-family: "Space Mono", monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.bs-product-eyebrow {
+  color: var(--product-gold);
+  margin-bottom: 0.55rem;
+}
+
+.bs-product-stage h1 {
+  margin: 0;
+  color: var(--product-ink);
+  font-family: "Space Mono", "Courier New", monospace;
+  font-size: clamp(2rem, 4.6vw, 3.7rem);
+  font-weight: 400;
+  line-height: 0.98;
+  letter-spacing: -0.07em;
+}
+
+.bs-product-stage p {
+  max-width: 650px;
+  margin: 0.85rem 0 0;
+  color: var(--product-muted);
+  line-height: 1.65;
+}
+
+.bs-product-console {
+  align-self: stretch;
+  display: grid;
+  align-content: space-between;
+  gap: 1rem;
+  min-height: 150px;
+  padding: 1rem;
+  border: 1px solid var(--product-line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.bs-product-console-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.bs-product-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: #11110f;
+  background: var(--product-ink);
+  font-weight: 950;
+}
+
+.bs-product-console strong,
+.bs-product-console span {
+  display: block;
+}
+
+.bs-product-console strong {
+  color: var(--product-ink);
+}
+
+.bs-product-console-top span:not(.bs-product-avatar) {
+  color: var(--product-faint);
+  font-size: 0.78rem;
+}
+
+.bs-product-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.bs-product-flow span {
+  position: relative;
+  overflow: hidden;
+  padding: 0.55rem 0.5rem;
+  border: 1px solid var(--product-line);
+  border-radius: 999px;
+  color: var(--product-muted);
+  text-align: center;
+}
+
+.bs-product-flow span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  translate: -110% 0;
+  background: linear-gradient(90deg, transparent, rgba(242, 211, 145, 0.24), transparent);
+  animation: productFlow 3.8s ease-in-out infinite;
+  animation-delay: calc(var(--step) * 0.28s);
+}
+
+.bs-product-routebar {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.bs-product-routebar a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 38px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--product-line);
+  border-radius: 999px;
+  color: var(--product-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 850;
+  background: rgba(255, 255, 255, 0.045);
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.bs-product-routebar a:hover,
+.bs-product-routebar a.is-active {
+  color: #11110f;
+  background: var(--product-ink);
+  border-color: var(--product-ink);
+  transform: translateY(-2px);
+}
+
+.bs-react-lift {
+  animation: productCardIn 0.65s cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  animation-delay: var(--stagger, 0ms);
+  transition: transform 0.24s ease, border-color 0.24s ease, box-shadow 0.24s ease;
+}
+
+.bs-react-lift:hover {
+  transform: translateY(-4px);
+  border-color: rgba(242, 211, 145, 0.28) !important;
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.38), 0 0 0 1px rgba(242, 211, 145, 0.08) !important;
+}
+
+.bs-react-row {
+  animation: productRowIn 0.52s ease both;
+  animation-delay: var(--stagger, 0ms);
+}
+
+body.bs-product-react-active .sidebar .nav-link {
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+body.bs-product-react-active .sidebar .nav-link:hover {
+  transform: translateX(4px);
+}
+
+body.bs-product-react-active .col-md-10.py-4 > .d-flex:first-of-type h4,
+body.bs-product-react-active .col-md-10.py-4 > h4:first-child {
+  font-family: "Space Mono", "Courier New", monospace;
+  font-weight: 400;
+  letter-spacing: -0.06em;
+}
+
+@keyframes productAurora {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-14deg) scale(1);
+  }
+  50% {
+    transform: translate3d(4vw, -2vh, 0) rotate(-11deg) scale(1.04);
+  }
+}
+
+@keyframes productScan {
+  to {
+    background-position: 0 260px;
+  }
+}
+
+@keyframes productStageIn {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes productCardIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes productRowIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes productFlow {
+  0%,
+  45% {
+    translate: -110% 0;
+  }
+  85%,
+  100% {
+    translate: 110% 0;
+  }
+}
+
+@media (max-width: 900px) {
+  .bs-product-stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .bs-product-stage {
+    padding: 1rem;
+  }
+
+  .bs-product-stage h1 {
+    font-size: clamp(2rem, 13vw, 3rem);
+  }
+
+  .bs-product-console {
+    min-height: auto;
+  }
+
+  .bs-product-flow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bs-product-aurora,
+  .bs-product-scanline,
+  .bs-product-flow span::after,
+  .bs-react-lift,
+  .bs-react-row,
+  .bs-product-stage {
+    animation-duration: 1ms !important;
+  }
+}

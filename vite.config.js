@@ -13,11 +13,20 @@ export default defineConfig({
     outDir: path.resolve(rootDir, "BookSlot/wwwroot/dist"),
     assetsDir: "assets",
     rollupOptions: {
-      input: path.resolve(rootDir, "ClientApp/src/main.jsx"),
+      input: {
+        landing: path.resolve(rootDir, "ClientApp/src/main.jsx"),
+        product: path.resolve(rootDir, "ClientApp/src/product.jsx")
+      },
       output: {
-        entryFileNames: "assets/bookslot-landing.js",
+        entryFileNames: (chunkInfo) =>
+          chunkInfo.name === "product" ? "assets/bookslot-product.js" : "assets/bookslot-landing.js",
         chunkFileNames: "assets/bookslot-[name].js",
-        assetFileNames: "assets/bookslot-landing[extname]"
+        assetFileNames: (assetInfo) => {
+          const name = assetInfo.names?.[0] || assetInfo.name || "";
+          return name.includes("product")
+            ? "assets/bookslot-product[extname]"
+            : "assets/bookslot-landing[extname]";
+        }
       }
     }
   }

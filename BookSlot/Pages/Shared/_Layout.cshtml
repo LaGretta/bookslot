@@ -14,6 +14,12 @@
     var profileInitial = !string.IsNullOrWhiteSpace(profileName)
         ? profileName.Trim()[0].ToString().ToUpperInvariant()
         : "B";
+    var isDashboardReactShell = !isLandingReact
+        && isSignedIn
+        && Context.Request.Path.StartsWithSegments("/Dashboard");
+    var bodyClass = isLandingReact
+        ? "landing-react-body"
+        : (isDashboardReactShell ? "bs-product-react-active" : "");
 }
 <!DOCTYPE html>
 <html lang="uk">
@@ -29,9 +35,13 @@
         document.documentElement.dataset.theme = 'dark';
     </script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @if (isDashboardReactShell)
+    {
+        <link rel="stylesheet" href="~/dist/assets/bookslot-product.css" asp-append-version="true" />
+    }
     @await RenderSectionAsync("Styles", required: false)
 </head>
-<body class="@(isLandingReact ? "landing-react-body" : "")">
+<body class="@bodyClass">
     @if (!isLandingReact)
     {
     <nav class="navbar navbar-expand-lg sticky-top bs-navbar" id="main-nav">
@@ -161,9 +171,16 @@
     </div>
     }
 
+    @if (isDashboardReactShell)
+    {
+        <div id="bookslot-product-react-root"
+             data-profile-initial="@profileInitial"
+             data-profile-name="@profileName"></div>
+    }
+
     @RenderBody()
 
-    @if (!isLandingReact)
+    @if (!isLandingReact && !isDashboardReactShell)
     {
     <footer class="py-5 mt-4">
         <div class="container">
@@ -200,6 +217,10 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @if (isDashboardReactShell)
+    {
+        <script type="module" src="~/dist/assets/bookslot-product.js" asp-append-version="true"></script>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
