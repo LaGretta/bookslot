@@ -318,25 +318,37 @@ function App() {
             {isLoggedIn ? "Go to dashboard" : "Create account"} <span>↗</span>
           </a>
         </div>
-        <form className="inquiry-card" data-reveal>
-          <label>
-            Name
-            <input type="text" value="Avery Stone" readOnly />
-          </label>
-          <label>
-            Work email
-            <input type="email" value="avery@studio.example" readOnly />
-          </label>
-          <label>
-            Primary need
-            <input type="text" value="Telegram AI receptionist" readOnly />
-          </label>
-          <label>
-            Message
-            <textarea value="Tell us about your current booking flow..." readOnly />
-          </label>
-        </form>
+        <div className="contact-panel" data-reveal>
+          <div className="contact-card-top">
+            <span>Contact layer</span>
+            <strong>Talk to BookSlot</strong>
+          </div>
+          <a href="mailto:bookslot0@gmail.com">
+            <span>Email</span>
+            <strong>bookslot0@gmail.com</strong>
+          </a>
+          <a href="https://t.me/koletvl" target="_blank" rel="noreferrer">
+            <span>Telegram</span>
+            <strong>@koletvl</strong>
+          </a>
+          <a href="https://t.me/koletvl" target="_blank" rel="noreferrer" className="contact-action">
+            Write in Telegram <span>↗</span>
+          </a>
+        </div>
       </section>
+
+      <footer className="site-footer">
+        <a className="brand" href="/">
+          <span className="brand-mark" />
+          <span>BookSlot</span>
+        </a>
+        <p>AI booking and scheduling layer for local service businesses.</p>
+        <div>
+          <a href="mailto:bookslot0@gmail.com">bookslot0@gmail.com</a>
+          <a href="https://t.me/koletvl" target="_blank" rel="noreferrer">Telegram</a>
+          <a href="#pricing">Pricing</a>
+        </div>
+      </footer>
     </main>
   );
 }

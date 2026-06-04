@@ -658,14 +658,87 @@ body.landing-react-body .price-card a {
   margin-top: 28px;
 }
 
-.inquiry-card {
+.contact-panel {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-  padding: 22px;
+  gap: 12px;
+  padding: 20px;
   border-radius: 8px;
 }
 
+.contact-panel,
+.contact-panel a {
+  border: 1px solid var(--bs-line);
+  background: var(--bs-panel);
+  backdrop-filter: blur(18px);
+}
+
+.contact-card-top,
+.contact-panel a {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  min-height: 76px;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.contact-panel span,
+.site-footer p {
+  color: var(--bs-faint);
+}
+
+.contact-card-top span,
+.contact-panel a span {
+  display: block;
+  font-family: "Space Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contact-panel strong {
+  font-size: 1rem;
+}
+
+.contact-action {
+  justify-content: center !important;
+  min-height: 50px !important;
+  color: #11110f !important;
+  background: var(--bs-ink) !important;
+  font-weight: 900;
+}
+
+.site-footer {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 22px;
+  align-items: center;
+  width: min(calc(100% - 32px), var(--bs-max));
+  margin: 0 auto;
+  padding: 28px 0 42px;
+  border-top: 1px solid var(--bs-line);
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.site-footer div {
+  display: flex;
+  gap: 16px;
+  color: var(--bs-muted);
+  font-size: 0.88rem;
+}
+
+.site-footer a:hover {
+  color: var(--bs-ink);
+}
+
+/*
 .inquiry-card label {
   display: grid;
   gap: 8px;
@@ -697,6 +770,7 @@ body.landing-react-body .price-card a {
   min-height: 150px;
   resize: none;
 }
+*/
 
 [data-reveal] {
   opacity: 0;
@@ -802,9 +876,18 @@ body.landing-react-body .price-card a {
   .feature-grid,
   .proof-grid,
   .pricing-grid,
-  .inquiry-card,
+  .contact-panel,
   .slot-grid {
     grid-template-columns: 1fr;
+  }
+
+  .site-footer {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .site-footer div {
+    flex-wrap: wrap;
   }
 
   .outcome-section,
