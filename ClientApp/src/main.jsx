@@ -337,18 +337,6 @@ function App() {
         </div>
       </section>
 
-      <footer className="site-footer">
-        <a className="brand" href="/">
-          <span className="brand-mark" />
-          <span>BookSlot</span>
-        </a>
-        <p>AI booking and scheduling layer for local service businesses.</p>
-        <div>
-          <a href="mailto:bookslot0@gmail.com">bookslot0@gmail.com</a>
-          <a href="https://t.me/koletvl" target="_blank" rel="noreferrer">Telegram</a>
-          <a href="#pricing">Pricing</a>
-        </div>
-      </footer>
     </main>
   );
 }

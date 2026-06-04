@@ -683,8 +683,7 @@ body.landing-react-body .price-card a {
   border-radius: 8px;
 }
 
-.contact-panel span,
-.site-footer p {
+.contact-panel span {
   color: var(--bs-faint);
 }
 
@@ -707,35 +706,6 @@ body.landing-react-body .price-card a {
   color: #11110f !important;
   background: var(--bs-ink) !important;
   font-weight: 900;
-}
-
-.site-footer {
-  position: relative;
-  z-index: 4;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 22px;
-  align-items: center;
-  width: min(calc(100% - 32px), var(--bs-max));
-  margin: 0 auto;
-  padding: 28px 0 42px;
-  border-top: 1px solid var(--bs-line);
-}
-
-.site-footer p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.site-footer div {
-  display: flex;
-  gap: 16px;
-  color: var(--bs-muted);
-  font-size: 0.88rem;
-}
-
-.site-footer a:hover {
-  color: var(--bs-ink);
 }
 
 /*
@@ -879,15 +849,6 @@ body.landing-react-body .price-card a {
   .contact-panel,
   .slot-grid {
     grid-template-columns: 1fr;
-  }
-
-  .site-footer {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .site-footer div {
-    flex-wrap: wrap;
   }
 
   .outcome-section,
