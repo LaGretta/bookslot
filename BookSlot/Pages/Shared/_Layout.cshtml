@@ -1,6 +1,9 @@
 @using Microsoft.AspNetCore.Identity
 @using BookSlot.Data
 @inject SignInManager<ApplicationUser> SignInManager
+@{
+    var isLandingReact = ViewData["LandingReact"] as bool? == true;
+}
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -12,8 +15,11 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @await RenderSectionAsync("Styles", required: false)
 </head>
-<body>
+<body class="@(isLandingReact ? "landing-react-body" : "")">
+    @if (!isLandingReact)
+    {
     <nav class="navbar navbar-expand-lg bg-white sticky-top" id="main-nav" style="transition:background .35s,box-shadow .35s,border-color .35s">
         <div class="container">
             <a class="navbar-brand" href="/">
@@ -36,9 +42,12 @@
             </div>
         </div>
     </nav>
+    }
 
     @RenderBody()
 
+    @if (!isLandingReact)
+    {
     <footer class="py-5 mt-4">
         <div class="container">
             <div class="row g-4">
@@ -69,6 +78,7 @@
             <p class="text-center mb-0" style="font-size:.82rem">&copy; 2026 BookSlot. Всі права захищені.</p>
         </div>
     </footer>
+    }
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
