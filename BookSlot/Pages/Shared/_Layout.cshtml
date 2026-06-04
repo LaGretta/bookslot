@@ -26,11 +26,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <script>
-        (() => {
-            const saved = localStorage.getItem('bookslot-theme');
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-            document.documentElement.dataset.theme = saved || (prefersDark ? 'dark' : 'light');
-        })();
+        document.documentElement.dataset.theme = 'dark';
     </script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
@@ -55,9 +51,6 @@
             }
 
             <div class="bs-nav-actions ms-auto">
-                <button class="bs-icon-button" type="button" data-theme-toggle aria-label="Змінити тему">
-                    <i class="bi bi-sun-fill" data-theme-icon></i>
-                </button>
                 <button class="bs-menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#accountMenu" aria-controls="accountMenu" aria-label="Відкрити меню профілю">
                     @if (isSignedIn)
                     {
@@ -154,13 +147,6 @@
                     </a>
                 </div>
             }
-
-            <div class="bs-drawer-section">
-                <button class="bs-drawer-link bs-theme-row" type="button" data-theme-toggle>
-                    <i class="bi bi-sun-fill" data-theme-icon></i>
-                    <span data-theme-label>Світла тема</span>
-                </button>
-            </div>
 
             @if (isSignedIn)
             {
