@@ -193,6 +193,7 @@ function HeroMockup() {
 function App() {
   const root = document.getElementById("bookslot-react-root");
   const isLoggedIn = root?.dataset.loggedIn === "true";
+  const profileInitial = root?.dataset.profileInitial || "B";
   const primaryHref = isLoggedIn ? "/Dashboard/AiAssistant" : "/Identity/Account/Register";
   const secondaryHref = isLoggedIn ? "/Dashboard" : "#ai-flow";
 
@@ -217,9 +218,18 @@ function App() {
             </a>
           ))}
         </nav>
-        <a className="nav-cta" href={primaryHref}>
-          {isLoggedIn ? "Open AI" : "Start free"} <span>↗</span>
-        </a>
+        <div className="landing-nav-actions">
+          <a className="nav-cta" href={primaryHref}>
+            {isLoggedIn ? "Open AI" : "Start free"} <span>↗</span>
+          </a>
+          {isLoggedIn && (
+            <a className="landing-profile-button" href="/Dashboard">
+              <span className="landing-profile-avatar">{profileInitial}</span>
+              <span>Профіль</span>
+              <span className="landing-profile-menu">☰</span>
+            </a>
+          )}
+        </div>
       </header>
 
       <section className="hero-section">

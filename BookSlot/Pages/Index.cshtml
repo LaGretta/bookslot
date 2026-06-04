@@ -3,14 +3,22 @@
 @using Microsoft.AspNetCore.Identity
 @using BookSlot.Data
 @inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
 @{
     ViewData["Title"] = "AI Receptionist для онлайн-запису";
     ViewData["LandingReact"] = true;
     Layout = "_Layout";
     var isLoggedIn = SignInManager.IsSignedIn(User);
+    var currentUser = isLoggedIn ? await UserManager.GetUserAsync(User) : null;
+    var profileName = currentUser?.FullName ?? currentUser?.Email ?? User.Identity?.Name ?? "BookSlot";
+    var profileInitial = !string.IsNullOrWhiteSpace(profileName)
+        ? profileName.Trim()[0].ToString().ToUpperInvariant()
+        : "B";
 }
 
-<div id="bookslot-react-root" data-logged-in="@isLoggedIn.ToString().ToLowerInvariant()"></div>
+<div id="bookslot-react-root"
+     data-logged-in="@isLoggedIn.ToString().ToLowerInvariant()"
+     data-profile-initial="@profileInitial"></div>
 
 @section Styles {
     <link rel="stylesheet" href="~/dist/assets/bookslot-landing.css" asp-append-version="true" />
