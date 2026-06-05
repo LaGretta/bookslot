@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -11,7 +11,7 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
-  --bs-pixel: "Pixelify Sans", "Space Mono", monospace;
+  --bs-display: "Handjet", "Space Mono", monospace;
   --bs-mono: "Space Mono", "Courier New", monospace;
 }
 
@@ -164,9 +164,9 @@ body.landing-react-body textarea {
 
 .brand > span:last-child {
   color: var(--bs-ink);
-  font-family: var(--bs-pixel);
-  font-size: clamp(1.05rem, 1.55vw, 1.22rem);
-  font-weight: 700;
+  font-family: var(--bs-display);
+  font-size: clamp(1.45rem, 2vw, 1.72rem);
+  font-weight: 520;
   line-height: 1;
 }
 
@@ -217,10 +217,10 @@ body.landing-react-body textarea {
   justify-content: center;
   gap: clamp(14px, 3vw, 34px);
   color: rgba(247, 242, 233, 0.58);
-  font-family: var(--bs-pixel);
-  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  font-family: var(--bs-mono);
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
 }
 
@@ -241,8 +241,8 @@ body.landing-react-body textarea {
   border-radius: 999px;
   background: var(--bs-ink);
   color: #10100e;
-  font-family: var(--bs-pixel);
-  font-size: 0.9rem;
+  font-family: var(--bs-mono);
+  font-size: 0.78rem;
   font-weight: 700;
 }
 
@@ -306,10 +306,10 @@ body.landing-react-body .price-card a {
 .eyebrow,
 .section-kicker {
   color: var(--bs-faint);
-  font-family: var(--bs-pixel);
-  font-size: clamp(0.78rem, 1vw, 0.9rem);
-  font-weight: 700;
-  letter-spacing: 0.13em;
+  font-family: var(--bs-display);
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
+  font-weight: 500;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
 }
 
@@ -331,19 +331,18 @@ body.landing-react-body .price-card a {
 .pricing-section h2,
 .contact-copy h2 {
   margin: 0;
-  font-family: var(--bs-pixel);
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-family: var(--bs-display);
+  font-weight: 430;
+  letter-spacing: 0.015em;
   text-wrap: balance;
 }
 
 .hero-copy h1 {
-  max-width: 840px;
-  font-family: var(--bs-pixel);
-  font-size: clamp(2.55rem, 4.9vw, 4.45rem);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: 0.01em;
+  max-width: 820px;
+  font-size: clamp(3.7rem, 7.2vw, 6.6rem);
+  font-weight: 390;
+  line-height: 0.84;
+  letter-spacing: 0.015em;
 }
 
 .hero-copy p,
@@ -369,8 +368,8 @@ body.landing-react-body .price-card a {
   min-height: 48px;
   border-radius: 999px;
   padding: 0 22px;
-  font-family: var(--bs-pixel);
-  font-size: 0.9rem;
+  font-family: var(--bs-mono);
+  font-size: 0.8rem;
   font-weight: 700;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
@@ -444,10 +443,10 @@ body.landing-react-body .price-card a {
 .device-metrics span {
   display: block;
   color: var(--bs-faint);
-  font-family: var(--bs-pixel);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+  font-family: var(--bs-display);
+  font-size: 1.18rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -594,8 +593,9 @@ body.landing-react-body .price-card a {
 .contact-copy h2 {
   max-width: 780px;
   margin-top: 20px;
-  font-size: clamp(1.8rem, 4.2vw, 3.45rem);
-  line-height: 1.08;
+  font-size: clamp(3.2rem, 6vw, 5.35rem);
+  font-weight: 410;
+  line-height: 0.88;
 }
 
 .feature-grid,
@@ -620,9 +620,9 @@ body.landing-react-body .price-card a {
 
 .glass-card span {
   color: var(--bs-gold);
-  font-family: var(--bs-pixel);
-  font-size: 0.9rem;
-  font-weight: 700;
+  font-family: var(--bs-display);
+  font-size: 1.28rem;
+  font-weight: 500;
 }
 
 .glass-card h3,
@@ -711,15 +711,16 @@ body.landing-react-body .price-card a {
 
 .price {
   margin: 4px 0 10px;
-  font-family: var(--bs-pixel);
-  font-size: clamp(2.8rem, 4vw, 3.55rem);
-  font-weight: 700;
+  font-family: var(--bs-display);
+  font-size: clamp(4.2rem, 6vw, 5.3rem);
+  font-weight: 430;
   letter-spacing: 0.01em;
+  line-height: 0.82;
 }
 
 .price small {
   color: var(--bs-faint);
-  font-size: 1rem;
+  font-size: 1.35rem;
   letter-spacing: 0;
 }
 
@@ -970,8 +971,19 @@ body.landing-react-body .price-card a {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2rem, 10vw, 2.85rem);
-    line-height: 1.04;
+    font-size: clamp(3.2rem, 14.5vw, 4.2rem);
+    line-height: 0.86;
+  }
+
+  .outcome-section h2,
+  .pricing-section h2,
+  .contact-copy h2 {
+    font-size: clamp(2.8rem, 11.5vw, 3.65rem);
+    line-height: 0.9;
+  }
+
+  .price {
+    font-size: 3.9rem;
   }
 
   .hero-device {
