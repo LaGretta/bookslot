@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Pixelify+Sans:wght@400..700&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -11,7 +11,7 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
-  --bs-pixel: "Press Start 2P", "Space Mono", monospace;
+  --bs-pixel: "Pixelify Sans", "Space Mono", monospace;
   --bs-mono: "Space Mono", "Courier New", monospace;
 }
 
@@ -165,7 +165,8 @@ body.landing-react-body textarea {
 .brand > span:last-child {
   color: var(--bs-ink);
   font-family: var(--bs-pixel);
-  font-size: clamp(0.64rem, 1.05vw, 0.78rem);
+  font-size: clamp(1.05rem, 1.55vw, 1.22rem);
+  font-weight: 700;
   line-height: 1;
 }
 
@@ -217,8 +218,8 @@ body.landing-react-body textarea {
   gap: clamp(14px, 3vw, 34px);
   color: rgba(247, 242, 233, 0.58);
   font-family: var(--bs-pixel);
-  font-size: clamp(0.5rem, 0.7vw, 0.58rem);
-  font-weight: 400;
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
@@ -241,8 +242,8 @@ body.landing-react-body textarea {
   background: var(--bs-ink);
   color: #10100e;
   font-family: var(--bs-pixel);
-  font-size: 0.58rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .landing-profile-button {
@@ -306,8 +307,8 @@ body.landing-react-body .price-card a {
 .section-kicker {
   color: var(--bs-faint);
   font-family: var(--bs-pixel);
-  font-size: clamp(0.52rem, 0.9vw, 0.64rem);
-  font-weight: 400;
+  font-size: clamp(0.78rem, 1vw, 0.9rem);
+  font-weight: 700;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -330,17 +331,18 @@ body.landing-react-body .price-card a {
 .pricing-section h2,
 .contact-copy h2 {
   margin: 0;
-  font-family: var(--bs-mono);
-  font-weight: 400;
-  letter-spacing: 0;
+  font-family: var(--bs-pixel);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   text-wrap: balance;
 }
 
 .hero-copy h1 {
-  max-width: 780px;
+  max-width: 840px;
   font-family: var(--bs-pixel);
-  font-size: clamp(2rem, 5.6vw, 4.8rem);
-  line-height: 1.18;
+  font-size: clamp(2.55rem, 4.9vw, 4.45rem);
+  font-weight: 700;
+  line-height: 1.02;
   letter-spacing: 0.01em;
 }
 
@@ -368,8 +370,8 @@ body.landing-react-body .price-card a {
   border-radius: 999px;
   padding: 0 22px;
   font-family: var(--bs-pixel);
-  font-size: 0.58rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 700;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
@@ -443,7 +445,8 @@ body.landing-react-body .price-card a {
   display: block;
   color: var(--bs-faint);
   font-family: var(--bs-pixel);
-  font-size: 0.5rem;
+  font-size: 0.78rem;
+  font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -589,10 +592,10 @@ body.landing-react-body .price-card a {
 .outcome-section h2,
 .pricing-section h2,
 .contact-copy h2 {
-  max-width: 720px;
+  max-width: 780px;
   margin-top: 20px;
-  font-size: clamp(2.2rem, 5vw, 4.1rem);
-  line-height: 1.03;
+  font-size: clamp(1.8rem, 4.2vw, 3.45rem);
+  line-height: 1.08;
 }
 
 .feature-grid,
@@ -618,7 +621,8 @@ body.landing-react-body .price-card a {
 .glass-card span {
   color: var(--bs-gold);
   font-family: var(--bs-pixel);
-  font-size: 0.62rem;
+  font-size: 0.9rem;
+  font-weight: 700;
 }
 
 .glass-card h3,
@@ -707,14 +711,15 @@ body.landing-react-body .price-card a {
 
 .price {
   margin: 4px 0 10px;
-  font-family: "Space Mono", monospace;
-  font-size: 3rem;
-  letter-spacing: -0.08em;
+  font-family: var(--bs-pixel);
+  font-size: clamp(2.8rem, 4vw, 3.55rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
 }
 
 .price small {
   color: var(--bs-faint);
-  font-size: 0.86rem;
+  font-size: 1rem;
   letter-spacing: 0;
 }
 
@@ -965,8 +970,8 @@ body.landing-react-body .price-card a {
   }
 
   .hero-copy h1 {
-    font-size: clamp(1.55rem, 8vw, 2.35rem);
-    line-height: 1.22;
+    font-size: clamp(2rem, 10vw, 2.85rem);
+    line-height: 1.04;
   }
 
   .hero-device {
