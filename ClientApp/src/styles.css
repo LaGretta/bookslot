@@ -116,20 +116,24 @@ body.landing-react-body textarea {
 
 .floating-nav {
   position: sticky;
-  top: 18px;
+  top: 20px;
   z-index: 10;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 22px;
-  min-height: 58px;
+  gap: clamp(14px, 2.8vw, 34px);
+  min-height: 62px;
   margin-top: 22px;
-  padding: 8px 10px 8px 16px;
-  border: 1px solid var(--bs-line);
-  border-radius: 8px;
-  background: rgba(19, 19, 17, 0.74);
-  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(24px);
+  padding: 7px 8px 7px 13px;
+  border: 1px solid rgba(247, 242, 233, 0.16);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(45, 48, 58, 0.9), rgba(25, 26, 31, 0.84)),
+    rgba(18, 18, 16, 0.78);
+  box-shadow:
+    0 26px 74px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(26px) saturate(1.2);
 }
 
 .brand,
@@ -149,24 +153,67 @@ body.landing-react-body textarea {
 }
 
 .brand {
-  gap: 10px;
+  gap: 11px;
+  min-width: 0;
   font-weight: 900;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brand > span:last-child {
+  color: var(--bs-ink);
+  font-family: "Space Mono", monospace;
+  font-size: clamp(0.86rem, 1.5vw, 1rem);
+  line-height: 1;
 }
 
 .brand-mark {
-  width: 26px;
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: clamp(32px, 4vw, 40px);
   aspect-ratio: 1;
+  border: 1px solid rgba(247, 242, 233, 0.32);
   border-radius: 50%;
-  background: conic-gradient(from 0deg, var(--bs-ink), var(--bs-gold), #9bd8ff, var(--bs-ink));
-  box-shadow: 0 0 24px rgba(242, 211, 145, 0.34);
-  animation: spinMark 10s linear infinite;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.18), transparent 34%),
+    conic-gradient(from 225deg, #f7f2e9, #f2d391, #9bd8ff, #b9ffd7, #f7f2e9);
+  box-shadow:
+    0 0 26px rgba(242, 211, 145, 0.3),
+    inset 0 0 0 5px rgba(18, 18, 16, 0.66);
+  animation: brandPulse 4.8s ease-in-out infinite;
+}
+
+.brand-mark::before {
+  content: "";
+  width: 44%;
+  aspect-ratio: 1;
+  border: 2px solid #11110f;
+  border-top-width: 5px;
+  border-radius: 5px;
+  background:
+    linear-gradient(90deg, transparent 0 38%, #11110f 38% 46%, transparent 46%),
+    linear-gradient(180deg, transparent 0 55%, #11110f 55% 64%, transparent 64%);
+  opacity: 0.9;
+}
+
+.brand-mark::after {
+  content: "";
+  position: absolute;
+  right: 17%;
+  bottom: 18%;
+  width: 25%;
+  height: 14%;
+  border-left: 2px solid #11110f;
+  border-bottom: 2px solid #11110f;
+  transform: rotate(-45deg);
 }
 
 .floating-nav nav {
   justify-content: center;
   gap: clamp(14px, 3vw, 34px);
-  color: var(--bs-faint);
+  color: rgba(247, 242, 233, 0.58);
   font-family: "Space Mono", monospace;
   font-size: 0.7rem;
   font-weight: 700;
@@ -186,8 +233,8 @@ body.landing-react-body textarea {
 .nav-cta {
   justify-content: center;
   gap: 10px;
-  min-height: 40px;
-  padding: 0 17px;
+  min-height: 44px;
+  padding: 0 clamp(16px, 2.5vw, 22px);
   border-radius: 999px;
   background: var(--bs-ink);
   color: #10100e;
@@ -806,9 +853,17 @@ body.landing-react-body .price-card a {
   }
 }
 
-@keyframes spinMark {
-  to {
-    transform: rotate(360deg);
+@keyframes brandPulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 24px rgba(242, 211, 145, 0.28),
+      inset 0 0 0 5px rgba(18, 18, 16, 0.66);
+  }
+  50% {
+    box-shadow:
+      0 0 34px rgba(155, 216, 255, 0.34),
+      inset 0 0 0 5px rgba(18, 18, 16, 0.6);
   }
 }
 
@@ -835,6 +890,7 @@ body.landing-react-body .price-card a {
 @media (max-width: 940px) {
   .floating-nav {
     grid-template-columns: 1fr auto;
+    min-height: 58px;
   }
 
   .floating-nav nav {
@@ -871,6 +927,8 @@ body.landing-react-body .price-card a {
   .floating-nav {
     top: 10px;
     margin-top: 10px;
+    padding: 7px;
+    border-radius: 30px;
   }
 
   .nav-cta {
@@ -887,6 +945,16 @@ body.landing-react-body .price-card a {
 
   .landing-profile-button > span:nth-child(2) {
     display: none;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand > span:last-child {
+    max-width: 92px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .hero-copy h1 {
