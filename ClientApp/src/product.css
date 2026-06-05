@@ -123,7 +123,7 @@ body.bs-product-react-active .col-md-10.py-4.px-4 {
   position: relative;
   overflow: hidden;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   padding: clamp(1.1rem, 3vw, 1.55rem);
   border: 1px solid rgba(242, 211, 145, 0.2);
@@ -148,14 +148,12 @@ body.bs-product-react-active .col-md-10.py-4.px-4 {
 }
 
 .bs-product-stage-copy,
-.bs-product-console,
 .bs-product-routebar {
   position: relative;
   z-index: 1;
 }
 
-.bs-product-eyebrow,
-.bs-product-flow span {
+.bs-product-eyebrow {
   font-family: "Space Mono", monospace;
   font-size: 0.68rem;
   font-weight: 700;
@@ -183,75 +181,6 @@ body.bs-product-react-active .col-md-10.py-4.px-4 {
   margin: 0.85rem 0 0;
   color: var(--product-muted);
   line-height: 1.65;
-}
-
-.bs-product-console {
-  align-self: stretch;
-  display: grid;
-  align-content: space-between;
-  gap: 1rem;
-  min-height: 150px;
-  padding: 1rem;
-  border: 1px solid var(--product-line);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.22);
-}
-
-.bs-product-console-top {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.bs-product-avatar {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  color: #11110f;
-  background: var(--product-ink);
-  font-weight: 950;
-}
-
-.bs-product-console strong,
-.bs-product-console span {
-  display: block;
-}
-
-.bs-product-console strong {
-  color: var(--product-ink);
-}
-
-.bs-product-console-top span:not(.bs-product-avatar) {
-  color: var(--product-faint);
-  font-size: 0.78rem;
-}
-
-.bs-product-flow {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.45rem;
-}
-
-.bs-product-flow span {
-  position: relative;
-  overflow: hidden;
-  padding: 0.55rem 0.5rem;
-  border: 1px solid var(--product-line);
-  border-radius: 999px;
-  color: var(--product-muted);
-  text-align: center;
-}
-
-.bs-product-flow span::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  translate: -110% 0;
-  background: linear-gradient(90deg, transparent, rgba(242, 211, 145, 0.24), transparent);
-  animation: productFlow 3.8s ease-in-out infinite;
-  animation-delay: calc(var(--step) * 0.28s);
 }
 
 .bs-product-routebar {
@@ -366,17 +295,6 @@ body.bs-product-react-active .col-md-10.py-4 > h4:first-child {
   }
 }
 
-@keyframes productFlow {
-  0%,
-  45% {
-    translate: -110% 0;
-  }
-  85%,
-  100% {
-    translate: 110% 0;
-  }
-}
-
 @media (max-width: 900px) {
   .bs-product-stage {
     grid-template-columns: 1fr;
@@ -392,19 +310,11 @@ body.bs-product-react-active .col-md-10.py-4 > h4:first-child {
     font-size: clamp(2rem, 13vw, 3rem);
   }
 
-  .bs-product-console {
-    min-height: auto;
-  }
-
-  .bs-product-flow {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bs-product-aurora,
   .bs-product-scanline,
-  .bs-product-flow span::after,
   .bs-react-lift,
   .bs-react-row,
   .bs-product-stage {

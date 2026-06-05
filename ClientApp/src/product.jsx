@@ -133,19 +133,7 @@ function AmbientLayer() {
   );
 }
 
-function FlowRail() {
-  return (
-    <div className="bs-product-flow" aria-hidden="true">
-      {["запит", "слот", "чернетка", "готово"].map((item, index) => (
-        <span key={item} style={{ "--step": index }}>
-          {item}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function ProductStage({ profileInitial }) {
+function ProductStage() {
   const page = useMemo(() => currentPage(), []);
   const path = window.location.pathname.replace(/\/$/, "") || "/";
 
@@ -155,17 +143,6 @@ function ProductStage({ profileInitial }) {
         <div className="bs-product-eyebrow">{page.eyebrow}</div>
         <h1>{page.title}</h1>
         <p>{page.text}</p>
-      </div>
-
-      <div className="bs-product-console">
-        <div className="bs-product-console-top">
-          <span className="bs-product-avatar">{profileInitial}</span>
-          <div>
-            <strong>Профіль BookSlot</strong>
-            <span>простір з React-анімаціями</span>
-          </div>
-        </div>
-        <FlowRail />
       </div>
 
       <nav className="bs-product-routebar" aria-label="Навігація профілю">
@@ -197,16 +174,14 @@ function ProductStage({ profileInitial }) {
 }
 
 function ProductExperience() {
-  const root = document.getElementById("bookslot-product-react-root");
   const host = useContentHost();
-  const profileInitial = root?.dataset.profileInitial || "B";
 
   useProductPolish();
 
   return (
     <>
       <AmbientLayer />
-      {host ? createPortal(<ProductStage profileInitial={profileInitial} />, host) : null}
+      {host ? createPortal(<ProductStage />, host) : null}
     </>
   );
 }
