@@ -2,61 +2,66 @@ import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
 
-const navItems = ["AI flow", "Proof", "Pricing", "Contact"];
+const navItems = [
+  { label: "AI-сценарій", href: "#ai-flow" },
+  { label: "Докази", href: "#proof" },
+  { label: "Тарифи", href: "#pricing" },
+  { label: "Контакт", href: "#contact" },
+];
 
 const metrics = [
-  ["18s", "draft creation"],
-  ["24/7", "client replies"],
-  ["0 missed", "slot requests"],
+  ["18с", "чернетка запису"],
+  ["24/7", "відповіді клієнтам"],
+  ["0", "втрачених запитів"],
 ];
 
 const proofCards = [
   {
-    quote: "BookSlot turns messy Telegram messages into clean booking drafts before the owner opens the phone.",
-    person: "Beauty studio",
-    role: "Manicure, brows, lashes",
+    quote: "BookSlot перетворює хаотичні повідомлення в Telegram на чисті чернетки записів ще до того, як власник відкриє телефон.",
+    person: "Студія краси",
+    role: "Манікюр, брови, вії",
   },
   {
-    quote: "Clients see real slots, AI asks the missing details, and the dashboard stays calm.",
-    person: "Local service",
-    role: "Owner-operated schedule",
+    quote: "Клієнти бачать реальні слоти, AI уточнює деталі, а дашборд залишається спокійним і чистим.",
+    person: "Локальний сервіс",
+    role: "Розклад власника",
   },
   {
-    quote: "The flow feels premium without becoming complicated. That is exactly the point.",
+    quote: "Сценарій відчувається преміально, але не стає складним. У цьому і є вся ідея.",
     person: "BookSlot Ultra AI",
-    role: "Reception layer",
+    role: "AI-шар запису",
   },
 ];
 
 const features = [
-  ["Booking link", "A clean public page where clients choose service, date and time."],
-  ["AI Receptionist", "Telegram replies that ask for service, date, time, name and contact."],
-  ["Owner control", "AI prepares the draft, the owner confirms the booking inside dashboard."],
-  ["Smart availability", "Slot logic stays connected to BookSlot schedule instead of guessing."],
+  ["Посилання для запису", "Чиста публічна сторінка, де клієнти обирають послугу, дату і час."],
+  ["AI-помічник", "Telegram-відповіді, які уточнюють послугу, дату, час, ім'я і контакт."],
+  ["Контроль власника", "AI готує чернетку, а власник підтверджує запис у дашборді."],
+  ["Розумна доступність", "Логіка слотів пов'язана з розкладом BookSlot і не вгадує навмання."],
 ];
 
 const plans = [
   {
-    name: "Free",
+    name: "Безкоштовно",
     price: "0",
-    note: "For the first real clients",
-    items: ["30 bookings / month", "Booking page", "Basic services", "No AI receptionist"],
-    cta: "Start free",
+    note: "Для перших реальних клієнтів",
+    items: ["30 записів на місяць", "Сторінка запису", "Базові послуги", "Без AI-помічника"],
+    cta: "Почати безкоштовно",
   },
   {
     name: "Basic",
     price: "299",
-    note: "For active local teams",
-    items: ["200 bookings / month", "Unlimited services", "Email notifications", "Clean dashboard"],
-    cta: "Choose Basic",
+    note: "Для активного локального бізнесу",
+    items: ["200 записів на місяць", "Необмежені послуги", "Поштові сповіщення", "Чистий дашборд"],
+    cta: "Обрати Basic",
   },
   {
     name: "Ultra AI",
     price: "599",
-    note: "The premium receptionist layer",
+    note: "Преміальний AI-помічник",
     featured: true,
-    items: ["AI Receptionist in Telegram", "Booking drafts", "Ukrainian and Russian replies", "Priority AI upgrades"],
-    cta: "Try Ultra AI",
+    items: ["AI-помічник у Telegram", "Чернетки записів", "Відповіді українською і російською", "Пріоритетні AI-оновлення"],
+    cta: "Спробувати Ultra AI",
   },
 ];
 
@@ -142,16 +147,16 @@ function HeroMockup() {
     <div className="hero-device" data-tilt>
       <div className="device-top">
         <div>
-          <span>LIVE QUEUE</span>
-          <strong>12 requests</strong>
+          <span>ЖИВА ЧЕРГА</span>
+          <strong>12 запитів</strong>
         </div>
         <div className="device-orb">AI</div>
       </div>
 
       <div className="booking-card">
         <div className="booking-card-title">
-          <span>BookSlot link</span>
-          <b>Beauty Studio</b>
+          <span>Посилання BookSlot</span>
+          <b>Студія краси</b>
         </div>
         <div className="slot-grid">
           {["14:30", "16:30", "17:45"].map((slot, index) => (
@@ -172,10 +177,10 @@ function HeroMockup() {
 
       <div className="draft-card">
         <div>
-          <span>Draft ready</span>
+          <span>Чернетка готова</span>
           <strong>Манікюр · 16:30</strong>
         </div>
-        <b>confirm</b>
+        <b>підтвердити</b>
       </div>
 
       <div className="device-metrics">
@@ -211,16 +216,16 @@ function App() {
           <span className="brand-mark" />
           <span>BookSlot</span>
         </a>
-        <nav aria-label="Landing navigation">
+        <nav aria-label="Навігація головної">
           {navItems.map((item) => (
-            <a href={`#${item.toLowerCase().replace(" ", "-")}`} key={item}>
-              {item}
+            <a href={item.href} key={item.href}>
+              {item.label}
             </a>
           ))}
         </nav>
         <div className="landing-nav-actions">
           <a className="nav-cta" href={primaryHref}>
-            {isLoggedIn ? "Open AI" : "Start free"} <span>↗</span>
+            {isLoggedIn ? "Відкрити AI" : "Почати"} <span>↗</span>
           </a>
           {isLoggedIn && (
             <a className="landing-profile-button" href="/Dashboard">
@@ -236,19 +241,19 @@ function App() {
         <div className="hero-copy" data-reveal>
           <div className="eyebrow">
             <span />
-            Private beta now open
+            Приватна бета вже відкрита
           </div>
-          <h1>Booking that thinks before the client waits.</h1>
+          <h1>Запис, який думає до того, як клієнт чекає.</h1>
           <p>
-            BookSlot gives local businesses a premium scheduling layer: a booking page, Telegram AI receptionist,
-            clean slot logic, and owner-approved drafts.
+            BookSlot дає локальному бізнесу преміальний шар онлайн-запису: сторінку бронювання,
+            Telegram AI-помічника, чисту логіку слотів і чернетки під контроль власника.
           </p>
           <div className="hero-actions">
             <a className="primary-button" href={primaryHref}>
-              {isLoggedIn ? "Open AI Receptionist" : "Start free"} <span>→</span>
+              {isLoggedIn ? "Відкрити AI-помічника" : "Почати"} <span>→</span>
             </a>
             <a className="secondary-button" href={secondaryHref}>
-              Watch the flow
+              Подивитись сценарій
             </a>
           </div>
         </div>
@@ -259,9 +264,9 @@ function App() {
 
       <section className="outcome-section" id="ai-flow">
         <div className="section-kicker" data-reveal>
-          // capabilities into outcomes
+          // можливості у результат
         </div>
-        <h2 data-reveal>A quiet operating system for every booking conversation.</h2>
+        <h2 data-reveal>Спокійна операційна система для кожної розмови про запис.</h2>
         <div className="feature-grid">
           {features.map(([title, text], index) => (
             <article className="glass-card" data-reveal data-tilt key={title}>
@@ -290,13 +295,13 @@ function App() {
 
       <section className="pricing-section" id="pricing">
         <div className="section-kicker" data-reveal>
-          // low-friction plans
+          // прості тарифи
         </div>
-        <h2 data-reveal>Choose the reception layer your schedule deserves.</h2>
+        <h2 data-reveal>Оберіть шар запису, якого заслуговує ваш розклад.</h2>
         <div className="pricing-grid">
           {plans.map((plan) => (
             <article className={`price-card ${plan.featured ? "featured" : ""}`} data-reveal data-tilt key={plan.name}>
-              {plan.featured && <div className="plan-badge">Premium AI upgrade</div>}
+              {plan.featured && <div className="plan-badge">Преміальний AI-апгрейд</div>}
               <h3>{plan.name}</h3>
               <div className="price">
                 {plan.price}
@@ -318,23 +323,23 @@ function App() {
 
       <section className="contact-section" id="contact">
         <div className="contact-copy" data-reveal>
-          <div className="section-kicker">// low-friction inquiry</div>
-          <h2>Bring your booking stack into focus.</h2>
+          <div className="section-kicker">// швидкий контакт</div>
+          <h2>Зберіть вашу систему запису в один фокус.</h2>
           <p>
-            Launch a public booking link, let AI collect the missing details, and keep final control inside your
-            dashboard.
+            Запустіть публічне посилання для запису, дайте AI зібрати потрібні деталі
+            і залиште фінальний контроль у вашому дашборді.
           </p>
           <a className="primary-button" href={primaryHref}>
-            {isLoggedIn ? "Go to dashboard" : "Create account"} <span>↗</span>
+            {isLoggedIn ? "До дашборда" : "Створити акаунт"} <span>↗</span>
           </a>
         </div>
         <div className="contact-panel" data-reveal>
           <div className="contact-card-top">
-            <span>Contact layer</span>
-            <strong>Talk to BookSlot</strong>
+            <span>Контактний шар</span>
+            <strong>Написати BookSlot</strong>
           </div>
           <a href="mailto:bookslot0@gmail.com">
-            <span>Email</span>
+            <span>Пошта</span>
             <strong>bookslot0@gmail.com</strong>
           </a>
           <a href="https://t.me/koletvl" target="_blank" rel="noreferrer">
@@ -342,11 +347,10 @@ function App() {
             <strong>@koletvl</strong>
           </a>
           <a href="https://t.me/koletvl" target="_blank" rel="noreferrer" className="contact-action">
-            Write in Telegram <span>↗</span>
+            Написати в Telegram <span>↗</span>
           </a>
         </div>
       </section>
-
     </main>
   );
 }

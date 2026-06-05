@@ -4,51 +4,51 @@ import { createPortal } from "react-dom";
 import "./product.css";
 
 const routes = [
-  { href: "/Dashboard", label: "Hub", icon: "⌁" },
-  { href: "/Dashboard/Bookings", label: "Records", icon: "◷" },
-  { href: "/Dashboard/Services", label: "Services", icon: "✂" },
-  { href: "/Dashboard/Schedule", label: "Schedule", icon: "◎" },
+  { href: "/Dashboard", label: "Центр", icon: "⌁" },
+  { href: "/Dashboard/Bookings", label: "Записи", icon: "◷" },
+  { href: "/Dashboard/Services", label: "Послуги", icon: "✂" },
+  { href: "/Dashboard/Schedule", label: "Розклад", icon: "◎" },
   { href: "/Dashboard/AiAssistant", label: "AI", icon: "✦" },
-  { href: "/Dashboard/Subscription", label: "Plan", icon: "☆" },
-  { href: "/Dashboard/Settings", label: "Settings", icon: "⚙" },
-  { href: "/", label: "Home", icon: "↗" },
+  { href: "/Dashboard/Subscription", label: "Підписка", icon: "☆" },
+  { href: "/Dashboard/Settings", label: "Налаштування", icon: "⚙" },
+  { href: "/", label: "Головна", icon: "↗" },
 ];
 
 const pageCopy = {
   "/Dashboard": {
-    title: "Control room",
-    eyebrow: "Profile command layer",
-    text: "One calm cockpit for bookings, AI drafts, public links and daily rhythm.",
+    title: "Центр керування",
+    eyebrow: "Командний шар профілю",
+    text: "Один спокійний простір для записів, AI-чернеток, публічного посилання і щоденного ритму.",
   },
   "/Dashboard/Bookings": {
-    title: "Booking records",
-    eyebrow: "Live queue",
-    text: "Filter, confirm and clean up client requests without losing the premium feel.",
+    title: "Усі записи",
+    eyebrow: "Жива черга",
+    text: "Фільтруйте, підтверджуйте і впорядковуйте запити клієнтів без втрати преміального відчуття.",
   },
   "/Dashboard/Services": {
-    title: "Service menu",
-    eyebrow: "Offer stack",
-    text: "Keep your public booking page sharp with services that feel easy to scan.",
+    title: "Меню послуг",
+    eyebrow: "Стек пропозицій",
+    text: "Тримайте сторінку запису чистою, зрозумілою і швидкою для вибору послуги.",
   },
   "/Dashboard/Schedule": {
-    title: "Time grid",
-    eyebrow: "Availability engine",
-    text: "Working hours, blocks and free slots stay connected to every client flow.",
+    title: "Сітка часу",
+    eyebrow: "Двигун доступності",
+    text: "Робочі години, блокування і вільні слоти залишаються пов'язаними з кожним клієнтським сценарієм.",
   },
   "/Dashboard/AiAssistant": {
-    title: "AI receptionist",
-    eyebrow: "Conversation layer",
-    text: "Telegram intake, suggested slots and draft bookings in one guided surface.",
+    title: "AI-помічник",
+    eyebrow: "Шар розмов",
+    text: "Telegram-запити, запропоновані слоти і чернетки записів в одному зрозумілому просторі.",
   },
   "/Dashboard/Settings": {
-    title: "Business profile",
-    eyebrow: "Identity layer",
-    text: "Your public link, logo and business details shape the client-facing experience.",
+    title: "Профіль бізнесу",
+    eyebrow: "Шар айдентики",
+    text: "Публічне посилання, логотип і деталі бізнесу формують перше враження клієнта.",
   },
   "/Dashboard/Subscription": {
-    title: "Plan engine",
-    eyebrow: "Growth layer",
-    text: "Choose the booking and AI capacity that matches the pace of the business.",
+    title: "Підписка",
+    eyebrow: "Шар росту",
+    text: "Оберіть ліміт записів і AI-можливості, які відповідають темпу вашого бізнесу.",
   },
 };
 
@@ -136,7 +136,7 @@ function AmbientLayer() {
 function FlowRail() {
   return (
     <div className="bs-product-flow" aria-hidden="true">
-      {["req", "match", "draft", "ok"].map((item, index) => (
+      {["запит", "слот", "чернетка", "готово"].map((item, index) => (
         <span key={item} style={{ "--step": index }}>
           {item}
         </span>
@@ -161,14 +161,14 @@ function ProductStage({ profileInitial }) {
         <div className="bs-product-console-top">
           <span className="bs-product-avatar">{profileInitial}</span>
           <div>
-            <strong>BookSlot profile</strong>
-            <span>react-enhanced workspace</span>
+            <strong>Профіль BookSlot</strong>
+            <span>простір з React-анімаціями</span>
           </div>
         </div>
         <FlowRail />
       </div>
 
-      <nav className="bs-product-routebar" aria-label="Product shortcuts">
+      <nav className="bs-product-routebar" aria-label="Навігація профілю">
         {routes.map((route) => (
           <a
             key={route.href}
