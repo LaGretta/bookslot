@@ -59,7 +59,7 @@ public class DetailsModel : PageModel
 
         if (!CanCreateBookingFromDraft)
         {
-            TempData["Error"] = "Draft is not ready to create a booking.";
+            TempData["Error"] = "Чернетка ще не готова для створення запису.";
             return RedirectToPage(new { id });
         }
 
@@ -75,11 +75,11 @@ public class DetailsModel : PageModel
             clientEmail,
             Draft.RequestedDate!.Value,
             Draft.RequestedTime!.Value,
-            notes: $"Created manually from AI conversation #{Conversation!.Id}.");
+            notes: $"Створено вручну з AI-розмови #{Conversation!.Id}.");
 
         if (booking == null)
         {
-            TempData["Error"] = "Could not create booking. The slot may no longer be available.";
+            TempData["Error"] = "Не вдалося створити запис. Слот може бути вже недоступний або ліміт тарифу вичерпано.";
             return RedirectToPage(new { id });
         }
 
@@ -87,10 +87,10 @@ public class DetailsModel : PageModel
         await _conversationStore.AddMessageAsync(
             Conversation.Id,
             AiMessageSenderType.System,
-            $"Owner created booking #{booking.Id} from this AI draft.",
+            $"Власник створив запис #{booking.Id} з цієї AI-чернетки.",
             HttpContext.RequestAborted);
 
-        TempData["Success"] = $"Booking #{booking.Id} created from AI draft.";
+        TempData["Success"] = $"Запис #{booking.Id} створено з AI-чернетки.";
         return RedirectToPage(new { id });
     }
 

@@ -16,6 +16,7 @@ public class Booking
     public BookingStatus Status { get; set; } = BookingStatus.Pending;
     public string? Notes { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? ReminderSentAt { get; set; }
 
     public Business Business { get; set; } = null!;
     public Service Service { get; set; } = null!;

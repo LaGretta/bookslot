@@ -52,6 +52,7 @@ builder.Services.AddHttpClient<ResendEmailService>();
 builder.Services.AddScoped<IEmailService, ResendEmailService>();
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<StripeService>();
+builder.Services.AddHostedService<BookingReminderWorker>();
 builder.Services.AddAiAssistantFeature(builder.Configuration);
 
 var app = builder.Build();

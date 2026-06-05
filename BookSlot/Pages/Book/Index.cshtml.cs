@@ -12,15 +12,13 @@ public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _db;
     private readonly BookingService _bookingService;
-    private readonly IEmailService _emailService;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public IndexModel(ApplicationDbContext db, BookingService bookingService,
-        IEmailService emailService, UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager)
     {
         _db = db;
         _bookingService = bookingService;
-        _emailService = emailService;
         _userManager = userManager;
     }
 
@@ -67,27 +65,8 @@ public class IndexModel : PageModel
 
         if (booking == null)
         {
-            ModelState.AddModelError("", "На жаль, цей час вже зайнятий. Оберіть інший.");
+            ModelState.AddModelError("", "На жаль, цей час недоступний або ліміт записів у тарифі вичерпано.");
             return Page();
-        }
-
-        var service = Services.FirstOrDefault(s => s.Id == serviceId);
-
-        if (!string.IsNullOrEmpty(clientEmail))
-        {
-            await _emailService.SendBookingConfirmationAsync(
-                clientEmail, clientName, Business.Name,
-                service?.Name ?? "", bookingDate, startTime);
-        }
-
-        var owner = await _db.Users.FirstOrDefaultAsync(u =>
-            _db.Businesses.Any(b => b.UserId == u.Id && b.Id == Business.Id));
-
-        if (owner?.Email != null)
-        {
-            await _emailService.SendNewBookingNotificationAsync(
-                owner.Email, clientName, service?.Name ?? "",
-                bookingDate, startTime, clientPhone);
         }
 
         TempData["BookingSuccess"] = $"Ви записані на {bookingDate:dd.MM.yyyy} о {startTime:hh\\:mm}. Чекаємо вас!";
