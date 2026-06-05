@@ -42,10 +42,27 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostSubscribeAsync(string plan)
     {
+        return await StartCheckoutAsync(plan);
+    }
+
+    public async Task<IActionResult> OnGetCheckoutAsync(string plan)
+    {
+        return await StartCheckoutAsync(plan);
+    }
+
+    private async Task<IActionResult> StartCheckoutAsync(string plan)
+    {
         var userId   = _userManager.GetUserId(User)!;
         var business = await _db.Businesses.Include(b => b.Subscription)
                                            .FirstOrDefaultAsync(b => b.UserId == userId);
         if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
+
+        var checkoutPlan = NormalizeCheckoutPlan(plan);
+        if (checkoutPlan == null)
+        {
+            TempData["Error"] = "Невідомий тариф. Оберіть Basic або Pro AI.";
+            return RedirectToPage();
+        }
 
         if (!_stripe.IsConfigured)
         {
@@ -53,7 +70,17 @@ public class IndexModel : PageModel
             return RedirectToPage();
         }
 
-        var url = await _stripe.CreateCheckoutSessionAsync(business.Id, plan, business.Name);
+        var url = await _stripe.CreateCheckoutSessionAsync(business.Id, checkoutPlan, business.Name);
         return Redirect(url);
+    }
+
+    private static string? NormalizeCheckoutPlan(string? plan)
+    {
+        return plan?.Trim().ToLowerInvariant() switch
+        {
+            "basic" => "Basic",
+            "pro" or "pro ai" or "proai" => "Pro",
+            _ => null
+        };
     }
 }

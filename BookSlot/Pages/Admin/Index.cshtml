@@ -125,7 +125,7 @@
                         <select name="plan" class="form-select">
                             <option value="Free">Free — безкоштовний</option>
                             <option value="Basic">Basic — 299 грн/міс</option>
-                            <option value="Pro">Ultra AI — найкращий тариф</option>
+                            <option value="Pro">Pro AI — найкращий тариф</option>
                         </select>
                     </div>
                     <div class="col-md-3">
@@ -144,7 +144,7 @@
                 </form>
 
                 <div class="form-text mt-2">
-                    Ultra AI тут технічно зберігається як старий backend-план <code>Pro</code>, щоб не ламати Stripe і існуючу логіку.
+                    Pro AI тут технічно зберігається як backend-план <code>Pro</code>, щоб не ламати Stripe і існуючу логіку.
                 </div>
             }
         </div>
@@ -175,7 +175,7 @@
         var profile = Model.SelectedUserProfile;
         var profilePlanLabel = profile.Plan switch {
             BookSlot.Models.SubscriptionPlan.Basic => "Basic",
-            BookSlot.Models.SubscriptionPlan.Pro   => "Ultra AI",
+            BookSlot.Models.SubscriptionPlan.Pro   => "Pro AI",
             _ => "Free"
         };
         var profilePlanBadge = profile.Plan switch {
@@ -317,7 +317,7 @@
                                     @{
                                         var planLabel = u.Plan switch {
                                             BookSlot.Models.SubscriptionPlan.Basic => "Basic",
-                                            BookSlot.Models.SubscriptionPlan.Pro   => "Ultra AI",
+                                            BookSlot.Models.SubscriptionPlan.Pro   => "Pro AI",
                                             _ => "Free"
                                         };
                                         var badgeClass = u.Plan switch {

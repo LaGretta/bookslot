@@ -28,7 +28,7 @@ const proofCards = [
   },
   {
     quote: "Сценарій відчувається преміально, але не стає складним. У цьому і є вся ідея.",
-    person: "BookSlot Ultra AI",
+    person: "BookSlot Pro AI",
     role: "AI-шар запису",
   },
 ];
@@ -52,18 +52,34 @@ const plans = [
     name: "Basic",
     price: "299",
     note: "Для активного локального бізнесу",
+    checkoutPlan: "Basic",
     items: ["200 записів на місяць", "Необмежені послуги", "Поштові сповіщення", "Чистий дашборд"],
-    cta: "Обрати Basic",
+    cta: "Оплатити 299 грн",
   },
   {
-    name: "Ultra AI",
+    name: "Pro AI",
     price: "599",
     note: "Преміальний AI-помічник",
     featured: true,
+    checkoutPlan: "Pro",
     items: ["AI-помічник у Telegram", "Чернетки записів", "Відповіді українською і російською", "Пріоритетні AI-оновлення"],
-    cta: "Спробувати Ultra AI",
+    cta: "Оплатити 599 грн",
   },
 ];
+
+const checkoutPath = (plan) => `/Dashboard/Subscription?handler=Checkout&plan=${encodeURIComponent(plan)}`;
+
+const registerPath = (returnUrl = "/Dashboard") =>
+  `/Identity/Account/Register?returnUrl=${encodeURIComponent(returnUrl)}`;
+
+function planHref(plan, isLoggedIn) {
+  if (!plan.checkoutPlan) {
+    return isLoggedIn ? "/Dashboard/Subscription" : registerPath("/Dashboard/Subscription");
+  }
+
+  const target = checkoutPath(plan.checkoutPlan);
+  return isLoggedIn ? target : registerPath(target);
+}
 
 function useReveal() {
   useEffect(() => {
@@ -313,7 +329,7 @@ function App() {
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-              <a href={primaryHref}>
+              <a href={planHref(plan, isLoggedIn)}>
                 {plan.cta} <span>→</span>
               </a>
             </article>

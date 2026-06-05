@@ -93,7 +93,7 @@ public class IndexModel : PageModel
 
         if (!TryParsePlan(plan, out var selectedPlan))
         {
-            TempData["Error"] = "Невідомий тариф. Обери Free, Basic або Ultra AI.";
+            TempData["Error"] = "Невідомий тариф. Обери Free, Basic або Pro AI.";
             return RedirectToPage();
         }
 
@@ -246,7 +246,7 @@ public class IndexModel : PageModel
         plan switch
         {
             SubscriptionPlan.Basic => "Basic",
-            SubscriptionPlan.Pro => "Ultra AI",
+            SubscriptionPlan.Pro => "Pro AI",
             _ => "Free"
         };
 
