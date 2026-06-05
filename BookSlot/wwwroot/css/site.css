@@ -2052,6 +2052,36 @@ html[data-theme="dark"] .navbar .nav-link {
     box-shadow: 0 0 24px rgba(242,211,145,.34);
 }
 
+.bs-brand-spark,
+.bs-auth-mark > span {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    display: inline-block;
+    background:
+        linear-gradient(#11110F 0 0) center / 2px 18px no-repeat,
+        linear-gradient(#11110F 0 0) center / 18px 2px no-repeat;
+}
+
+.bs-brand-spark::before,
+.bs-brand-spark::after,
+.bs-auth-mark > span::before,
+.bs-auth-mark > span::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 2px;
+    height: 18px;
+    border-radius: 99px;
+    background: #11110F;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.bs-brand-spark::after,
+.bs-auth-mark > span::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
 .bs-icon-button,
 .bs-menu-trigger,
 .bs-close-button,
@@ -2259,6 +2289,235 @@ textarea::placeholder {
 .form-label,
 html[data-theme="dark"] .form-label {
     color: var(--bs-auric-ink) !important;
+}
+
+.bs-auth-shell {
+    position: relative;
+    display: grid;
+    place-items: start center;
+    min-height: calc(100vh - 72px);
+    padding: clamp(2.2rem, 8vw, 4.8rem) 1rem 3rem;
+    overflow: hidden;
+}
+
+.bs-auth-shell::before,
+.bs-auth-shell::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.bs-auth-shell::before {
+    top: -10vh;
+    left: -18vw;
+    width: 136vw;
+    height: 42vh;
+    opacity: .24;
+    filter: blur(3px);
+    transform: rotate(-14deg);
+    background:
+        linear-gradient(90deg, transparent 0 14%, rgba(155,216,255,.38), rgba(242,211,145,.24), transparent 74%),
+        repeating-linear-gradient(96deg, transparent 0 40px, rgba(255,255,255,.16) 42px, transparent 48px);
+}
+
+.bs-auth-shell::after {
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 8%, rgba(242,211,145,.12), transparent 18rem),
+        linear-gradient(180deg, rgba(3,4,3,0), rgba(3,4,3,.92) 58%);
+}
+
+.bs-auth-panel {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 520px);
+    animation: bsAuthIn .62s cubic-bezier(.2,.9,.2,1) both;
+}
+
+.bs-auth-head {
+    margin-bottom: 1.25rem;
+    text-align: center;
+}
+
+.bs-auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .72rem;
+    margin-bottom: 1.1rem;
+    color: var(--bs-auric-ink);
+    text-decoration: none;
+    font-size: clamp(1.45rem, 6vw, 2rem);
+    font-weight: 920;
+    letter-spacing: -.04em;
+}
+
+.bs-auth-brand:hover {
+    color: #fff;
+}
+
+.bs-auth-mark {
+    position: relative;
+    display: inline-flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    color: #11110F;
+    background:
+        radial-gradient(circle at 30% 26%, #fff, transparent 34%),
+        conic-gradient(from 20deg, var(--bs-auric-ink), var(--bs-auric-gold), var(--bs-auric-blue), var(--bs-auric-ink));
+    box-shadow: 0 0 34px rgba(242,211,145,.32), inset 0 1px 0 rgba(255,255,255,.55);
+}
+
+.bs-auth-kicker {
+    margin-bottom: .55rem;
+    color: var(--bs-auric-gold);
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+}
+
+.bs-auth-head h1 {
+    margin: 0;
+    color: var(--bs-auric-ink);
+    font-size: clamp(1.9rem, 8vw, 2.55rem);
+    font-weight: 900;
+    letter-spacing: -.055em;
+    line-height: 1.02;
+}
+
+.bs-auth-head p {
+    width: min(100%, 390px);
+    margin: .72rem auto 0;
+    color: var(--bs-auric-muted);
+    font-size: .98rem;
+    line-height: 1.55;
+}
+
+.bs-auth-shell .bs-auth-card {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(1.15rem, 5vw, 1.75rem);
+    border: 1px solid rgba(247,242,233,.14);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 86% 0%, rgba(155,216,255,.11), transparent 16rem),
+        linear-gradient(180deg, rgba(247,242,233,.075), rgba(8,9,8,.84));
+    box-shadow: 0 30px 86px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.045);
+    backdrop-filter: blur(24px);
+}
+
+.bs-auth-shell .bs-auth-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(110deg, transparent 0 28%, rgba(247,242,233,.07), transparent 48%),
+        radial-gradient(circle at 50% 0%, rgba(242,211,145,.08), transparent 16rem);
+}
+
+.bs-auth-shell .bs-auth-card form,
+.bs-auth-success {
+    position: relative;
+    z-index: 1;
+}
+
+.bs-auth-shell .form-label {
+    margin-bottom: .48rem;
+    color: var(--bs-auric-ink);
+    font-size: .92rem;
+    font-weight: 820 !important;
+}
+
+.bs-auth-shell .form-control {
+    min-height: 56px;
+    border-radius: 16px !important;
+    border-color: rgba(247,242,233,.16) !important;
+    background: rgba(0,0,0,.34) !important;
+    font-size: 1rem;
+}
+
+.bs-auth-shell .form-control:focus {
+    border-color: rgba(242,211,145,.62) !important;
+    box-shadow: 0 0 0 .22rem rgba(242,211,145,.13) !important;
+}
+
+.bs-auth-submit {
+    min-height: 58px;
+    border-radius: 999px !important;
+    font-size: 1.02rem;
+    font-weight: 900 !important;
+    letter-spacing: -.015em;
+    box-shadow: 0 20px 46px rgba(0,0,0,.3);
+}
+
+.bs-auth-link,
+.bs-auth-switch a {
+    color: var(--bs-auric-gold);
+    font-weight: 760;
+    text-decoration-color: rgba(242,211,145,.42);
+    text-underline-offset: 3px;
+}
+
+.bs-auth-link:hover,
+.bs-auth-switch a:hover {
+    color: var(--bs-auric-ink);
+}
+
+.bs-auth-switch {
+    margin: 1rem 0 0;
+    color: var(--bs-auric-muted);
+    text-align: center;
+    font-size: .98rem;
+}
+
+.bs-auth-success {
+    display: grid;
+    justify-items: center;
+    padding: .7rem 0 .4rem;
+    text-align: center;
+}
+
+.bs-auth-success-icon {
+    display: inline-flex;
+    width: 58px;
+    height: 58px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border-radius: 999px;
+    color: #11110F;
+    background: var(--bs-auric-ink);
+    font-size: 1.35rem;
+    box-shadow: 0 0 30px rgba(242,211,145,.28);
+}
+
+.bs-auth-success h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 900;
+}
+
+.bs-auth-success p {
+    margin: .45rem auto 0;
+    max-width: 340px;
+    color: var(--bs-auric-muted);
+    line-height: 1.55;
+}
+
+@keyframes bsAuthIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .table,
