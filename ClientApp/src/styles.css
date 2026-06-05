@@ -177,40 +177,37 @@ body.landing-react-body textarea {
   place-items: center;
   width: clamp(32px, 4vw, 40px);
   aspect-ratio: 1;
-  border: 1px solid rgba(247, 242, 233, 0.32);
+  border: 1px solid rgba(247, 242, 233, 0.48);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.18), transparent 34%),
-    conic-gradient(from 225deg, #f7f2e9, #f2d391, #9bd8ff, #b9ffd7, #f7f2e9);
+    radial-gradient(circle at 30% 26%, #ffffff, transparent 34%),
+    conic-gradient(from 20deg, #f7f2e9, #f2d391, #9bd8ff, #f7f2e9);
   box-shadow:
-    0 0 26px rgba(242, 211, 145, 0.3),
-    inset 0 0 0 5px rgba(18, 18, 16, 0.66);
+    0 0 28px rgba(242, 211, 145, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58);
   animation: brandPulse 4.8s ease-in-out infinite;
 }
 
 .brand-mark::before {
   content: "";
-  width: 44%;
-  aspect-ratio: 1;
-  border: 2px solid #11110f;
-  border-top-width: 5px;
-  border-radius: 5px;
+  width: 18px;
+  height: 18px;
   background:
-    linear-gradient(90deg, transparent 0 38%, #11110f 38% 46%, transparent 46%),
-    linear-gradient(180deg, transparent 0 55%, #11110f 55% 64%, transparent 64%);
+    linear-gradient(#11110f 0 0) center / 2px 18px no-repeat,
+    linear-gradient(#11110f 0 0) center / 18px 2px no-repeat;
   opacity: 0.9;
 }
 
 .brand-mark::after {
   content: "";
   position: absolute;
-  right: 17%;
-  bottom: 18%;
-  width: 25%;
-  height: 14%;
-  border-left: 2px solid #11110f;
-  border-bottom: 2px solid #11110f;
-  transform: rotate(-45deg);
+  width: 18px;
+  height: 18px;
+  background:
+    linear-gradient(#11110f 0 0) center / 2px 18px no-repeat,
+    linear-gradient(#11110f 0 0) center / 18px 2px no-repeat;
+  opacity: 0.9;
+  transform: rotate(45deg);
 }
 
 .floating-nav nav {
@@ -871,12 +868,12 @@ body.landing-react-body .price-card a {
   100% {
     box-shadow:
       0 0 24px rgba(242, 211, 145, 0.28),
-      inset 0 0 0 5px rgba(18, 18, 16, 0.66);
+      inset 0 1px 0 rgba(255, 255, 255, 0.58);
   }
   50% {
     box-shadow:
       0 0 34px rgba(155, 216, 255, 0.34),
-      inset 0 0 0 5px rgba(18, 18, 16, 0.6);
+      inset 0 1px 0 rgba(255, 255, 255, 0.64);
   }
 }
 
