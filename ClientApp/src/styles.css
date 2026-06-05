@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -11,6 +11,8 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
+  --bs-pixel: "Press Start 2P", "Space Mono", monospace;
+  --bs-mono: "Space Mono", "Courier New", monospace;
 }
 
 * {
@@ -162,8 +164,8 @@ body.landing-react-body textarea {
 
 .brand > span:last-child {
   color: var(--bs-ink);
-  font-family: "Space Mono", monospace;
-  font-size: clamp(0.86rem, 1.5vw, 1rem);
+  font-family: var(--bs-pixel);
+  font-size: clamp(0.64rem, 1.05vw, 0.78rem);
   line-height: 1;
 }
 
@@ -214,10 +216,10 @@ body.landing-react-body textarea {
   justify-content: center;
   gap: clamp(14px, 3vw, 34px);
   color: rgba(247, 242, 233, 0.58);
-  font-family: "Space Mono", monospace;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
+  font-family: var(--bs-pixel);
+  font-size: clamp(0.5rem, 0.7vw, 0.58rem);
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
@@ -238,8 +240,9 @@ body.landing-react-body textarea {
   border-radius: 999px;
   background: var(--bs-ink);
   color: #10100e;
-  font-size: 0.82rem;
-  font-weight: 800;
+  font-family: var(--bs-pixel);
+  font-size: 0.58rem;
+  font-weight: 400;
 }
 
 .landing-profile-button {
@@ -302,10 +305,10 @@ body.landing-react-body .price-card a {
 .eyebrow,
 .section-kicker {
   color: var(--bs-faint);
-  font-family: "Space Mono", monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  font-family: var(--bs-pixel);
+  font-size: clamp(0.52rem, 0.9vw, 0.64rem);
+  font-weight: 400;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
@@ -327,16 +330,18 @@ body.landing-react-body .price-card a {
 .pricing-section h2,
 .contact-copy h2 {
   margin: 0;
-  font-family: "Space Mono", "Courier New", monospace;
+  font-family: var(--bs-mono);
   font-weight: 400;
-  letter-spacing: -0.055em;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
 .hero-copy h1 {
   max-width: 780px;
-  font-size: clamp(3.2rem, 7vw, 6.4rem);
-  line-height: 0.96;
+  font-family: var(--bs-pixel);
+  font-size: clamp(2rem, 5.6vw, 4.8rem);
+  line-height: 1.18;
+  letter-spacing: 0.01em;
 }
 
 .hero-copy p,
@@ -362,8 +367,9 @@ body.landing-react-body .price-card a {
   min-height: 48px;
   border-radius: 999px;
   padding: 0 22px;
-  font-size: 0.86rem;
-  font-weight: 900;
+  font-family: var(--bs-pixel);
+  font-size: 0.58rem;
+  font-weight: 400;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
@@ -436,9 +442,9 @@ body.landing-react-body .price-card a {
 .device-metrics span {
   display: block;
   color: var(--bs-faint);
-  font-family: "Space Mono", monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.12em;
+  font-family: var(--bs-pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
@@ -611,7 +617,8 @@ body.landing-react-body .price-card a {
 
 .glass-card span {
   color: var(--bs-gold);
-  font-family: "Space Mono", monospace;
+  font-family: var(--bs-pixel);
+  font-size: 0.62rem;
 }
 
 .glass-card h3,
@@ -958,7 +965,8 @@ body.landing-react-body .price-card a {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.75rem, 14vw, 4rem);
+    font-size: clamp(1.55rem, 8vw, 2.35rem);
+    line-height: 1.22;
   }
 
   .hero-device {
