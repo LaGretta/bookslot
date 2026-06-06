@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./styles.css";
 
 const navItems = [
+  { label: "Як працює", href: "#how-it-works" },
   { label: "AI-сценарій", href: "#ai-flow" },
   { label: "Докази", href: "#proof" },
   { label: "Тарифи", href: "#pricing" },
@@ -64,6 +65,48 @@ const plans = [
     checkoutPlan: "Pro",
     items: ["Необмежені записи", "AI-помічник у Telegram", "Email власнику та клієнту", "Нагадування клієнту за 24 години"],
     cta: "Оплатити 599 грн",
+  },
+];
+
+const ownerFlow = [
+  {
+    label: "01",
+    title: "Власник бере посилання",
+    text: "У дашборді BookSlot є готове посилання на сторінку запису.",
+    screen: "dashboard",
+  },
+  {
+    label: "02",
+    title: "Додає його в Instagram",
+    text: "Посилання ставиться в шапку профілю: клієнтам не треба писати в Direct.",
+    screen: "instagram-edit",
+  },
+  {
+    label: "03",
+    title: "Отримує новий запис",
+    text: "Новий запис прилітає в дашборд і на email власника.",
+    screen: "owner-booking",
+  },
+];
+
+const clientFlow = [
+  {
+    label: "01",
+    title: "Клієнт заходить в Instagram",
+    text: "Бачить профіль бізнесу і кнопку з посиланням на запис.",
+    screen: "instagram-profile",
+  },
+  {
+    label: "02",
+    title: "Обирає послугу і час",
+    text: "BookSlot показує вільні слоти без переписки та очікування відповіді.",
+    screen: "booking-page",
+  },
+  {
+    label: "03",
+    title: "Підтверджує запис",
+    text: "Клієнт залишає контакт, а бізнес бачить бронювання в системі.",
+    screen: "confirm",
   },
 ];
 
@@ -211,6 +254,147 @@ function HeroMockup() {
   );
 }
 
+function PhoneScreen({ role, activeStep }) {
+  const isOwner = role === "owner";
+  const flow = isOwner ? ownerFlow : clientFlow;
+  const step = flow[activeStep];
+
+  return (
+    <div className={`journey-phone ${isOwner ? "owner-phone" : "client-phone"}`} data-tilt>
+      <div className="phone-hardware">
+        <span />
+        <b>{isOwner ? "Власник" : "Клієнт"}</b>
+        <i>{step.label}</i>
+      </div>
+
+      <div className={`phone-screen phone-screen-${step.screen}`}>
+        <div className="phone-status">
+          <span>BookSlot</span>
+          <b>{isOwner ? "Business" : "Client"}</b>
+        </div>
+
+        {isOwner ? (
+          <div className="owner-scenes">
+            <div className="mini-dashboard">
+              <div className="mini-topline">
+                <span>Студія краси</span>
+                <b>Записи</b>
+              </div>
+              <div className="link-card">
+                <small>Ваше посилання</small>
+                <strong>bookslot.app/beauty</strong>
+                <em>Скопійовано</em>
+              </div>
+              <div className="mini-row active">
+                <span>Манікюр</span>
+                <b>16:30</b>
+              </div>
+              <div className="mini-row">
+                <span>Брови</span>
+                <b>17:45</b>
+              </div>
+            </div>
+
+            <div className="insta-edit">
+              <div className="insta-avatar">BS</div>
+              <strong>beauty.studio</strong>
+              <span>Редагувати профіль</span>
+              <div className="bio-field">
+                <small>Посилання в біо</small>
+                <b>bookslot.app/beauty</b>
+              </div>
+            </div>
+
+            <div className="owner-notification">
+              <small>Новий запис</small>
+              <strong>Олена · Манікюр</strong>
+              <span>Сьогодні о 16:30</span>
+            </div>
+          </div>
+        ) : (
+          <div className="client-scenes">
+            <div className="insta-profile">
+              <div className="insta-avatar">BS</div>
+              <strong>beauty.studio</strong>
+              <span>Манікюр · брови · вії</span>
+              <button type="button">Записатися</button>
+            </div>
+
+            <div className="booking-flow-card">
+              <small>Оберіть послугу</small>
+              <strong>Манікюр</strong>
+              <div className="client-slots">
+                <span>14:30</span>
+                <span className="selected">16:30</span>
+                <span>17:45</span>
+              </div>
+            </div>
+
+            <div className="client-confirm">
+              <small>Запис підтверджено</small>
+              <strong>Манікюр · 16:30</strong>
+              <span>Нагадування прийде за 24 години</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="journey-caption">
+        <span>{step.title}</span>
+        <p>{step.text}</p>
+      </div>
+    </div>
+  );
+}
+
+function HowItWorks() {
+  const [activeStep, setActiveStep] = useState(0);
+
+  useEffect(() => {
+    const id = window.setInterval(() => setActiveStep((step) => (step + 1) % ownerFlow.length), 2600);
+    return () => window.clearInterval(id);
+  }, []);
+
+  return (
+    <section className="journey-section" id="how-it-works">
+      <div className="section-kicker" data-reveal>
+        // як це працює
+      </div>
+      <div className="journey-heading" data-reveal>
+        <h2>Власник ставить посилання. Клієнт записується сам.</h2>
+        <p>
+          BookSlot працює як простий міст між вашим Instagram і реальним розкладом. Без пояснень у Direct, без
+          ручного “а коли вам зручно?”.
+        </p>
+      </div>
+
+      <div className="journey-stage" data-reveal>
+        <PhoneScreen role="owner" activeStep={activeStep} />
+        <div className="journey-bridge" aria-hidden="true">
+          <span />
+          <b>{activeStep + 1}</b>
+          <span />
+        </div>
+        <PhoneScreen role="client" activeStep={activeStep} />
+      </div>
+
+      <div className="journey-steps" data-reveal>
+        {ownerFlow.map((step, index) => (
+          <button
+            className={activeStep === index ? "active" : ""}
+            type="button"
+            onClick={() => setActiveStep(index)}
+            key={step.label}
+          >
+            <span>{step.label}</span>
+            <b>{step.title}</b>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function App() {
   const root = document.getElementById("bookslot-react-root");
   const isLoggedIn = root?.dataset.loggedIn === "true";
@@ -277,6 +461,8 @@ function App() {
           <HeroMockup />
         </div>
       </section>
+
+      <HowItWorks />
 
       <section className="outcome-section" id="ai-flow">
         <div className="section-kicker" data-reveal>
