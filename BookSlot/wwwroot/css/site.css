@@ -36,6 +36,40 @@ body { font-family: 'Inter', 'Segoe UI', sans-serif; color: var(--text); }
 .navbar .nav-link { color: var(--text) !important; font-weight: 500; font-size: .95rem; }
 .navbar .btn-primary { padding: .45rem 1.2rem; font-size: .9rem; border-radius: 8px; }
 
+.bs-language-switch {
+    display: inline-grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 3px;
+    align-items: center;
+    padding: 4px;
+    border: 1px solid rgba(148, 163, 184, .28);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, .08);
+}
+
+.bs-language-switch button {
+    min-width: 34px;
+    min-height: 30px;
+    border: 0;
+    border-radius: 999px;
+    color: #64748b;
+    background: transparent;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.bs-language-switch button.is-active {
+    color: #11110f;
+    background: #f7f2e9;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+
+.navbar .bs-language-switch button.is-active {
+    color: white;
+    background: var(--primary);
+}
+
 /* ── HERO ── */
 .hero {
     background: linear-gradient(150deg, #1e1b4b 0%, #312e81 40%, #4F46E5 100%);
