@@ -1053,6 +1053,485 @@ body.landing-react-body .price-card a {
   font-size: 0.88rem;
 }
 
+.movie-screen {
+  min-height: 520px;
+}
+
+.movie-scenes {
+  position: relative;
+  z-index: 1;
+  min-height: 444px;
+  padding: 4px 15px 18px;
+}
+
+.movie-scene {
+  position: absolute;
+  inset: 4px 15px 18px;
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  filter: blur(2px) saturate(0.72);
+  pointer-events: none;
+  transition:
+    opacity 620ms ease,
+    transform 620ms ease,
+    filter 620ms ease;
+}
+
+.movie-scene.active {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0) saturate(1);
+  pointer-events: auto;
+}
+
+.dashboard-shell,
+.social-editor,
+.social-profile,
+.public-booking,
+.client-confirmation,
+.owner-final-card,
+.owner-mini-calendar {
+  border: 1px solid rgba(247, 242, 233, 0.12);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 80% 0%, rgba(155, 216, 255, 0.12), transparent 16rem),
+    rgba(247, 242, 233, 0.055);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+}
+
+.dashboard-shell {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  gap: 12px;
+  min-height: 346px;
+  padding: 12px;
+}
+
+.dashboard-side {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 12px 8px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.dashboard-side span {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 5px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 32% 25%, #fff, transparent 35%),
+    conic-gradient(from 30deg, #f7f2e9, #f2d391, #9bd8ff, #f7f2e9);
+}
+
+.dashboard-side b {
+  padding: 8px 7px;
+  border-radius: 11px;
+  color: var(--bs-faint);
+  font-size: 0.7rem;
+}
+
+.dashboard-side b.active {
+  color: #11110f;
+  background: var(--bs-gold);
+}
+
+.dashboard-main {
+  position: relative;
+  padding: 15px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.dashboard-main small,
+.public-booking small,
+.owner-final-card small,
+.client-confirmation small {
+  color: var(--bs-gold);
+  font-family: var(--bs-display);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dashboard-main h3,
+.public-booking h3 {
+  margin: 9px 0 7px;
+  color: var(--bs-ink);
+  font-size: 1.08rem;
+}
+
+.dashboard-main p,
+.social-profile p,
+.owner-final-card p,
+.client-confirmation p {
+  margin: 0;
+  color: var(--bs-muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.copy-panel {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid rgba(242, 211, 145, 0.26);
+  border-radius: 15px;
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.copy-panel span {
+  display: block;
+  color: var(--bs-ink);
+  font-size: 0.95rem;
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.copy-panel button,
+.social-profile button {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 999px;
+  color: #11110f;
+  background: var(--bs-ink);
+  font-weight: 950;
+  overflow-wrap: anywhere;
+}
+
+.social-profile button {
+  padding-inline: 12px;
+  font-size: 0.92rem;
+}
+
+.dashboard-hint {
+  margin-top: 12px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  color: #11110f;
+  background: var(--bs-green);
+  font-size: 0.74rem;
+  font-weight: 900;
+}
+
+.movie-pointer {
+  position: absolute;
+  z-index: 7;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--bs-ink);
+  box-shadow:
+    0 0 0 8px rgba(247, 242, 233, 0.12),
+    0 0 34px rgba(242, 211, 145, 0.35);
+}
+
+.copy-pointer {
+  right: 38px;
+  top: 232px;
+  animation: pointerTap 2.3s ease-in-out infinite;
+}
+
+.dashboard-scene .copy-pointer {
+  opacity: 0;
+}
+
+.dashboard-scene.is-copying .copy-pointer {
+  opacity: 1;
+}
+
+.bio-pointer {
+  right: 38px;
+  top: 186px;
+  animation: pointerTap 2.3s ease-in-out infinite;
+}
+
+.tap-pointer {
+  left: 50%;
+  top: 236px;
+  animation: pointerTap 2.3s ease-in-out infinite;
+}
+
+.copy-toast {
+  position: absolute;
+  left: 34px;
+  right: 34px;
+  bottom: 4px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  color: #11110f;
+  background: var(--bs-green);
+  font-weight: 950;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  transition: opacity 420ms ease, transform 420ms ease;
+}
+
+.copy-toast.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.social-editor,
+.social-profile,
+.public-booking,
+.client-confirmation {
+  min-height: 350px;
+  padding: 18px;
+}
+
+.social-topline,
+.profile-row,
+.profile-head,
+.service-option,
+.owner-mini-calendar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.social-topline span {
+  color: var(--bs-muted);
+  font-size: 0.8rem;
+}
+
+.social-topline b {
+  color: var(--bs-gold);
+  font-size: 0.82rem;
+}
+
+.profile-row,
+.profile-head {
+  justify-content: flex-start;
+  margin: 18px 0;
+}
+
+.profile-row strong,
+.profile-head strong,
+.owner-final-card strong,
+.client-confirmation strong {
+  display: block;
+  color: var(--bs-ink);
+  font-size: 1.05rem;
+}
+
+.profile-row small,
+.profile-head small,
+.client-confirmation span,
+.owner-final-card span {
+  color: var(--bs-muted);
+  font-size: 0.78rem;
+}
+
+.social-editor label {
+  display: block;
+  margin-top: 13px;
+  color: var(--bs-faint);
+  font-size: 0.75rem;
+}
+
+.social-editor label span {
+  position: relative;
+  display: block;
+  margin-top: 6px;
+  padding: 12px;
+  border: 1px solid rgba(247, 242, 233, 0.12);
+  border-radius: 14px;
+  color: var(--bs-ink);
+  background: rgba(0, 0, 0, 0.28);
+  font-weight: 850;
+}
+
+.profile-link-field span {
+  border-color: rgba(242, 211, 145, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(242, 211, 145, 0.08);
+}
+
+.bio-scene.is-editing .profile-link-field span {
+  animation: fieldFocus 2.3s ease-in-out infinite;
+}
+
+.bio-scene.is-editing .profile-link-field span::after {
+  content: "";
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 4px;
+  vertical-align: -0.12em;
+  border-radius: 999px;
+  background: var(--bs-gold);
+  animation: caretBlink 900ms steps(1) infinite;
+}
+
+.profile-about-field {
+  opacity: 0.66;
+}
+
+.bio-scene .bio-pointer {
+  opacity: 0;
+}
+
+.bio-scene.is-editing .bio-pointer {
+  opacity: 1;
+}
+
+.bio-scene.is-live .social-editor::after {
+  content: "Профіль збережено";
+  display: block;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  color: #11110f;
+  background: var(--bs-green);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-align: center;
+}
+
+.profile-cover {
+  height: 82px;
+  margin: -18px -18px 0;
+  border-radius: 20px 20px 0 0;
+  background:
+    linear-gradient(120deg, rgba(155, 216, 255, 0.22), transparent 42%),
+    linear-gradient(135deg, rgba(242, 211, 145, 0.34), rgba(247, 242, 233, 0.05));
+}
+
+.social-profile p {
+  margin-bottom: 4px;
+}
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-top: 16px;
+}
+
+.social-grid span {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: rgba(247, 242, 233, 0.09);
+}
+
+.service-option {
+  min-height: 52px;
+  margin-top: 10px;
+  padding: 0 13px;
+  border: 1px solid rgba(247, 242, 233, 0.12);
+  border-radius: 15px;
+  color: var(--bs-muted);
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.service-option.active {
+  color: #11110f;
+  background: var(--bs-gold);
+}
+
+.movie-slots {
+  margin-top: 16px;
+}
+
+.client-confirmation {
+  display: grid;
+  align-content: center;
+  min-height: 350px;
+  text-align: center;
+}
+
+.client-confirmation::before {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  width: 74px;
+  height: 74px;
+  margin: 0 auto 18px;
+  border-radius: 999px;
+  color: #11110f;
+  background: var(--bs-green);
+  font-size: 2.1rem;
+  font-weight: 950;
+}
+
+.owner-final-card {
+  padding: 20px;
+}
+
+.owner-mini-calendar {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.owner-mini-calendar b {
+  color: #11110f;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--bs-gold);
+}
+
+.owner-mini-calendar span {
+  color: var(--bs-ink);
+  font-weight: 900;
+}
+
+.movie-bridge b {
+  width: 58px;
+  height: 58px;
+  font-family: var(--bs-display);
+  letter-spacing: 0.04em;
+}
+
+.movie-steps {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.movie-steps button {
+  min-height: 86px;
+}
+
+@keyframes pointerTap {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  48% {
+    transform: translate(-8px, 7px) scale(1);
+  }
+  58% {
+    transform: translate(-8px, 7px) scale(0.78);
+  }
+  68% {
+    transform: translate(-8px, 7px) scale(1);
+  }
+}
+
+@keyframes fieldFocus {
+  0%, 100% {
+    border-color: rgba(242, 211, 145, 0.28);
+    box-shadow: inset 0 0 0 1px rgba(242, 211, 145, 0.08), 0 0 0 rgba(242, 211, 145, 0);
+  }
+  50% {
+    border-color: rgba(242, 211, 145, 0.72);
+    box-shadow: inset 0 0 0 1px rgba(242, 211, 145, 0.22), 0 0 26px rgba(242, 211, 145, 0.18);
+  }
+}
+
+@keyframes caretBlink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
 .outcome-section,
 .pricing-section,
 .contact-section {
@@ -1438,6 +1917,10 @@ body.landing-react-body .price-card a {
     min-height: 570px;
   }
 
+  .movie-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .owner-phone,
   .client-phone {
     rotate: 0deg;
@@ -1551,6 +2034,54 @@ body.landing-react-body .price-card a {
   .phone-screen {
     min-height: 428px;
     border-radius: 24px;
+  }
+
+  .movie-screen {
+    min-height: 500px;
+  }
+
+  .movie-scenes {
+    min-height: 424px;
+    padding-inline: 10px;
+  }
+
+  .movie-scene {
+    inset: 4px 10px 18px;
+  }
+
+  .dashboard-shell {
+    grid-template-columns: 64px 1fr;
+    gap: 8px;
+    padding: 9px;
+  }
+
+  .dashboard-side {
+    padding-inline: 6px;
+  }
+
+  .dashboard-side b {
+    padding-inline: 5px;
+    font-size: 0.64rem;
+  }
+
+  .dashboard-main,
+  .social-editor,
+  .social-profile,
+  .public-booking,
+  .client-confirmation {
+    padding: 14px;
+  }
+
+  .copy-panel span {
+    font-size: 0.82rem;
+  }
+
+  .profile-cover {
+    margin: -14px -14px 0;
+  }
+
+  .movie-steps {
+    grid-template-columns: 1fr;
   }
 
   .owner-scenes,

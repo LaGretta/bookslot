@@ -68,45 +68,56 @@ const plans = [
   },
 ];
 
-const ownerFlow = [
+const walkthroughFrames = [
   {
     label: "01",
-    title: "Власник бере посилання",
-    text: "У дашборді BookSlot є готове посилання на сторінку запису.",
-    screen: "dashboard",
+    title: "Посилання лежить у кабінеті",
+    ownerScene: "owner-dashboard",
+    clientScene: "client-profile",
+    ownerTitle: "Власник відкриває дашборд BookSlot",
+    ownerText: "У блоці “Посилання для клієнтів” вже є готова адреса сторінки запису.",
+    clientTitle: "Клієнт поки бачить звичайний профіль",
+    clientText: "Для нього все виглядає знайомо: сторінка бізнесу і кнопка запису в шапці.",
   },
   {
     label: "02",
-    title: "Додає його в Instagram",
-    text: "Посилання ставиться в шапку профілю: клієнтам не треба писати в Direct.",
-    screen: "instagram-edit",
+    title: "Власник копіює лінк",
+    ownerScene: "owner-copy",
+    clientScene: "client-profile",
+    ownerTitle: "Натискає “Копіювати”",
+    ownerText: "Не треба нічого вигадувати вручну: BookSlot сам дає робоче посилання.",
+    clientTitle: "Клієнт бачить той самий профіль",
+    clientText: "Саме цей лінк потім стане входом у запис без переписки.",
   },
   {
     label: "03",
-    title: "Отримує новий запис",
-    text: "Новий запис прилітає в дашборд і на email власника.",
-    screen: "owner-booking",
-  },
-];
-
-const clientFlow = [
-  {
-    label: "01",
-    title: "Клієнт заходить в Instagram",
-    text: "Бачить профіль бізнесу і кнопку з посиланням на запис.",
-    screen: "instagram-profile",
+    title: "Лінк іде в шапку профілю",
+    ownerScene: "owner-bio",
+    clientScene: "client-tap",
+    ownerTitle: "Вставляє посилання у соцмережу",
+    ownerText: "У полі “Сайт / посилання” з’являється адреса BookSlot, і профіль готовий.",
+    clientTitle: "Клієнт натискає посилання",
+    clientText: "Він не пише в Direct, а просто переходить з профілю на сторінку запису.",
   },
   {
-    label: "02",
-    title: "Обирає послугу і час",
-    text: "BookSlot показує вільні слоти без переписки та очікування відповіді.",
-    screen: "booking-page",
+    label: "04",
+    title: "Клієнт обирає послугу",
+    ownerScene: "owner-live",
+    clientScene: "client-booking",
+    ownerTitle: "У власника профіль уже працює",
+    ownerText: "Посилання лишається в біо, а всі записи автоматично збираються в кабінеті.",
+    clientTitle: "BookSlot відкриває вільні слоти",
+    clientText: "Клієнт бачить послуги, час і може вибрати зручний варіант за кілька секунд.",
   },
   {
-    label: "03",
-    title: "Підтверджує запис",
-    text: "Клієнт залишає контакт, а бізнес бачить бронювання в системі.",
-    screen: "confirm",
+    label: "05",
+    title: "Запис готовий",
+    ownerScene: "owner-notified",
+    clientScene: "client-done",
+    ownerTitle: "Власник отримує новий запис",
+    ownerText: "Бронювання з’являється в дашборді, а сповіщення приходить на email.",
+    clientTitle: "Клієнт бачить підтвердження",
+    clientText: "Йому зрозуміло, коли приходити, а нагадування допоможе не забути запис.",
   },
 ];
 
@@ -254,106 +265,172 @@ function HeroMockup() {
   );
 }
 
-function PhoneScreen({ role, activeStep }) {
+function OwnerMovie({ frame }) {
+  return (
+    <div className="movie-scenes owner-movie">
+      <div
+        className={`movie-scene dashboard-scene ${
+          frame.ownerScene === "owner-dashboard" || frame.ownerScene === "owner-copy" ? "active" : ""
+        } ${frame.ownerScene === "owner-copy" ? "is-copying" : ""}`}
+      >
+        <div className="dashboard-shell">
+          <div className="dashboard-side">
+            <span />
+            <b>Записи</b>
+            <b className="active">Посилання</b>
+            <b>Послуги</b>
+          </div>
+          <div className="dashboard-main">
+            <small>Кабінет BookSlot</small>
+            <h3>Посилання для клієнтів</h3>
+            <p>Дайте це посилання людям, щоб вони могли записатися самі.</p>
+            <div className="copy-panel">
+              <span>bookslot.app/beauty</span>
+              <button type="button">Копіювати</button>
+            </div>
+            <div className="dashboard-hint">Сторінка запису вже готова</div>
+          </div>
+        </div>
+        <span className="movie-pointer copy-pointer" />
+        <div className={`copy-toast ${frame.ownerScene === "owner-copy" ? "visible" : ""}`}>Посилання скопійовано</div>
+      </div>
+
+      <div
+        className={`movie-scene bio-scene ${frame.ownerScene === "owner-bio" || frame.ownerScene === "owner-live" ? "active" : ""} ${
+          frame.ownerScene === "owner-bio" ? "is-editing" : ""
+        } ${frame.ownerScene === "owner-live" ? "is-live" : ""}`}
+      >
+        <div className="social-editor">
+          <div className="social-topline">
+            <span>Редагування профілю</span>
+            <b>Зберегти</b>
+          </div>
+          <div className="profile-row">
+            <div className="insta-avatar">BS</div>
+            <div>
+              <strong>beauty.studio</strong>
+              <small>Манікюр · брови · вії</small>
+            </div>
+          </div>
+          <label className="profile-link-field">
+            Сайт / посилання
+            <span>bookslot.app/beauty</span>
+          </label>
+          <label className="profile-about-field">
+            Опис профілю
+            <span>Запис онлайн без Direct</span>
+          </label>
+        </div>
+        <span className="movie-pointer bio-pointer" />
+      </div>
+
+      <div className={`movie-scene owner-live-scene ${frame.ownerScene === "owner-notified" ? "active" : ""}`}>
+        <div className="owner-final-card">
+          <small>Новий запис у BookSlot</small>
+          <strong>Олена · Манікюр</strong>
+          <span>Сьогодні о 16:30</span>
+          <p>Email власнику вже відправлено.</p>
+        </div>
+        <div className="owner-mini-calendar">
+          <b>16:30</b>
+          <span>Манікюр</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ClientMovie({ frame }) {
+  return (
+    <div className="movie-scenes client-movie">
+      <div className={`movie-scene client-profile-scene ${frame.clientScene === "client-profile" || frame.clientScene === "client-tap" ? "active" : ""}`}>
+        <div className="social-profile">
+          <div className="profile-cover" />
+          <div className="profile-head">
+            <div className="insta-avatar">BS</div>
+            <div>
+              <strong>beauty.studio</strong>
+              <small>Манікюр · брови · вії</small>
+            </div>
+          </div>
+          <p>Вільні місця на цей тиждень. Запис онлайн нижче.</p>
+          <button type="button">bookslot.app/beauty</button>
+          <div className="social-grid">
+            <span />
+            <span />
+            <span />
+          </div>
+        </div>
+        <span className="movie-pointer tap-pointer" />
+      </div>
+
+      <div className={`movie-scene client-booking-scene ${frame.clientScene === "client-booking" ? "active" : ""}`}>
+        <div className="public-booking">
+          <small>BookSlot · Студія краси</small>
+          <h3>Оберіть послугу</h3>
+          <div className="service-option active">
+            <span>Манікюр</span>
+            <b>60 хв</b>
+          </div>
+          <div className="service-option">
+            <span>Брови</span>
+            <b>40 хв</b>
+          </div>
+          <div className="client-slots movie-slots">
+            <span>14:30</span>
+            <span className="selected">16:30</span>
+            <span>17:45</span>
+          </div>
+        </div>
+      </div>
+
+      <div className={`movie-scene client-done-scene ${frame.clientScene === "client-done" ? "active" : ""}`}>
+        <div className="client-confirmation">
+          <small>Запис підтверджено</small>
+          <strong>Манікюр · 16:30</strong>
+          <span>beauty.studio</span>
+          <p>Нагадування прийде за 24 години до запису.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PhoneScreen({ role, frame }) {
   const isOwner = role === "owner";
-  const flow = isOwner ? ownerFlow : clientFlow;
-  const step = flow[activeStep];
 
   return (
     <div className={`journey-phone ${isOwner ? "owner-phone" : "client-phone"}`} data-tilt>
       <div className="phone-hardware">
         <span />
         <b>{isOwner ? "Власник" : "Клієнт"}</b>
-        <i>{step.label}</i>
+        <i>{frame.label}</i>
       </div>
 
-      <div className={`phone-screen phone-screen-${step.screen}`}>
+      <div className="phone-screen movie-screen">
         <div className="phone-status">
-          <span>BookSlot</span>
-          <b>{isOwner ? "Business" : "Client"}</b>
+          <span>{isOwner ? "BookSlot dashboard" : "Instagram → BookSlot"}</span>
+          <b>{isOwner ? "Copy link" : "Book now"}</b>
         </div>
-
-        {isOwner ? (
-          <div className="owner-scenes">
-            <div className="mini-dashboard">
-              <div className="mini-topline">
-                <span>Студія краси</span>
-                <b>Записи</b>
-              </div>
-              <div className="link-card">
-                <small>Ваше посилання</small>
-                <strong>bookslot.app/beauty</strong>
-                <em>Скопійовано</em>
-              </div>
-              <div className="mini-row active">
-                <span>Манікюр</span>
-                <b>16:30</b>
-              </div>
-              <div className="mini-row">
-                <span>Брови</span>
-                <b>17:45</b>
-              </div>
-            </div>
-
-            <div className="insta-edit">
-              <div className="insta-avatar">BS</div>
-              <strong>beauty.studio</strong>
-              <span>Редагувати профіль</span>
-              <div className="bio-field">
-                <small>Посилання в біо</small>
-                <b>bookslot.app/beauty</b>
-              </div>
-            </div>
-
-            <div className="owner-notification">
-              <small>Новий запис</small>
-              <strong>Олена · Манікюр</strong>
-              <span>Сьогодні о 16:30</span>
-            </div>
-          </div>
-        ) : (
-          <div className="client-scenes">
-            <div className="insta-profile">
-              <div className="insta-avatar">BS</div>
-              <strong>beauty.studio</strong>
-              <span>Манікюр · брови · вії</span>
-              <button type="button">Записатися</button>
-            </div>
-
-            <div className="booking-flow-card">
-              <small>Оберіть послугу</small>
-              <strong>Манікюр</strong>
-              <div className="client-slots">
-                <span>14:30</span>
-                <span className="selected">16:30</span>
-                <span>17:45</span>
-              </div>
-            </div>
-
-            <div className="client-confirm">
-              <small>Запис підтверджено</small>
-              <strong>Манікюр · 16:30</strong>
-              <span>Нагадування прийде за 24 години</span>
-            </div>
-          </div>
-        )}
+        {isOwner ? <OwnerMovie frame={frame} /> : <ClientMovie frame={frame} />}
       </div>
 
       <div className="journey-caption">
-        <span>{step.title}</span>
-        <p>{step.text}</p>
+        <span>{isOwner ? frame.ownerTitle : frame.clientTitle}</span>
+        <p>{isOwner ? frame.ownerText : frame.clientText}</p>
       </div>
     </div>
   );
 }
 
 function HowItWorks() {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeFrame, setActiveFrame] = useState(0);
+  const frame = walkthroughFrames[activeFrame];
 
   useEffect(() => {
-    const id = window.setInterval(() => setActiveStep((step) => (step + 1) % ownerFlow.length), 2600);
-    return () => window.clearInterval(id);
-  }, []);
+    const id = window.setTimeout(() => setActiveFrame((step) => (step + 1) % walkthroughFrames.length), 3400);
+    return () => window.clearTimeout(id);
+  }, [activeFrame]);
 
   return (
     <section className="journey-section" id="how-it-works">
@@ -361,29 +438,29 @@ function HowItWorks() {
         // як це працює
       </div>
       <div className="journey-heading" data-reveal>
-        <h2>Власник ставить посилання. Клієнт записується сам.</h2>
+        <h2>Один раз ставите посилання. Далі люди записуються самі.</h2>
         <p>
-          BookSlot працює як простий міст між вашим Instagram і реальним розкладом. Без пояснень у Direct, без
-          ручного “а коли вам зручно?”.
+          Нижче показано як у маленькому відео: де власник бере лінк у BookSlot, куди вставляє його в профілі, і що
+          бачить клієнт, коли натискає на це посилання.
         </p>
       </div>
 
       <div className="journey-stage" data-reveal>
-        <PhoneScreen role="owner" activeStep={activeStep} />
-        <div className="journey-bridge" aria-hidden="true">
+        <PhoneScreen role="owner" frame={frame} />
+        <div className="journey-bridge movie-bridge" aria-hidden="true">
           <span />
-          <b>{activeStep + 1}</b>
+          <b>{frame.label}</b>
           <span />
         </div>
-        <PhoneScreen role="client" activeStep={activeStep} />
+        <PhoneScreen role="client" frame={frame} />
       </div>
 
-      <div className="journey-steps" data-reveal>
-        {ownerFlow.map((step, index) => (
+      <div className="journey-steps movie-steps" data-reveal>
+        {walkthroughFrames.map((step, index) => (
           <button
-            className={activeStep === index ? "active" : ""}
+            className={activeFrame === index ? "active" : ""}
             type="button"
-            onClick={() => setActiveStep(index)}
+            onClick={() => setActiveFrame(index)}
             key={step.label}
           >
             <span>{step.label}</span>
