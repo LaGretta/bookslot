@@ -672,9 +672,9 @@ document.documentElement.dataset.theme = "dark";
       priceElement.setAttribute("data-subscription-plan", plan);
 
       const [amount, suffix] = priceCopy[currentLanguage][plan];
-      const sub = document.createElement("sub");
-      sub.textContent = suffix;
-      priceElement.replaceChildren(document.createTextNode(amount), sub);
+      const suffixElement = document.createElement(priceElement.classList.contains("price") ? "small" : "sub");
+      suffixElement.textContent = suffix;
+      priceElement.replaceChildren(document.createTextNode(amount), suffixElement);
     });
   }
 
