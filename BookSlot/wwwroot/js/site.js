@@ -135,13 +135,13 @@ document.documentElement.dataset.theme = "dark";
     "Необмежені послуги": "Unlimited services",
     "Email власнику про новий запис": "Owner email for each new booking",
     "Клієнтські листи та нагадування у Pro AI": "Client emails and reminders in Pro AI",
-    "Оплатити 299 грн": "Pay 299 UAH",
+    "Оплатити 299 грн": "Pay $8",
     "AI-помічник і повний email-супровід записів": "AI assistant and full booking email support",
     "Необмежені записи": "Unlimited bookings",
     "AI-помічник у Telegram": "Telegram AI assistant",
     "Email власнику та клієнту": "Email to owner and client",
     "Нагадування клієнту за 24 години": "Client reminder 24 hours before",
-    "Оплатити 599 грн": "Pay 599 UAH",
+    "Оплатити 599 грн": "Pay $15",
     "Преміальний AI-апгрейд": "Premium AI upgrade",
     "грн/міс": "UAH/month",
     "грн": "UAH",
@@ -154,6 +154,35 @@ document.documentElement.dataset.theme = "dark";
     "Написати BookSlot": "Message BookSlot",
     "Пошта": "Email",
     "Написати в Telegram": "Message on Telegram",
+
+    "AI-помічник BookSlot": "BookSlot AI assistant",
+    "Працює": "Live",
+    "Потребує налаштування": "Needs setup",
+    "Тариф Pro": "Pro plan",
+    "AI-помічник відповідає за вас 24/7": "AI assistant replies for you 24/7",
+    "Бот сам спілкується з клієнтами в Telegram, підбирає послугу, дату й час і готує запис — навіть коли ви зайняті чи спите. Доступно у тарифі": "The bot talks to clients in Telegram, picks the service, date, and time, and prepares the booking even when you are busy or asleep. Available on",
+    "Автовідповіді клієнтам у Telegram": "Auto-replies to clients in Telegram",
+    "Кнопки послуг і вільних годин": "Service and available-time buttons",
+    "Готові чернетки записів у дашборді": "Ready booking drafts in the dashboard",
+    "Персональне посилання-бот для клієнтів": "Personal bot link for clients",
+    "Перейти на Pro": "Upgrade to Pro",
+    "Ваш салон": "Your salon",
+    "бот • онлайн": "bot • online",
+    "Привіт! 💅": "Hi! 💅",
+    "Вітаю! Що вас цікавить?": "Hi! What are you interested in?",
+    "Педикюр": "Pedicure",
+    "Чудово! На завтра є вільні години:": "Great! Tomorrow has these open times:",
+    "Запишіть, будь ласка, імʼя та телефон 🙂": "Please send your name and phone number 🙂",
+    "Олена, +380 67 123 45 67": "Olena, +380 67 123 45 67",
+    "Запис підготовлено!": "Booking draft prepared!",
+    "Що потрібно для роботи": "What is needed to go live",
+    "Додати послуги": "Add services",
+    "Розклад": "Schedule",
+    "Налаштувати розклад": "Set up schedule",
+    "AI увімкнений": "AI is enabled",
+    "Увімкни AI →": "Turn on AI →",
+    "Telegram готовий": "Telegram is ready",
+    "Telegram не готовий": "Telegram is not ready",
 
     "Центр": "Hub",
     "Головна": "Home",
@@ -610,6 +639,45 @@ document.documentElement.dataset.theme = "dark";
     });
   }
 
+  function inferSubscriptionPlan(priceElement) {
+    const text = normalize(priceElement.textContent || "");
+    const cardText = normalize(priceElement.closest(".price-card, .lp-p-card")?.textContent || "");
+    const combined = `${text} ${cardText}`;
+
+    if (/\$?15|599/.test(combined)) return "pro";
+    if (/\$?8|299/.test(combined)) return "basic";
+    if (/\$?0|0/.test(text)) return "free";
+    return "";
+  }
+
+  function renderSubscriptionPrices() {
+    const priceCopy = {
+      uk: {
+        free: ["0", " грн/міс"],
+        basic: ["299", " грн/міс"],
+        pro: ["599", " грн/міс"],
+      },
+      en: {
+        free: ["$0", "/mo"],
+        basic: ["$8", "/mo"],
+        pro: ["$15", "/mo"],
+      },
+    };
+
+    document.querySelectorAll(".price-card .price, .lp-p-card .lp-p-price").forEach((priceElement) => {
+      const plan = priceElement.getAttribute("data-subscription-plan") || inferSubscriptionPlan(priceElement);
+      if (!plan || !priceCopy[currentLanguage][plan]) return;
+
+      priceElement.setAttribute("data-no-translate", "");
+      priceElement.setAttribute("data-subscription-plan", plan);
+
+      const [amount, suffix] = priceCopy[currentLanguage][plan];
+      const sub = document.createElement("sub");
+      sub.textContent = suffix;
+      priceElement.replaceChildren(document.createTextNode(amount), sub);
+    });
+  }
+
   function applyLanguage() {
     if (translating) return;
     translating = true;
@@ -617,6 +685,7 @@ document.documentElement.dataset.theme = "dark";
     document.documentElement.dataset.lang = currentLanguage;
     walk(document.body);
     polishKnownFields();
+    renderSubscriptionPrices();
     if (originalTitle) document.title = currentLanguage === "en" ? translateValue(originalTitle) : originalTitle;
     updateSwitches();
     translating = false;
