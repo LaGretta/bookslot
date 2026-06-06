@@ -1013,6 +1013,12 @@ body.landing-react-body .price-card a {
   box-shadow: 0 0 34px rgba(242, 211, 145, 0.26);
 }
 
+.journey-bridge b small,
+.journey-bridge b strong {
+  display: block;
+  line-height: 1;
+}
+
 .journey-steps {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1483,10 +1489,26 @@ body.landing-react-body .price-card a {
 }
 
 .movie-bridge b {
+  align-content: center;
+  gap: 4px;
   width: 58px;
   height: 58px;
-  font-family: var(--bs-display);
-  letter-spacing: 0.04em;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0;
+}
+
+.movie-bridge b small {
+  color: rgba(17, 17, 15, 0.62);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.movie-bridge b strong {
+  color: #11110f;
+  font-size: 1rem;
+  font-weight: 950;
 }
 
 .movie-steps {

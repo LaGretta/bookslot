@@ -449,7 +449,10 @@ function HowItWorks() {
         <PhoneScreen role="owner" frame={frame} />
         <div className="journey-bridge movie-bridge" aria-hidden="true">
           <span />
-          <b>{frame.label}</b>
+          <b>
+            <small>крок</small>
+            <strong>{frame.label}</strong>
+          </b>
           <span />
         </div>
         <PhoneScreen role="client" frame={frame} />
