@@ -589,9 +589,14 @@ document.documentElement.dataset.theme = "dark";
   }
 
   function updateSwitches() {
-    document.querySelectorAll("[data-language-switch] button[data-lang]").forEach((button) => {
-      button.classList.toggle("is-active", button.dataset.lang === currentLanguage);
-      button.setAttribute("aria-pressed", String(button.dataset.lang === currentLanguage));
+    document.querySelectorAll("[data-language-switch]").forEach((switcher) => {
+      switcher.classList.toggle("is-uk", currentLanguage === "uk");
+      switcher.classList.toggle("is-en", currentLanguage === "en");
+      switcher.setAttribute("aria-pressed", String(currentLanguage === "en"));
+      switcher.setAttribute(
+        "aria-label",
+        currentLanguage === "en" ? "Switch language to Ukrainian" : "Перемкнути мову на англійську",
+      );
     });
   }
 
@@ -634,9 +639,9 @@ document.documentElement.dataset.theme = "dark";
   }
 
   document.addEventListener("click", (event) => {
-    const button = event.target.closest("[data-language-switch] button[data-lang]");
-    if (!button) return;
-    setLanguage(button.dataset.lang);
+    const switcher = event.target.closest("[data-language-switch]");
+    if (!switcher) return;
+    setLanguage(currentLanguage === "en" ? "uk" : "en");
   });
 
   window.BookSlotI18n = {

@@ -37,36 +37,61 @@ body { font-family: 'Inter', 'Segoe UI', sans-serif; color: var(--text); }
 .navbar .btn-primary { padding: .45rem 1.2rem; font-size: .9rem; border-radius: 8px; }
 
 .bs-language-switch {
+    position: relative;
     display: inline-grid;
-    grid-template-columns: repeat(2, auto);
-    gap: 3px;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
+    min-width: 76px;
+    min-height: 38px;
     padding: 4px;
     border: 1px solid rgba(148, 163, 184, .28);
     border-radius: 999px;
     background: rgba(15, 23, 42, .08);
+    cursor: pointer;
+    isolation: isolate;
 }
 
-.bs-language-switch button {
+.bs-language-switch span {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    place-items: center;
     min-width: 34px;
-    min-height: 30px;
-    border: 0;
-    border-radius: 999px;
     color: #64748b;
-    background: transparent;
     font-size: .74rem;
     font-weight: 800;
     letter-spacing: .04em;
+    transition: color .18s ease;
 }
 
-.bs-language-switch button.is-active {
-    color: #11110f;
+.bs-language-switch i {
+    position: absolute;
+    z-index: 1;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    bottom: 4px;
+    border-radius: 999px;
     background: #f7f2e9;
     box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    transition: transform .2s ease;
 }
 
-.navbar .bs-language-switch button.is-active {
+.bs-language-switch.is-en i {
+    transform: translateX(100%);
+}
+
+.bs-language-switch.is-uk span:first-child,
+.bs-language-switch.is-en span:nth-child(2) {
+    color: #11110f;
+}
+
+.navbar .bs-language-switch.is-uk span:first-child,
+.navbar .bs-language-switch.is-en span:nth-child(2) {
     color: white;
+}
+
+.navbar .bs-language-switch i {
     background: var(--primary);
 }
 

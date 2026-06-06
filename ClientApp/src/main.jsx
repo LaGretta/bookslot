@@ -508,14 +508,11 @@ function App() {
           ))}
         </nav>
         <div className="landing-nav-actions">
-          <div className="bs-language-switch" data-language-switch aria-label="Перемикач мови">
-            <button type="button" data-lang="uk">
-              UA
-            </button>
-            <button type="button" data-lang="en">
-              EN
-            </button>
-          </div>
+          <button className="bs-language-switch" type="button" data-language-switch aria-label="Перемкнути мову">
+            <span>UA</span>
+            <span>EN</span>
+            <i aria-hidden="true" />
+          </button>
           <a className="nav-cta" href={primaryHref}>
             {isLoggedIn ? "Відкрити AI" : "Почати"} <span>↗</span>
           </a>
