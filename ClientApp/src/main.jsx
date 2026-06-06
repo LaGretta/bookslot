@@ -206,9 +206,10 @@ function HeroMockup() {
 
   const chat = useMemo(
     () => [
-      ["client", "Привіт, є сьогодні манікюр після 16:00?"],
-      ["ai", "Так, є 16:30. Підкажіть ім'я та номер телефону."],
-      ["client", "Олена, +380..."],
+      ["client", "Привіт, хочу манікюр завтра після 16:00."],
+      ["ai", "Можу запропонувати 16:30 або 17:45. Який час бронюємо?"],
+      ["client", "16:30. Олена, +380..."],
+      ["ai", "Готово. Я підготував запис для власника в BookSlot."],
     ],
     [],
   );
@@ -217,23 +218,23 @@ function HeroMockup() {
     <div className="hero-device" data-tilt>
       <div className="device-top">
         <div>
-          <span>ЖИВА ЧЕРГА</span>
-          <strong>12 запитів</strong>
+          <span>Telegram AI</span>
+          <strong>BookSlot bot</strong>
         </div>
-        <div className="device-orb">AI</div>
+        <div className="device-orb">TG</div>
       </div>
 
-      <div className="booking-card">
+      <div className="booking-card hero-ai-entry">
         <div className="booking-card-title">
-          <span>Посилання BookSlot</span>
-          <b>Студія краси</b>
+          <span>Клієнт натискає AI-посилання</span>
+          <b>@bookslot_beauty_bot</b>
         </div>
-        <div className="slot-grid">
-          {["14:30", "16:30", "17:45"].map((slot, index) => (
-            <button className={index === pulse ? "active" : ""} key={slot} type="button">
-              {slot}
-            </button>
-          ))}
+        <div className="telegram-header">
+          <div className="bot-avatar">AI</div>
+          <div>
+            <strong>BookSlot bot</strong>
+            <span>онлайн · питає деталі запису</span>
+          </div>
         </div>
       </div>
 
@@ -245,22 +246,25 @@ function HeroMockup() {
         ))}
       </div>
 
-      <div className="draft-card">
-        <div>
-          <span>Чернетка готова</span>
-          <strong>Манікюр · 16:30</strong>
+      <div className="bot-suggestion">
+        <span>Бот знайшов вільні слоти</span>
+        <div className="ai-slot-row">
+          {["14:30", "16:30", "17:45"].map((slot, index) => (
+            <button className={index === pulse ? "active" : ""} key={slot} type="button">
+              {slot}
+            </button>
+          ))}
         </div>
-        <b>підтвердити</b>
       </div>
 
-      <div className="device-metrics">
-        {metrics.map(([value, label]) => (
-          <div key={label}>
-            <strong>{value}</strong>
-            <span>{label}</span>
-          </div>
-        ))}
+      <div className="draft-card">
+        <div>
+          <span>Чернетка для власника</span>
+          <strong>Олена · манікюр · 16:30</strong>
+        </div>
+        <b>готово</b>
       </div>
+
     </div>
   );
 }

@@ -402,7 +402,10 @@ body.landing-react-body .price-card a {
 
 .hero-device {
   position: relative;
-  min-height: 502px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: clamp(540px, 64vh, 590px);
   overflow: hidden;
   padding: 20px;
   border: 1px solid var(--bs-line);
@@ -432,7 +435,7 @@ body.landing-react-body .price-card a {
 
 .device-top {
   justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .device-top span,
@@ -470,6 +473,7 @@ body.landing-react-body .price-card a {
 
 .booking-card,
 .draft-card,
+.bot-suggestion,
 .chat-bubble,
 .device-metrics div,
 .quote-card,
@@ -482,14 +486,65 @@ body.landing-react-body .price-card a {
 }
 
 .booking-card {
-  padding: 16px;
+  padding: 13px;
   border-radius: 8px;
+}
+
+.hero-ai-entry {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 85% 10%, rgba(155, 216, 255, 0.14), transparent 12rem),
+    rgba(247, 242, 233, 0.055);
+}
+
+.hero-ai-entry::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 211, 145, 0.6), transparent);
 }
 
 .booking-card-title {
   display: grid;
   gap: 4px;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+}
+
+.telegram-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px;
+  border: 1px solid rgba(247, 242, 233, 0.1);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.bot-avatar {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: #10100e;
+  background:
+    radial-gradient(circle at 30% 25%, #fff, transparent 34%),
+    conic-gradient(from 25deg, #f7f2e9, #9bd8ff, #f2d391, #f7f2e9);
+  font-weight: 950;
+}
+
+.telegram-header strong {
+  display: block;
+  color: var(--bs-ink);
+}
+
+.telegram-header span {
+  display: block;
+  margin-top: 2px;
+  color: var(--bs-muted);
+  font-size: 0.78rem;
 }
 
 .slot-grid {
@@ -515,17 +570,21 @@ body.landing-react-body .price-card a {
 
 .chat-stack {
   display: grid;
-  gap: 10px;
-  margin-top: 18px;
+  align-content: start;
+  gap: 7px;
+  min-height: 190px;
+  max-height: 210px;
+  margin-top: 10px;
+  overflow: hidden;
 }
 
 .chat-bubble {
-  width: min(88%, 330px);
-  padding: 12px 14px;
+  width: min(92%, 330px);
+  padding: 9px 11px;
   border-radius: 8px;
   color: var(--bs-muted);
-  font-size: 0.88rem;
-  line-height: 1.48;
+  font-size: 0.78rem;
+  line-height: 1.34;
   animation: messageLoop 6.3s ease-in-out infinite;
   animation-delay: var(--delay);
 }
@@ -536,11 +595,55 @@ body.landing-react-body .price-card a {
   background: var(--bs-ink);
 }
 
+.chat-bubble.ai {
+  border-color: rgba(155, 216, 255, 0.18);
+  background:
+    linear-gradient(180deg, rgba(155, 216, 255, 0.1), rgba(247, 242, 233, 0.045)),
+    var(--bs-panel);
+}
+
+.bot-suggestion {
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.bot-suggestion > span {
+  display: block;
+  color: var(--bs-gold);
+  font-family: var(--bs-display);
+  font-size: 1.08rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.ai-slot-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ai-slot-row button {
+  min-height: 34px;
+  border: 1px solid var(--bs-line);
+  border-radius: 999px;
+  color: var(--bs-muted);
+  background: rgba(255, 255, 255, 0.055);
+  cursor: default;
+}
+
+.ai-slot-row button.active {
+  color: #17130d;
+  background: var(--bs-gold);
+  box-shadow: 0 0 24px rgba(242, 211, 145, 0.34);
+}
+
 .draft-card {
   justify-content: space-between;
   gap: 16px;
-  margin-top: 18px;
-  padding: 16px;
+  margin-top: 10px;
+  padding: 12px;
   border-radius: 8px;
 }
 
@@ -562,12 +665,12 @@ body.landing-react-body .price-card a {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 9px;
-  margin-top: 18px;
+  margin-top: 10px;
 }
 
 .device-metrics div {
-  min-height: 78px;
-  padding: 14px 10px;
+  min-height: 60px;
+  padding: 10px 8px;
   border-radius: 8px;
   text-align: center;
 }
@@ -575,7 +678,7 @@ body.landing-react-body .price-card a {
 .device-metrics strong {
   display: block;
   font-family: "Space Mono", monospace;
-  font-size: 1.25rem;
+  font-size: 1.08rem;
   font-weight: 400;
   letter-spacing: -0.08em;
 }
