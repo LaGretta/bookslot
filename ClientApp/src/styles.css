@@ -294,8 +294,8 @@ body.landing-react-body .price-card a {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.54fr);
-  gap: clamp(28px, 6vw, 78px);
+  grid-template-columns: minmax(0, 0.78fr) minmax(430px, 0.72fr);
+  gap: clamp(20px, 3.6vw, 48px);
   align-items: end;
   min-height: calc(100vh - 100px);
   padding: clamp(86px, 13vh, 150px) 0 86px;
@@ -404,10 +404,12 @@ body.landing-react-body .price-card a {
   position: relative;
   display: flex;
   flex-direction: column;
+  width: min(100%, 500px);
+  justify-self: end;
   min-height: 0;
   height: clamp(540px, 64vh, 590px);
   overflow: hidden;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid var(--bs-line);
   border-radius: 8px;
   background: linear-gradient(180deg, rgba(21, 21, 18, 0.96), rgba(10, 10, 9, 0.94));
@@ -435,7 +437,7 @@ body.landing-react-body .price-card a {
 
 .device-top {
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .device-top span,
@@ -445,7 +447,7 @@ body.landing-react-body .price-card a {
   display: block;
   color: var(--bs-faint);
   font-family: var(--bs-display);
-  font-size: 1.18rem;
+  font-size: 1.02rem;
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -453,9 +455,9 @@ body.landing-react-body .price-card a {
 
 .device-top strong {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
   font-family: "Space Mono", monospace;
-  font-size: 2rem;
+  font-size: clamp(1.55rem, 2.6vw, 1.9rem);
   font-weight: 400;
   letter-spacing: -0.08em;
 }
@@ -463,8 +465,8 @@ body.landing-react-body .price-card a {
 .device-orb {
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--bs-ink);
   color: #141410;
@@ -486,7 +488,7 @@ body.landing-react-body .price-card a {
 }
 
 .booking-card {
-  padding: 13px;
+  padding: 10px;
   border-radius: 8px;
 }
 
@@ -508,15 +510,15 @@ body.landing-react-body .price-card a {
 
 .booking-card-title {
   display: grid;
-  gap: 4px;
-  margin-bottom: 10px;
+  gap: 2px;
+  margin-bottom: 7px;
 }
 
 .telegram-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 9px;
+  gap: 10px;
+  padding: 7px 8px;
   border: 1px solid rgba(247, 242, 233, 0.1);
   border-radius: 14px;
   background: rgba(0, 0, 0, 0.25);
@@ -525,8 +527,8 @@ body.landing-react-body .price-card a {
 .bot-avatar {
   display: grid;
   place-items: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
   color: #10100e;
   background:
@@ -544,7 +546,7 @@ body.landing-react-body .price-card a {
   display: block;
   margin-top: 2px;
   color: var(--bs-muted);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
 }
 
 .slot-grid {
@@ -572,14 +574,14 @@ body.landing-react-body .price-card a {
   display: grid;
   align-content: start;
   gap: 7px;
-  min-height: 190px;
-  max-height: 210px;
-  margin-top: 10px;
+  min-height: 206px;
+  max-height: 226px;
+  margin-top: 8px;
   overflow: hidden;
 }
 
 .chat-bubble {
-  width: min(92%, 330px);
+  width: min(94%, 370px);
   padding: 9px 11px;
   border-radius: 8px;
   color: var(--bs-muted);
@@ -604,7 +606,7 @@ body.landing-react-body .price-card a {
 
 .bot-suggestion {
   margin-top: 10px;
-  padding: 10px;
+  padding: 9px;
   border-radius: 8px;
 }
 
@@ -619,13 +621,14 @@ body.landing-react-body .price-card a {
 
 .ai-slot-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
   margin-top: 8px;
 }
 
 .ai-slot-row button {
   min-height: 34px;
+  padding-inline: 4px;
   border: 1px solid var(--bs-line);
   border-radius: 999px;
   color: var(--bs-muted);
@@ -641,7 +644,7 @@ body.landing-react-body .price-card a {
 
 .draft-card {
   justify-content: space-between;
-  gap: 16px;
+  gap: 10px;
   margin-top: 10px;
   padding: 12px;
   border-radius: 8px;
@@ -653,6 +656,7 @@ body.landing-react-body .price-card a {
 }
 
 .draft-card b {
+  flex: 0 0 auto;
   padding: 8px 11px;
   border-radius: 999px;
   color: #132114;
@@ -2056,6 +2060,11 @@ body.landing-react-body .price-card a {
     padding-top: 72px;
   }
 
+  .hero-device {
+    justify-self: center;
+    width: min(100%, 470px);
+  }
+
   .feature-grid,
   .proof-grid,
   .pricing-grid {
@@ -2126,6 +2135,7 @@ body.landing-react-body .price-card a {
 
   .hero-device {
     min-height: auto;
+    width: 100%;
     padding: 14px;
   }
 
