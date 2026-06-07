@@ -22,9 +22,9 @@ public class EmailService : IEmailService
     {
         try
         {
-            var username = _config["Email:Username"] ?? "";
-            var password = _config["Email:Password"] ?? "";
-            var senderEmail = _config["Email:SenderEmail"] ?? "";
+            var username = GetConfigValue("Email:Username", "EMAIL_USERNAME", "SMTP_USERNAME");
+            var password = GetConfigValue("Email:Password", "EMAIL_PASSWORD", "SMTP_PASSWORD");
+            var senderEmail = GetConfigValue("Email:SenderEmail", "EMAIL_SENDER_EMAIL", "EMAIL_SENDER", "SMTP_FROM");
 
             if (string.IsNullOrWhiteSpace(username) ||
                 string.IsNullOrWhiteSpace(password) ||
@@ -36,7 +36,7 @@ public class EmailService : IEmailService
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(
-                _config["Email:SenderName"] ?? "BookSlot",
+                GetConfigValue("Email:SenderName", "EMAIL_SENDER_NAME", "SMTP_FROM_NAME") ?? "BookSlot",
                 string.IsNullOrWhiteSpace(senderEmail) ? username : senderEmail));
             message.To.Add(new MailboxAddress(toName, toEmail));
             message.Subject = subject;
@@ -44,8 +44,8 @@ public class EmailService : IEmailService
 
             using var client = new SmtpClient();
             await client.ConnectAsync(
-                _config["Email:Host"] ?? "smtp.gmail.com",
-                int.Parse(_config["Email:Port"] ?? "465"),
+                GetConfigValue("Email:Host", "EMAIL_HOST", "SMTP_HOST") ?? "smtp.gmail.com",
+                int.Parse(GetConfigValue("Email:Port", "EMAIL_PORT", "SMTP_PORT") ?? "465"),
                 SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(
                 username,
@@ -156,5 +156,17 @@ public class EmailService : IEmailService
         </div>";
 
         await SendAsync(toEmail, "Власник", "Новий запис — BookSlot", html);
+    }
+
+    private string? GetConfigValue(params string[] keys)
+    {
+        foreach (var key in keys)
+        {
+            var value = _config[key] ?? Environment.GetEnvironmentVariable(key);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return null;
     }
 }

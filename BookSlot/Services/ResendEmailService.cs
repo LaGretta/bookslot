@@ -24,11 +24,13 @@ public class ResendEmailService : IEmailService
     {
         try
         {
-            var apiKey = _config["Resend:ApiKey"] ?? "";
-            var from   = _config["Resend:From"] ?? "BookSlot <onboarding@resend.dev>";
+            var apiKey = GetConfigValue("Resend:ApiKey", "RESEND_API_KEY");
+            var from   = GetConfigValue("Resend:From", "RESEND_FROM");
+            if (string.IsNullOrWhiteSpace(from))
+                from = "BookSlot <onboarding@resend.dev>";
 
             if (string.IsNullOrWhiteSpace(apiKey))
-                throw new EmailDeliveryException("Resend API key is not configured.");
+                throw new EmailDeliveryException("Resend API key is not configured. Set Resend:ApiKey or RESEND_API_KEY.");
 
             var payload = new
             {
@@ -147,5 +149,17 @@ public class ResendEmailService : IEmailService
         </div>";
 
         await SendRawAsync(toEmail, "Власник", "🔔 Новий запис — BookSlot", html);
+    }
+
+    private string GetConfigValue(params string[] keys)
+    {
+        foreach (var key in keys)
+        {
+            var value = _config[key] ?? Environment.GetEnvironmentVariable(key);
+            if (!string.IsNullOrWhiteSpace(value))
+                return value;
+        }
+
+        return "";
     }
 }
