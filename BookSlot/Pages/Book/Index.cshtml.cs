@@ -4,6 +4,7 @@ using BookSlot.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookSlot.Pages.Book;
@@ -43,6 +44,7 @@ public class IndexModel : PageModel
         }
     }
 
+    [EnableRateLimiting("booking-write")]
     public async Task<IActionResult> OnPostAsync(
         string slug, int serviceId, string date, string time,
         string clientName, string clientPhone, string clientEmail, string? notes)

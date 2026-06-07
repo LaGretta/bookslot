@@ -46,12 +46,18 @@ public class LoginModel : PageModel
             return Page();
 
         var result = await _signInManager.PasswordSignInAsync(
-            Input.Email, Input.Password, isPersistent: false, lockoutOnFailure: false);
+            Input.Email, Input.Password, isPersistent: false, lockoutOnFailure: true);
 
         if (result.Succeeded)
         {
             _logger.LogInformation("User logged in: {Email}", Input.Email);
             return LocalRedirect(returnUrl);
+        }
+
+        if (result.IsLockedOut)
+        {
+            ModelState.AddModelError(string.Empty, "Забагато невдалих спроб. Спробуйте ще раз через 10 хвилин.");
+            return Page();
         }
 
         ModelState.AddModelError(string.Empty, "Невірний email або пароль");

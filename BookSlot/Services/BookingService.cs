@@ -1,6 +1,7 @@
 using BookSlot.Data;
 using BookSlot.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace BookSlot.Services;
 
@@ -17,11 +18,17 @@ public class BookingService
 
     public async Task<List<TimeSpan>> GetAvailableSlotsAsync(int businessId, int serviceId, DateTime date)
     {
-        var service = await _db.Services.FindAsync(serviceId);
+        if (date.Date < DateTime.UtcNow.Date || date.Date > DateTime.UtcNow.Date.AddMonths(6))
+            return [];
+
+        var service = await _db.Services
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Id == serviceId && s.BusinessId == businessId && s.IsActive);
         if (service == null) return [];
 
         var dayOfWeek = date.DayOfWeek;
         var schedule = await _db.WorkSchedules
+            .AsNoTracking()
             .FirstOrDefaultAsync(w => w.BusinessId == businessId && w.DayOfWeek == dayOfWeek && w.IsWorking);
 
         if (schedule == null) return [];
@@ -29,6 +36,7 @@ public class BookingService
         var dayStart = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
         var dayEnd   = dayStart.AddDays(1);
         var existingBookings = await _db.Bookings
+            .AsNoTracking()
             .Where(b => b.BusinessId == businessId
                      && b.BookingDate >= dayStart && b.BookingDate < dayEnd
                      && b.Status != BookingStatus.Cancelled)
@@ -36,6 +44,7 @@ public class BookingService
 
         // Load manually blocked times for this day
         var manualBlocks = await _db.ManualBlocks
+            .AsNoTracking()
             .Where(b => b.BusinessId == businessId && b.Date == dayStart)
             .Select(b => b.BlockedTime)
             .ToListAsync();
@@ -66,6 +75,9 @@ public class BookingService
         string clientName, string clientPhone, string clientEmail,
         DateTime date, TimeSpan startTime, string? notes = null)
     {
+        if (date.Date < DateTime.UtcNow.Date || date.Date > DateTime.UtcNow.Date.AddMonths(6))
+            return null;
+
         var service = await _db.Services.FirstOrDefaultAsync(s => s.Id == serviceId && s.BusinessId == businessId);
         if (service == null) return null;
 
@@ -80,22 +92,37 @@ public class BookingService
         var available = await GetAvailableSlotsAsync(businessId, serviceId, date);
         if (!available.Contains(startTime)) return null;
 
+        await using var transaction = await _db.Database.BeginTransactionAsync(IsolationLevel.Serializable);
+
+        var bookingDate = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc);
+        var bookingEnd = startTime + TimeSpan.FromMinutes(service.DurationMinutes);
+        var alreadyBooked = await _db.Bookings.AnyAsync(b =>
+            b.BusinessId == businessId &&
+            b.BookingDate == bookingDate &&
+            b.Status != BookingStatus.Cancelled &&
+            b.StartTime < bookingEnd &&
+            b.EndTime > startTime);
+
+        if (alreadyBooked)
+            return null;
+
         var booking = new Booking
         {
             BusinessId = businessId,
             ServiceId = serviceId,
-            ClientName = clientName,
-            ClientPhone = clientPhone,
-            ClientEmail = clientEmail,
-            BookingDate = DateTime.SpecifyKind(date.Date, DateTimeKind.Utc),
+            ClientName = TrimTo(clientName, 120),
+            ClientPhone = TrimTo(clientPhone, 60),
+            ClientEmail = TrimTo(clientEmail, 160),
+            BookingDate = bookingDate,
             StartTime = startTime,
-            EndTime = startTime + TimeSpan.FromMinutes(service.DurationMinutes),
-            Notes = notes,
+            EndTime = bookingEnd,
+            Notes = TrimTo(notes, 1000),
             Status = BookingStatus.Confirmed
         };
 
         _db.Bookings.Add(booking);
         await _db.SaveChangesAsync();
+        await transaction.CommitAsync();
 
         await SendPlanNotificationsAsync(booking, business, service);
 
@@ -104,7 +131,9 @@ public class BookingService
 
     private async Task<bool> CanCreateBookingThisMonthAsync(Business business)
     {
-        var max = business.Subscription?.MaxBookingsPerMonth ?? 30;
+        var max = IsActiveSubscription(business.Subscription)
+            ? business.Subscription!.MaxBookingsPerMonth
+            : 30;
         if (max == int.MaxValue) return true;
 
         var now = DateTime.UtcNow;
@@ -122,7 +151,9 @@ public class BookingService
 
     private async Task SendPlanNotificationsAsync(Booking booking, Business business, Service service)
     {
-        var plan = business.Subscription?.Plan ?? SubscriptionPlan.Free;
+        var plan = IsActiveSubscription(business.Subscription)
+            ? business.Subscription!.Plan
+            : SubscriptionPlan.Free;
         if (plan == SubscriptionPlan.Free) return;
 
         var owner = await _db.Users.FirstOrDefaultAsync(u => u.Id == business.UserId);
@@ -172,4 +203,13 @@ public class BookingService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    private static string TrimTo(string? value, int maxLength)
+    {
+        value = value?.Trim() ?? "";
+        return value.Length <= maxLength ? value : value[..maxLength];
+    }
+
+    private static bool IsActiveSubscription(Subscription? subscription) =>
+        subscription is { IsActive: true } && !subscription.IsExpired;
 }

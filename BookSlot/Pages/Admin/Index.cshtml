@@ -263,6 +263,36 @@
                     </div>
                 </div>
 
+                <div class="mt-3 p-3 rounded-3" style="background:#f8fafc;border:1px solid #e2e8f0">
+                    <form method="post" asp-page-handler="SetUserPlan" class="row g-2 align-items-end">
+                        <input type="hidden" name="userId" value="@profile.UserId" />
+                        <input type="hidden" name="search" value="@Model.SearchEmail" />
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold text-muted">Видати підписку</label>
+                            <select name="plan" class="form-select">
+                                <option value="Free">Free</option>
+                                <option value="Basic">Basic</option>
+                                <option value="Pro">Pro AI</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label small fw-semibold text-muted">Днів</label>
+                            <input name="days" type="number" min="0" max="3660" class="form-control" placeholder="0 = безстроково" />
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success w-100" type="submit"
+                                    onclick="return confirm('Змінити підписку для @profile.Email?')">
+                                <i class="bi bi-stars me-1"></i> Видати тариф
+                            </button>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-text">
+                                Порожньо або 0 днів = без кінцевої дати. Free зніме платний тариф.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
                 @if (profile.BusinessSlug != null)
                 {
                     <div class="mt-3 d-flex gap-2 flex-wrap">

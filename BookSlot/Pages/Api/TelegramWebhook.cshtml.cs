@@ -4,6 +4,7 @@ using BookSlot.Features.AiAssistant.Configuration;
 using BookSlot.Features.AiAssistant.Telegram;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -19,21 +20,25 @@ public class TelegramWebhookModel : PageModel
     private readonly ITelegramMessageSender _sender;
     private readonly ITelegramTokenProtector _tokenProtector;
     private readonly ApplicationDbContext _db;
+    private readonly IWebHostEnvironment _environment;
 
     public TelegramWebhookModel(
         IOptions<AiAssistantOptions> options,
         ITelegramAssistantHandler handler,
         ITelegramMessageSender sender,
         ITelegramTokenProtector tokenProtector,
-        ApplicationDbContext db)
+        ApplicationDbContext db,
+        IWebHostEnvironment environment)
     {
         _options = options.Value;
         _handler = handler;
         _sender = sender;
         _tokenProtector = tokenProtector;
         _db = db;
+        _environment = environment;
     }
 
+    [EnableRateLimiting("webhook")]
     public async Task<IActionResult> OnPostAsync()
     {
         if (!_options.TelegramWebhookEnabled)
@@ -120,7 +125,7 @@ public class TelegramWebhookModel : PageModel
     private bool IsValidTelegramSecret()
     {
         if (string.IsNullOrWhiteSpace(_options.TelegramWebhookSecretToken))
-            return true;
+            return _environment.IsDevelopment();
 
         if (!Request.Headers.TryGetValue(TelegramSecretHeaderName, out var receivedSecret))
             return false;

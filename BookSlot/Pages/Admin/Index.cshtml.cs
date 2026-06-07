@@ -11,9 +11,14 @@ namespace BookSlot.Pages.Admin;
 public class IndexModel : PageModel
 {
     private readonly ApplicationDbContext _db;
-    private const string OwnerEmail = "sashagutsul2014@gmail.com";
+    private readonly string _adminEmail;
+    private const string DefaultAdminEmail = "sashagutsul2014@gmail.com";
 
-    public IndexModel(ApplicationDbContext db) => _db = db;
+    public IndexModel(ApplicationDbContext db, IConfiguration configuration)
+    {
+        _db = db;
+        _adminEmail = configuration["Admin:OwnerEmail"] ?? DefaultAdminEmail;
+    }
 
     public List<UserRow> Users { get; set; } = [];
     public string? SearchEmail { get; set; }
@@ -72,7 +77,7 @@ public class IndexModel : PageModel
 
     private bool IsAdmin() =>
         User.Identity?.IsAuthenticated == true &&
-        string.Equals(User.Identity.Name, OwnerEmail, StringComparison.OrdinalIgnoreCase);
+        string.Equals(User.Identity.Name, _adminEmail, StringComparison.OrdinalIgnoreCase);
 
     public async Task<IActionResult> OnGetAsync(string? search, string? userId)
     {
@@ -176,6 +181,84 @@ public class IndexModel : PageModel
         return RedirectToPage();
     }
 
+    public async Task<IActionResult> OnPostSetUserPlanAsync(
+        string userId,
+        string plan,
+        int? days,
+        string? search)
+    {
+        if (!IsAdmin()) return Forbid();
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            TempData["Error"] = "Не передано користувача.";
+            return RedirectToPage(new { search });
+        }
+
+        if (!TryParsePlan(plan, out var selectedPlan))
+        {
+            TempData["Error"] = "Невідомий тариф. Обери Free, Basic або Pro AI.";
+            return RedirectToPage(new { search, userId });
+        }
+
+        var grantDays = days.GetValueOrDefault();
+
+        if (grantDays is < 0 or > 3660)
+        {
+            TempData["Error"] = "Кількість днів має бути від 0 до 3660. 0 або порожньо = без кінцевої дати.";
+            return RedirectToPage(new { search, userId });
+        }
+
+        var user = await _db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null)
+        {
+            TempData["Error"] = "Користувача не знайдено.";
+            return RedirectToPage(new { search });
+        }
+
+        var business = await _db.Businesses
+            .Include(b => b.Subscription)
+            .FirstOrDefaultAsync(b => b.UserId == userId);
+
+        if (business == null)
+        {
+            TempData["Error"] = $"У {user.Email} ще немає бізнесу, тому підписку нема до чого прив'язати. Нехай спершу створить бізнес у налаштуваннях.";
+            return RedirectToPage(new { search, userId });
+        }
+
+        var subscription = business.Subscription;
+        if (subscription == null)
+        {
+            subscription = new Models.Subscription { BusinessId = business.Id };
+            _db.Subscriptions.Add(subscription);
+        }
+
+        subscription.Plan = selectedPlan;
+        subscription.StartDate = DateTime.UtcNow;
+        subscription.EndDate = selectedPlan == SubscriptionPlan.Free
+            ? null
+            : grantDays > 0
+                ? DateTime.UtcNow.AddDays(grantDays)
+                : null;
+        subscription.IsActive = true;
+        subscription.PromoUsed = false;
+
+        await _db.SaveChangesAsync();
+
+        var duration = subscription.EndDate.HasValue
+            ? $"до {subscription.EndDate.Value:dd.MM.yyyy}"
+            : "без кінцевої дати";
+
+        TempData["Success"] = selectedPlan == SubscriptionPlan.Free
+            ? $"{user.Email} повернуто на Free."
+            : $"{user.Email} видано {PlanLabel(selectedPlan)} {duration}.";
+
+        return RedirectToPage(new { search, userId });
+    }
+
     private async Task LoadStatsAsync()
     {
         var now = DateTime.UtcNow;
@@ -203,9 +286,10 @@ public class IndexModel : PageModel
 
     private async Task<Business?> GetOwnerBusinessAsync(bool includeSubscription)
     {
+        var adminEmail = _adminEmail.ToLowerInvariant();
         var user = await _db.Users
             .AsNoTracking()
-            .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == OwnerEmail);
+            .FirstOrDefaultAsync(u => u.Email != null && u.Email.ToLower() == adminEmail);
 
         if (user == null)
             return null;
