@@ -1,22 +1,27 @@
+using System.ComponentModel.DataAnnotations;
 using BookSlot.Data;
+using BookSlot.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BookSlot.Areas.Identity.Pages.Account;
 
+[EnableRateLimiting("auth")]
 public class RegisterModel : PageModel
 {
-    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
+    private readonly EmailVerificationCodeService _emailVerification;
     private readonly ILogger<RegisterModel> _logger;
 
-    public RegisterModel(UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager, ILogger<RegisterModel> logger)
+    public RegisterModel(
+        UserManager<ApplicationUser> userManager,
+        EmailVerificationCodeService emailVerification,
+        ILogger<RegisterModel> logger)
     {
         _userManager = userManager;
-        _signInManager = signInManager;
+        _emailVerification = emailVerification;
         _logger = logger;
     }
 
@@ -48,19 +53,29 @@ public class RegisterModel : PageModel
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl = "/Dashboard/Index";
+        returnUrl = string.IsNullOrWhiteSpace(returnUrl)
+            ? "/Dashboard/Index"
+            : returnUrl;
+        ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)
             return Page();
 
-        var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
-        var result = await _userManager.CreateAsync(user, Input.Password);
+        var email = Input.Email.Trim();
+        var user = new ApplicationUser
+        {
+            UserName = email,
+            Email = email,
+            EmailConfirmed = false
+        };
 
+        var result = await _userManager.CreateAsync(user, Input.Password);
         if (result.Succeeded)
         {
-            _logger.LogInformation("New user registered: {Email}", Input.Email);
-            await _signInManager.SignInAsync(user, isPersistent: false);
-            return LocalRedirect(returnUrl);
+            _logger.LogInformation("New user registered and needs email confirmation: {Email}", email);
+            await _emailVerification.SendCodeAsync(user);
+            TempData["Success"] = "Ми надіслали 6-значний код на вашу пошту.";
+            return RedirectToPage("./VerifyEmailCode", new { userId = user.Id, returnUrl });
         }
 
         foreach (var error in result.Errors)

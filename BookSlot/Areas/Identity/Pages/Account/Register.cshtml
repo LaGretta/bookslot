@@ -32,11 +32,15 @@
                     <span asp-validation-for="Input.Password" class="text-danger small"></span>
                 </div>
 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label asp-for="Input.ConfirmPassword" class="form-label fw-semibold">Підтвердити пароль</label>
                     <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="повторіть пароль" autocomplete="new-password" />
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
                 </div>
+
+                <p class="small text-muted mb-4">
+                    Після реєстрації ми надішлемо 6-значний код на вашу пошту.
+                </p>
 
                 <button type="submit" class="btn btn-primary bs-auth-submit w-100">
                     Зареєструватись

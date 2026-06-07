@@ -28,7 +28,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
-    options.SignIn.RequireConfirmedAccount   = false;
+    options.SignIn.RequireConfirmedAccount   = true;
     options.User.RequireUniqueEmail          = true;
     options.Password.RequireDigit           = true;
     options.Password.RequiredLength         = 6;
@@ -65,6 +65,7 @@ builder.Services.AddDataProtection()
     .SetApplicationName("BookSlot");
 
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
@@ -107,11 +108,22 @@ builder.Services.AddRateLimiter(options =>
                 Window = TimeSpan.FromMinutes(1),
                 QueueLimit = 0
             }));
+
+    options.AddPolicy("auth", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            GetClientPartition(context),
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
 });
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddHttpClient<ResendEmailService>();
 builder.Services.AddScoped<IEmailService, ResendEmailService>();
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
+builder.Services.AddScoped<EmailVerificationCodeService>();
 builder.Services.AddScoped<StripeService>();
 if (builder.Configuration.GetValue("BookingReminders:Enabled", true))
 {
