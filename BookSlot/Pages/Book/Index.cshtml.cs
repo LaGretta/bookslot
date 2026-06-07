@@ -45,6 +45,7 @@ public class IndexModel : PageModel
         string time,
         string clientName,
         string clientPhone,
+        string clientEmail,
         string? notes)
     {
         await LoadPageAsync(slug);
@@ -52,25 +53,6 @@ public class IndexModel : PageModel
             return NotFound();
 
         var currentUser = await _userManager.GetUserAsync(User);
-        if (currentUser == null)
-        {
-            return RedirectToPage("/Account/Login", new
-            {
-                area = "Identity",
-                returnUrl = Url.Page("/Book/Index", new { slug })
-            });
-        }
-
-        if (!currentUser.EmailConfirmed || string.IsNullOrWhiteSpace(currentUser.Email))
-        {
-            return RedirectToPage("/Account/VerifyEmailCode", new
-            {
-                area = "Identity",
-                userId = currentUser.Id,
-                returnUrl = Url.Page("/Book/Index", new { slug })
-            });
-        }
-
         await LoadCurrentUserAsync(currentUser);
 
         if (!DateTime.TryParse(date, out var bookingDate) || !TimeSpan.TryParse(time, out var startTime))
@@ -79,12 +61,18 @@ public class IndexModel : PageModel
             return Page();
         }
 
+        if (string.IsNullOrWhiteSpace(clientEmail))
+        {
+            ModelState.AddModelError(string.Empty, "Введіть email для підтвердження запису та нагадувань.");
+            return Page();
+        }
+
         var booking = await _bookingService.CreateBookingAsync(
             Business.Id,
             serviceId,
             clientName,
             clientPhone,
-            currentUser.Email,
+            clientEmail,
             bookingDate,
             startTime,
             notes);
@@ -99,6 +87,7 @@ public class IndexModel : PageModel
 
         TempData["BookingSuccess"] =
             $"Ви записані на {bookingDate:dd.MM.yyyy} о {startTime:hh\\:mm}. Чекаємо вас!";
+        TempData["BookingEmail"] = clientEmail;
         return RedirectToPage(new { slug });
     }
 

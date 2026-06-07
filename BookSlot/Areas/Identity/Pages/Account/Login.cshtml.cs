@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using BookSlot.Data;
-using BookSlot.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,19 +11,13 @@ namespace BookSlot.Areas.Identity.Pages.Account;
 public class LoginModel : PageModel
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
-    private readonly UserManager<ApplicationUser> _userManager;
-    private readonly EmailVerificationCodeService _emailVerification;
     private readonly ILogger<LoginModel> _logger;
 
     public LoginModel(
         SignInManager<ApplicationUser> signInManager,
-        UserManager<ApplicationUser> userManager,
-        EmailVerificationCodeService emailVerification,
         ILogger<LoginModel> logger)
     {
         _signInManager = signInManager;
-        _userManager = userManager;
-        _emailVerification = emailVerification;
         _logger = logger;
     }
 
@@ -58,29 +51,6 @@ public class LoginModel : PageModel
             return Page();
 
         var email = Input.Email.Trim();
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
-        {
-            if (await _userManager.IsLockedOutAsync(user))
-            {
-                ModelState.AddModelError(string.Empty, "Забагато невдалих спроб. Спробуйте ще раз через 10 хвилин.");
-                return Page();
-            }
-
-            var passwordIsValid = await _userManager.CheckPasswordAsync(user, Input.Password);
-            if (!passwordIsValid)
-            {
-                await _userManager.AccessFailedAsync(user);
-                ModelState.AddModelError(string.Empty, "Невірний email або пароль");
-                return Page();
-            }
-
-            await _userManager.ResetAccessFailedCountAsync(user);
-            await _emailVerification.SendCodeAsync(user);
-            TempData["Success"] = "Email ще не підтверджено. Ми надіслали новий код на вашу пошту.";
-            return RedirectToPage("./VerifyEmailCode", new { userId = user.Id, returnUrl });
-        }
-
         var result = await _signInManager.PasswordSignInAsync(
             email, Input.Password, isPersistent: false, lockoutOnFailure: true);
 
@@ -93,12 +63,6 @@ public class LoginModel : PageModel
         if (result.IsLockedOut)
         {
             ModelState.AddModelError(string.Empty, "Забагато невдалих спроб. Спробуйте ще раз через 10 хвилин.");
-            return Page();
-        }
-
-        if (result.IsNotAllowed)
-        {
-            ModelState.AddModelError(string.Empty, "Підтвердіть email перед входом.");
             return Page();
         }
 

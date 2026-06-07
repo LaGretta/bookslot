@@ -70,10 +70,10 @@ else
                         <div style="font-size:3rem"><i class="bi bi-check2-circle"></i></div>
                         <h5 class="fw-bold mt-2">Запис підтверджено!</h5>
                         <p>@TempData["BookingSuccess"]</p>
-                        @if (!string.IsNullOrWhiteSpace(Model.CurrentUserEmail))
+                        @if (TempData["BookingEmail"] is string bookingEmail && !string.IsNullOrWhiteSpace(bookingEmail))
                         {
                             <p class="small text-muted mb-0">
-                                Якщо тариф закладу підтримує email-сповіщення, вони прийдуть на @Model.CurrentUserEmail.
+                                Якщо тариф закладу підтримує email-сповіщення, вони прийдуть на @bookingEmail.
                             </p>
                         }
                     </div>
@@ -132,59 +132,41 @@ else
                             <div id="step4" style="display:none">
                                 <h5 class="fw-bold mb-3">4. Ваші дані</h5>
 
-                                @if (!Model.IsClientSignedIn)
-                                {
-                                    <div class="alert alert-light border p-4">
-                                        <h6 class="fw-bold mb-2">Щоб підтвердити запис, увійдіть в акаунт</h6>
-                                        <p class="text-muted small mb-3">
-                                            Email підтверджується один раз при реєстрації. Потім записи й нагадування приходять на email вашого акаунта.
-                                        </p>
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <a class="btn btn-primary flex-fill" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
-                                                Увійти
-                                            </a>
-                                            <a class="btn btn-outline-primary flex-fill" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
-                                                Зареєструватись
-                                            </a>
-                                        </div>
+                                <form method="post">
+                                    <input type="hidden" name="serviceId" id="formServiceId" />
+                                    <input type="hidden" name="date" id="formDate" />
+                                    <input type="hidden" name="time" id="formTime" />
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Ім'я та прізвище *</label>
+                                        <input name="clientName" class="form-control" required
+                                               value="@displayName"
+                                               placeholder="Іван Петренко" autocomplete="name" />
                                     </div>
-                                }
-                                else
-                                {
-                                    <form method="post">
-                                        <input type="hidden" name="serviceId" id="formServiceId" />
-                                        <input type="hidden" name="date" id="formDate" />
-                                        <input type="hidden" name="time" id="formTime" />
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Телефон *</label>
+                                        <input name="clientPhone" type="tel" class="form-control" required
+                                               placeholder="+380XXXXXXXXX" autocomplete="tel" />
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Email для підтвердження і нагадувань *</label>
+                                        <input name="clientEmail" type="email" class="form-control" required
+                                               value="@Model.CurrentUserEmail"
+                                               placeholder="your@email.com" autocomplete="email" />
+                                        <div class="form-text">На цю пошту прийде інформація про запис. Код вводити не потрібно.</div>
+                                    </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Ім'я та прізвище *</label>
-                                            <input name="clientName" class="form-control" required
-                                                   value="@displayName"
-                                                   placeholder="Іван Петренко" autocomplete="name" />
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Телефон *</label>
-                                            <input name="clientPhone" type="tel" class="form-control" required
-                                                   placeholder="+380XXXXXXXXX" autocomplete="tel" />
-                                        </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Нотатки</label>
+                                        <textarea name="notes" class="form-control" rows="2" placeholder="Побажання або коментар"></textarea>
+                                    </div>
 
-                                        <div class="alert alert-light border mb-3">
-                                            <div class="small text-muted mb-1">Email для підтвердження і нагадувань</div>
-                                            <div class="fw-semibold">@Model.CurrentUserEmail</div>
-                                        </div>
+                                    <div class="alert alert-light border mb-3" id="bookingSummary"></div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label fw-semibold">Нотатки</label>
-                                            <textarea name="notes" class="form-control" rows="2" placeholder="Побажання або коментар"></textarea>
-                                        </div>
-
-                                        <div class="alert alert-light border mb-3" id="bookingSummary"></div>
-
-                                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
-                                            <i class="bi bi-calendar-check me-2"></i> Підтвердити запис
-                                        </button>
-                                    </form>
-                                }
+                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
+                                        <i class="bi bi-calendar-check me-2"></i> Підтвердити запис
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>

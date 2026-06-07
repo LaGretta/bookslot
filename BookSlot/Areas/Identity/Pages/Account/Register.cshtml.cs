@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using BookSlot.Data;
-using BookSlot.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,16 +11,16 @@ namespace BookSlot.Areas.Identity.Pages.Account;
 public class RegisterModel : PageModel
 {
     private readonly UserManager<ApplicationUser> _userManager;
-    private readonly EmailVerificationCodeService _emailVerification;
+    private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ILogger<RegisterModel> _logger;
 
     public RegisterModel(
         UserManager<ApplicationUser> userManager,
-        EmailVerificationCodeService emailVerification,
+        SignInManager<ApplicationUser> signInManager,
         ILogger<RegisterModel> logger)
     {
         _userManager = userManager;
-        _emailVerification = emailVerification;
+        _signInManager = signInManager;
         _logger = logger;
     }
 
@@ -66,30 +65,41 @@ public class RegisterModel : PageModel
             return Page();
         }
 
-        var validation = await _emailVerification.ValidateNewRegistrationAsync(email, Input.Password);
-        if (!validation.Succeeded)
+        var user = new ApplicationUser
         {
-            foreach (var error in validation.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-            return Page();
+            UserName = email,
+            Email = email,
+            EmailConfirmed = true
+        };
+
+        var result = await _userManager.CreateAsync(user, Input.Password);
+        if (result.Succeeded)
+        {
+            _logger.LogInformation("User registered: {Email}", email);
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return LocalRedirect(returnUrl);
         }
 
-        try
-        {
-            var pending = await _emailVerification.CreatePendingRegistrationAsync(email, Input.Password);
-            _logger.LogInformation("Pending registration created for {Email}", email);
+        foreach (var error in result.Errors)
+            ModelState.AddModelError(string.Empty, TranslateIdentityError(error));
 
-            TempData["Success"] = "Ми надіслали 6-значний код на вашу пошту.";
-            return RedirectToPage("./VerifyEmailCode", new { pendingId = pending.Id, returnUrl });
-        }
-        catch (EmailDeliveryException ex)
-        {
-            _logger.LogError(ex, "Failed to send registration code to {Email}", email);
-            ModelState.AddModelError(string.Empty, "Не вдалося надіслати код на пошту. Перевірте email або спробуйте ще раз трохи пізніше.");
-            return Page();
-        }
+        return Page();
     }
 
     private string NormalizeReturnUrl(string? returnUrl) =>
         Url.IsLocalUrl(returnUrl) ? returnUrl! : "/Dashboard/Index";
+
+    private static string TranslateIdentityError(IdentityError error) =>
+        error.Code switch
+        {
+            "DuplicateUserName" or "DuplicateEmail" => "Акаунт з таким email вже існує. Увійдіть або використайте іншу пошту.",
+            "PasswordTooShort" => "Пароль має містити мінімум 6 символів.",
+            "PasswordRequiresDigit" => "Пароль має містити хоча б одну цифру.",
+            "PasswordRequiresNonAlphanumeric" => "Пароль має містити хоча б один спеціальний символ.",
+            "PasswordRequiresUpper" => "Пароль має містити хоча б одну велику літеру.",
+            "PasswordRequiresLower" => "Пароль має містити хоча б одну малу літеру.",
+            "InvalidEmail" => "Невірний формат email.",
+            "InvalidUserName" => "Email містить недопустимі символи.",
+            _ => error.Description
+        };
 }
