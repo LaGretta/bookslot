@@ -27,6 +27,9 @@ public class ResendEmailService : IEmailService
             var apiKey = _config["Resend:ApiKey"] ?? "";
             var from   = _config["Resend:From"] ?? "BookSlot <onboarding@resend.dev>";
 
+            if (string.IsNullOrWhiteSpace(apiKey))
+                throw new EmailDeliveryException("Resend API key is not configured.");
+
             var payload = new
             {
                 from,
@@ -46,11 +49,17 @@ public class ResendEmailService : IEmailService
             {
                 var body = await response.Content.ReadAsStringAsync();
                 _logger.LogError("Resend API error {Status}: {Body}", response.StatusCode, body);
+                throw new EmailDeliveryException($"Resend rejected email with status {(int)response.StatusCode}: {body}");
             }
+        }
+        catch (EmailDeliveryException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send email via Resend to {Email}", toEmail);
+            throw new EmailDeliveryException("Failed to send email via Resend.", ex);
         }
     }
 

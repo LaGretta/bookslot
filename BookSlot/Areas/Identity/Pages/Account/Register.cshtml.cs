@@ -48,39 +48,48 @@ public class RegisterModel : PageModel
 
     public void OnGet(string? returnUrl = null)
     {
-        ReturnUrl = returnUrl ?? Url.Content("~/Dashboard/Index");
+        ReturnUrl = NormalizeReturnUrl(returnUrl);
     }
 
     public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
     {
-        returnUrl = string.IsNullOrWhiteSpace(returnUrl)
-            ? "/Dashboard/Index"
-            : returnUrl;
+        returnUrl = NormalizeReturnUrl(returnUrl);
         ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)
             return Page();
 
         var email = Input.Email.Trim();
-        var user = new ApplicationUser
+        if (await _userManager.FindByEmailAsync(email) != null)
         {
-            UserName = email,
-            Email = email,
-            EmailConfirmed = false
-        };
-
-        var result = await _userManager.CreateAsync(user, Input.Password);
-        if (result.Succeeded)
-        {
-            _logger.LogInformation("New user registered and needs email confirmation: {Email}", email);
-            await _emailVerification.SendCodeAsync(user);
-            TempData["Success"] = "Ми надіслали 6-значний код на вашу пошту.";
-            return RedirectToPage("./VerifyEmailCode", new { userId = user.Id, returnUrl });
+            ModelState.AddModelError(string.Empty, "Акаунт з таким email вже існує. Увійдіть або використайте іншу пошту.");
+            return Page();
         }
 
-        foreach (var error in result.Errors)
-            ModelState.AddModelError(string.Empty, error.Description);
+        var validation = await _emailVerification.ValidateNewRegistrationAsync(email, Input.Password);
+        if (!validation.Succeeded)
+        {
+            foreach (var error in validation.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            return Page();
+        }
 
-        return Page();
+        try
+        {
+            var pending = await _emailVerification.CreatePendingRegistrationAsync(email, Input.Password);
+            _logger.LogInformation("Pending registration created for {Email}", email);
+
+            TempData["Success"] = "Ми надіслали 6-значний код на вашу пошту.";
+            return RedirectToPage("./VerifyEmailCode", new { pendingId = pending.Id, returnUrl });
+        }
+        catch (EmailDeliveryException ex)
+        {
+            _logger.LogError(ex, "Failed to send registration code to {Email}", email);
+            ModelState.AddModelError(string.Empty, "Не вдалося надіслати код на пошту. Перевірте email або спробуйте ще раз трохи пізніше.");
+            return Page();
+        }
     }
+
+    private string NormalizeReturnUrl(string? returnUrl) =>
+        Url.IsLocalUrl(returnUrl) ? returnUrl! : "/Dashboard/Index";
 }

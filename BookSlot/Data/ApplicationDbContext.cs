@@ -24,6 +24,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
     public DbSet<Booking> Bookings { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<ManualBlock> ManualBlocks { get; set; }
+    public DbSet<PendingEmailRegistration> PendingEmailRegistrations { get; set; }
     public DbSet<AiAssistantSettings> AiAssistantSettings { get; set; }
     public DbSet<TelegramBotConnection> TelegramBotConnections { get; set; }
     public DbSet<AiConversation> AiConversations { get; set; }
@@ -69,6 +70,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IDataPro
         {
             e.HasOne(m => m.Business).WithMany(b => b.ManualBlocks).HasForeignKey(m => m.BusinessId);
             e.HasIndex(m => new { m.BusinessId, m.Date, m.BlockedTime });
+        });
+
+        builder.Entity<PendingEmailRegistration>(e =>
+        {
+            e.HasKey(p => p.Id);
+            e.HasIndex(p => p.NormalizedEmail).IsUnique();
+            e.Property(p => p.Email).IsRequired().HasMaxLength(256);
+            e.Property(p => p.NormalizedEmail).IsRequired().HasMaxLength(256);
+            e.Property(p => p.PasswordHash).IsRequired();
+            e.Property(p => p.CodeHash).IsRequired().HasMaxLength(128);
+            e.Property(p => p.CodeSalt).IsRequired().HasMaxLength(64);
         });
 
         builder.Entity<AiAssistantSettings>(e =>

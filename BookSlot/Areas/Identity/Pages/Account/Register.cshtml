@@ -17,6 +17,11 @@
         </div>
 
         <div class="bs-auth-card">
+            @if (TempData["Error"] is string error)
+            {
+                <div class="alert alert-danger" role="alert">@error</div>
+            }
+
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
 
@@ -39,7 +44,7 @@
                 </div>
 
                 <p class="small text-muted mb-4">
-                    Після реєстрації ми надішлемо 6-значний код на вашу пошту.
+                    Акаунт створиться тільки після підтвердження email 6-значним кодом.
                 </p>
 
                 <button type="submit" class="btn btn-primary bs-auth-submit w-100">

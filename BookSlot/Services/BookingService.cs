@@ -9,11 +9,13 @@ public class BookingService
 {
     private readonly ApplicationDbContext _db;
     private readonly IEmailService _emailService;
+    private readonly ILogger<BookingService> _logger;
 
-    public BookingService(ApplicationDbContext db, IEmailService emailService)
+    public BookingService(ApplicationDbContext db, IEmailService emailService, ILogger<BookingService> logger)
     {
         _db = db;
         _emailService = emailService;
+        _logger = logger;
     }
 
     public async Task<List<TimeSpan>> GetAvailableSlotsAsync(int businessId, int serviceId, DateTime date)
@@ -124,7 +126,14 @@ public class BookingService
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        await SendPlanNotificationsAsync(booking, business, service);
+        try
+        {
+            await SendPlanNotificationsAsync(booking, business, service);
+        }
+        catch (EmailDeliveryException ex)
+        {
+            _logger.LogError(ex, "Booking {BookingId} was created, but email notification failed.", booking.Id);
+        }
 
         return booking;
     }
@@ -159,25 +168,39 @@ public class BookingService
         var owner = await _db.Users.FirstOrDefaultAsync(u => u.Id == business.UserId);
         if (!string.IsNullOrWhiteSpace(owner?.Email))
         {
-            await _emailService.SendNewBookingNotificationAsync(
-                owner.Email,
-                booking.ClientName,
-                service.Name,
-                booking.BookingDate,
-                booking.StartTime,
-                booking.ClientPhone);
+            try
+            {
+                await _emailService.SendNewBookingNotificationAsync(
+                    owner.Email,
+                    booking.ClientName,
+                    service.Name,
+                    booking.BookingDate,
+                    booking.StartTime,
+                    booking.ClientPhone);
+            }
+            catch (EmailDeliveryException ex)
+            {
+                _logger.LogError(ex, "Failed to send owner notification for booking {BookingId}", booking.Id);
+            }
         }
 
         if (plan != SubscriptionPlan.Pro || string.IsNullOrWhiteSpace(booking.ClientEmail))
             return;
 
-        await _emailService.SendBookingConfirmationAsync(
-            booking.ClientEmail,
-            booking.ClientName,
-            business.Name,
-            service.Name,
-            booking.BookingDate,
-            booking.StartTime);
+        try
+        {
+            await _emailService.SendBookingConfirmationAsync(
+                booking.ClientEmail,
+                booking.ClientName,
+                business.Name,
+                service.Name,
+                booking.BookingDate,
+                booking.StartTime);
+        }
+        catch (EmailDeliveryException ex)
+        {
+            _logger.LogError(ex, "Failed to send client confirmation for booking {BookingId}", booking.Id);
+        }
     }
 
     public async Task<bool> CancelBookingAsync(int bookingId, int businessId)

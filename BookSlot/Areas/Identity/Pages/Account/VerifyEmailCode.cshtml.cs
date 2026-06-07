@@ -32,12 +32,12 @@ public class VerifyEmailCodeModel : PageModel
     public InputModel Input { get; set; } = new();
 
     public string Email { get; set; } = "";
+    public bool IsPendingRegistration => Input.PendingId.HasValue;
 
     public class InputModel
     {
-        [Required]
-        public string UserId { get; set; } = "";
-
+        public Guid? PendingId { get; set; }
+        public string? UserId { get; set; }
         public string ReturnUrl { get; set; } = "/Dashboard/Index";
 
         [Required(ErrorMessage = "Введіть код з email")]
@@ -45,17 +45,35 @@ public class VerifyEmailCodeModel : PageModel
         public string Code { get; set; } = "";
     }
 
-    public async Task<IActionResult> OnGetAsync(string userId, string? returnUrl = null)
+    public async Task<IActionResult> OnGetAsync(Guid? pendingId, string? userId, string? returnUrl = null)
     {
+        Input.ReturnUrl = NormalizeReturnUrl(returnUrl);
+
+        if (pendingId.HasValue)
+        {
+            var pending = await _emailVerification.FindPendingAsync(pendingId.Value);
+            if (pending == null)
+            {
+                TempData["Error"] = "Код вже закінчився. Спробуйте зареєструватись ще раз.";
+                return RedirectToPage("./Register", new { returnUrl = Input.ReturnUrl });
+            }
+
+            Input.PendingId = pending.Id;
+            Email = pending.Email;
+            return Page();
+        }
+
+        if (string.IsNullOrWhiteSpace(userId))
+            return RedirectToPage("./Register", new { returnUrl = Input.ReturnUrl });
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
-            return RedirectToPage("./Register");
+            return RedirectToPage("./Register", new { returnUrl = Input.ReturnUrl });
 
         if (await _userManager.IsEmailConfirmedAsync(user))
-            return RedirectToPage("./Login", new { returnUrl });
+            return RedirectToPage("./Login", new { returnUrl = Input.ReturnUrl });
 
         Input.UserId = user.Id;
-        Input.ReturnUrl = NormalizeReturnUrl(returnUrl);
         Email = user.Email ?? "";
         return Page();
     }
@@ -63,9 +81,106 @@ public class VerifyEmailCodeModel : PageModel
     public async Task<IActionResult> OnPostAsync()
     {
         Input.ReturnUrl = NormalizeReturnUrl(Input.ReturnUrl);
-        var user = await LoadUserAsync();
+
+        if (Input.PendingId.HasValue)
+            return await ConfirmPendingAsync();
+
+        return await ConfirmExistingUserAsync();
+    }
+
+    public async Task<IActionResult> OnPostResendAsync(Guid? pendingId, string? userId, string? returnUrl = null)
+    {
+        returnUrl = NormalizeReturnUrl(returnUrl);
+
+        try
+        {
+            if (pendingId.HasValue)
+            {
+                var pending = await _emailVerification.FindPendingAsync(pendingId.Value);
+                if (pending == null)
+                {
+                    TempData["Error"] = "Код вже закінчився. Спробуйте зареєструватись ще раз.";
+                    return RedirectToPage("./Register", new { returnUrl });
+                }
+
+                await _emailVerification.ResendPendingCodeAsync(pending);
+                TempData["Success"] = "Новий код надіслано.";
+                return RedirectToPage("./VerifyEmailCode", new { pendingId = pending.Id, returnUrl });
+            }
+
+            if (string.IsNullOrWhiteSpace(userId))
+                return RedirectToPage("./Register", new { returnUrl });
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return RedirectToPage("./Register", new { returnUrl });
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+                return RedirectToPage("./Login", new { returnUrl });
+
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                Input.UserId = user.Id;
+                Input.ReturnUrl = returnUrl;
+                Email = user.Email ?? "";
+                ModelState.AddModelError(string.Empty, "Забагато спроб. Спробуйте ще раз через 10 хвилин.");
+                return Page();
+            }
+
+            await _emailVerification.SendCodeAsync(user);
+            TempData["Success"] = "Новий код надіслано.";
+            return RedirectToPage("./VerifyEmailCode", new { userId = user.Id, returnUrl });
+        }
+        catch (EmailDeliveryException ex)
+        {
+            _logger.LogError(ex, "Failed to resend verification code.");
+            Input.PendingId = pendingId;
+            Input.UserId = userId;
+            Input.ReturnUrl = returnUrl;
+            await LoadEmailForPageAsync();
+            ModelState.AddModelError(string.Empty, "Не вдалося надіслати код. Спробуйте ще раз трохи пізніше.");
+            return Page();
+        }
+    }
+
+    public async Task<IActionResult> OnPostChangeEmailAsync(Guid? pendingId, string? returnUrl = null)
+    {
+        returnUrl = NormalizeReturnUrl(returnUrl);
+
+        if (pendingId.HasValue)
+            await _emailVerification.DeletePendingAsync(pendingId.Value);
+
+        return RedirectToPage("./Register", new { returnUrl });
+    }
+
+    private async Task<IActionResult> ConfirmPendingAsync()
+    {
+        await LoadEmailForPageAsync();
+
+        if (!ModelState.IsValid)
+            return Page();
+
+        var confirmation = await _emailVerification.ConfirmPendingRegistrationAsync(
+            Input.PendingId!.Value,
+            Input.Code);
+
+        if (!confirmation.Result.Succeeded || confirmation.CreatedUser == null)
+        {
+            foreach (var error in confirmation.Result.Errors)
+                ModelState.AddModelError(string.Empty, error.Description);
+            return Page();
+        }
+
+        await _signInManager.SignInAsync(confirmation.CreatedUser, isPersistent: false);
+        _logger.LogInformation("User registered and confirmed email: {Email}", confirmation.CreatedUser.Email);
+        return LocalRedirect(Input.ReturnUrl);
+    }
+
+    private async Task<IActionResult> ConfirmExistingUserAsync()
+    {
+        var user = await LoadExistingUserAsync();
         if (user == null)
-            return RedirectToPage("./Register");
+            return RedirectToPage("./Register", new { returnUrl = Input.ReturnUrl });
 
         if (!ModelState.IsValid)
             return Page();
@@ -101,36 +216,28 @@ public class VerifyEmailCodeModel : PageModel
         return LocalRedirect(Input.ReturnUrl);
     }
 
-    public async Task<IActionResult> OnPostResendAsync(string userId, string? returnUrl = null)
+    private async Task<ApplicationUser?> LoadExistingUserAsync()
     {
-        var user = await _userManager.FindByIdAsync(userId);
-        if (user == null)
-            return RedirectToPage("./Register");
+        if (string.IsNullOrWhiteSpace(Input.UserId))
+            return null;
 
-        if (await _userManager.IsEmailConfirmedAsync(user))
-            return RedirectToPage("./Login", new { returnUrl });
-
-        if (await _userManager.IsLockedOutAsync(user))
-        {
-            Input.UserId = user.Id;
-            Input.ReturnUrl = NormalizeReturnUrl(returnUrl);
-            Email = user.Email ?? "";
-            ModelState.AddModelError(string.Empty, "Забагато спроб. Спробуйте ще раз через 10 хвилин.");
-            return Page();
-        }
-
-        await _emailVerification.SendCodeAsync(user);
-        TempData["Success"] = "Новий код надіслано.";
-        return RedirectToPage("./VerifyEmailCode", new { userId = user.Id, returnUrl });
-    }
-
-    private async Task<ApplicationUser?> LoadUserAsync()
-    {
         var user = await _userManager.FindByIdAsync(Input.UserId);
         if (user != null)
             Email = user.Email ?? "";
 
         return user;
+    }
+
+    private async Task LoadEmailForPageAsync()
+    {
+        if (Input.PendingId.HasValue)
+        {
+            var pending = await _emailVerification.FindPendingAsync(Input.PendingId.Value);
+            Email = pending?.Email ?? "";
+            return;
+        }
+
+        await LoadExistingUserAsync();
     }
 
     private string NormalizeReturnUrl(string? returnUrl) =>

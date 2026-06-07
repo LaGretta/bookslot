@@ -121,7 +121,14 @@ builder.Services.AddRateLimiter(options =>
 });
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddHttpClient<ResendEmailService>();
-builder.Services.AddScoped<IEmailService, ResendEmailService>();
+builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<IEmailService>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    return string.IsNullOrWhiteSpace(configuration["Resend:ApiKey"])
+        ? sp.GetRequiredService<EmailService>()
+        : sp.GetRequiredService<ResendEmailService>();
+});
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<EmailVerificationCodeService>();
 builder.Services.AddScoped<StripeService>();

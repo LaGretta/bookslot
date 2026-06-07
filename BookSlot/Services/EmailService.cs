@@ -22,10 +22,22 @@ public class EmailService : IEmailService
     {
         try
         {
+            var username = _config["Email:Username"] ?? "";
+            var password = _config["Email:Password"] ?? "";
+            var senderEmail = _config["Email:SenderEmail"] ?? "";
+
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(password) ||
+                username == "your-email@gmail.com" ||
+                password == "your-app-password")
+            {
+                throw new EmailDeliveryException("SMTP email credentials are not configured.");
+            }
+
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(
                 _config["Email:SenderName"] ?? "BookSlot",
-                _config["Email:SenderEmail"] ?? "noreply@bookslot.com"));
+                string.IsNullOrWhiteSpace(senderEmail) ? username : senderEmail));
             message.To.Add(new MailboxAddress(toName, toEmail));
             message.Subject = subject;
             message.Body = new TextPart("html") { Text = htmlBody };
@@ -36,14 +48,19 @@ public class EmailService : IEmailService
                 int.Parse(_config["Email:Port"] ?? "465"),
                 SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(
-                _config["Email:Username"] ?? "",
-                _config["Email:Password"] ?? "");
+                username,
+                password);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
+        }
+        catch (EmailDeliveryException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send email to {Email}", toEmail);
+            throw new EmailDeliveryException("Failed to send email via SMTP.", ex);
         }
     }
 
