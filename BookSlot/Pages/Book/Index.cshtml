@@ -5,14 +5,19 @@
 @{
     ViewData["Title"] = Model.Business?.Name ?? "Запис";
     Layout = "_BookLayout";
+    var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+    var displayName = !string.IsNullOrWhiteSpace(Model.CurrentUserName) &&
+                      !string.Equals(Model.CurrentUserName, Model.CurrentUserEmail, StringComparison.OrdinalIgnoreCase)
+        ? Model.CurrentUserName
+        : "";
 }
 
 @if (Model.Business == null)
 {
     <div class="container py-5 text-center">
-        <div style="font-size:4rem">😕</div>
+        <div style="font-size:4rem">:(</div>
         <h3 class="mt-3">Бізнес не знайдено</h3>
-        <p class="text-muted">Перевірте посилання або зверніться до власника</p>
+        <p class="text-muted">Перевірте посилання або зверніться до власника.</p>
         <a asp-page="/Index" class="btn btn-primary">На головну</a>
     </div>
 }
@@ -28,7 +33,6 @@ else
     }
 
     <div class="container py-4" style="max-width:700px">
-        <!-- Business Header -->
         <div class="booking-header mb-0 text-center">
             <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
                  style="width:80px;height:80px;background:rgba(255,255,255,.2);font-size:2rem;overflow:hidden">
@@ -63,40 +67,49 @@ else
                 @if (TempData["BookingSuccess"] != null)
                 {
                     <div class="alert alert-success text-center py-4">
-                        <div style="font-size:3rem">🎉</div>
+                        <div style="font-size:3rem"><i class="bi bi-check2-circle"></i></div>
                         <h5 class="fw-bold mt-2">Запис підтверджено!</h5>
                         <p>@TempData["BookingSuccess"]</p>
-                        <p class="small text-muted">Перевірте свою пошту — ми надіслали підтвердження</p>
+                        @if (!string.IsNullOrWhiteSpace(Model.CurrentUserEmail))
+                        {
+                            <p class="small text-muted mb-0">
+                                Якщо тариф закладу підтримує email-сповіщення, вони прийдуть на @Model.CurrentUserEmail.
+                            </p>
+                        }
                     </div>
                 }
                 else if (!Model.Services.Any())
                 {
                     <div class="text-center py-4 text-muted">
-                        <div style="font-size:3rem">🛠️</div>
+                        <div style="font-size:3rem"><i class="bi bi-tools"></i></div>
                         <p class="mt-2">Послуги ще не додані. Зверніться до закладу.</p>
                     </div>
                 }
                 else
                 {
-                    <!-- Step 1: Service -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    }
+
                     <div id="step1">
                         <h5 class="fw-bold mb-3">1. Оберіть послугу</h5>
                         <div class="row g-2 mb-4">
-                            @foreach (var s in Model.Services)
+                            @foreach (var service in Model.Services)
                             {
                                 <div class="col-md-6">
-                                    <div class="service-card" onclick="selectService(@s.Id, '@s.Name', @s.DurationMinutes)">
+                                    <div class="service-card" onclick="selectService(this, @service.Id, '@EscapeJs(service.Name)', @service.DurationMinutes)">
                                         <div class="d-flex justify-content-between align-items-start">
                                             <div>
-                                                <div class="fw-semibold">@s.Name</div>
-                                                @if (!string.IsNullOrEmpty(s.Description))
+                                                <div class="fw-semibold">@service.Name</div>
+                                                @if (!string.IsNullOrEmpty(service.Description))
                                                 {
-                                                    <small class="text-muted">@s.Description</small>
+                                                    <small class="text-muted">@service.Description</small>
                                                 }
                                             </div>
                                             <div class="text-end ms-2">
-                                                <div class="fw-bold" style="color:var(--primary)">@s.Price грн</div>
-                                                <small class="text-muted">@s.DurationMinutes хв</small>
+                                                <div class="fw-bold" style="color:var(--primary)">@service.Price грн</div>
+                                                <small class="text-muted">@service.DurationMinutes хв</small>
                                             </div>
                                         </div>
                                     </div>
@@ -104,7 +117,6 @@ else
                             }
                         </div>
 
-                        <!-- Step 2: Date -->
                         <div id="step2" style="display:none">
                             <h5 class="fw-bold mb-3">2. Оберіть дату</h5>
                             <input type="date" id="bookingDate" class="form-control mb-3"
@@ -112,44 +124,67 @@ else
                                    max="@DateTime.Today.AddDays(60).ToString("yyyy-MM-dd")"
                                    onchange="loadSlots()" style="max-width:220px" />
 
-                            <!-- Step 3: Time -->
                             <div id="step3" style="display:none">
                                 <h5 class="fw-bold mb-3">3. Оберіть час</h5>
                                 <div id="slotsContainer" class="row g-2 mb-4"></div>
                             </div>
 
-                            <!-- Step 4: Client form -->
                             <div id="step4" style="display:none">
                                 <h5 class="fw-bold mb-3">4. Ваші дані</h5>
-                                <form method="post">
-                                    <input type="hidden" name="serviceId" id="formServiceId" />
-                                    <input type="hidden" name="date" id="formDate" />
-                                    <input type="hidden" name="time" id="formTime" />
 
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Ім'я та прізвище *</label>
-                                        <input name="clientName" class="form-control" required placeholder="Іван Петренко" />
+                                @if (!Model.IsClientSignedIn)
+                                {
+                                    <div class="alert alert-light border p-4">
+                                        <h6 class="fw-bold mb-2">Щоб підтвердити запис, увійдіть в акаунт</h6>
+                                        <p class="text-muted small mb-3">
+                                            Email підтверджується один раз при реєстрації. Потім записи й нагадування приходять на email вашого акаунта.
+                                        </p>
+                                        <div class="d-flex gap-2 flex-wrap">
+                                            <a class="btn btn-primary flex-fill" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@returnUrl">
+                                                Увійти
+                                            </a>
+                                            <a class="btn btn-outline-primary flex-fill" asp-area="Identity" asp-page="/Account/Register" asp-route-returnUrl="@returnUrl">
+                                                Зареєструватись
+                                            </a>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Телефон *</label>
-                                        <input name="clientPhone" type="tel" class="form-control" required placeholder="+380XXXXXXXXX" />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Email <span class="text-muted">(для підтвердження)</span></label>
-                                        <input name="clientEmail" type="email" class="form-control" placeholder="ivan@email.com" />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-semibold">Нотатки</label>
-                                        <textarea name="notes" class="form-control" rows="2" placeholder="Побажання або коментар"></textarea>
-                                    </div>
+                                }
+                                else
+                                {
+                                    <form method="post">
+                                        <input type="hidden" name="serviceId" id="formServiceId" />
+                                        <input type="hidden" name="date" id="formDate" />
+                                        <input type="hidden" name="time" id="formTime" />
 
-                                    <!-- Summary -->
-                                    <div class="alert alert-light border mb-3" id="bookingSummary"></div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Ім'я та прізвище *</label>
+                                            <input name="clientName" class="form-control" required
+                                                   value="@displayName"
+                                                   placeholder="Іван Петренко" autocomplete="name" />
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Телефон *</label>
+                                            <input name="clientPhone" type="tel" class="form-control" required
+                                                   placeholder="+380XXXXXXXXX" autocomplete="tel" />
+                                        </div>
 
-                                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
-                                        <i class="bi bi-calendar-check me-2"></i> Підтвердити запис
-                                    </button>
-                                </form>
+                                        <div class="alert alert-light border mb-3">
+                                            <div class="small text-muted mb-1">Email для підтвердження і нагадувань</div>
+                                            <div class="fw-semibold">@Model.CurrentUserEmail</div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">Нотатки</label>
+                                            <textarea name="notes" class="form-control" rows="2" placeholder="Побажання або коментар"></textarea>
+                                        </div>
+
+                                        <div class="alert alert-light border mb-3" id="bookingSummary"></div>
+
+                                        <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
+                                            <i class="bi bi-calendar-check me-2"></i> Підтвердити запис
+                                        </button>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>
@@ -157,7 +192,6 @@ else
             </div>
         </div>
 
-        <!-- Business phone -->
         @if (!string.IsNullOrEmpty(Model.Business.Phone))
         {
             <div class="text-center mt-3">
@@ -172,29 +206,35 @@ else
 }
 
 @functions {
-    string GetCategoryEmoji(string? cat) => cat switch {
-        "Барбершоп" => "✂️",
-        "Косметолог" => "💆",
-        "Манікюр/Педикюр" => "💅",
-        "Масаж" => "💆",
-        "Репетитор" => "📚",
-        "Фітнес/Тренер" => "💪",
-        "Лікар" => "🏥",
-        _ => "🏢"
+    string GetCategoryEmoji(string? category) => category switch
+    {
+        "Барбершоп" => "✂",
+        "Косметолог" => "Beauty",
+        "Манікюр/Педикюр" => "Nails",
+        "Масаж" => "Spa",
+        "Репетитор" => "Study",
+        "Фітнес/Тренер" => "Fit",
+        "Лікар" => "Med",
+        _ => "Book"
     };
+
+    string EscapeJs(string value) => value.Replace("\\", "\\\\").Replace("'", "\\'");
 }
 
 @section Scripts {
 <script>
 var selectedServiceId = null;
 var selectedTime = null;
-var businessId = @Model.Business?.Id;
+var selectedServiceName = '';
+var businessId = @(Model.Business?.Id ?? 0);
 
-function selectService(id, name, duration) {
+function selectService(element, id, name, duration) {
     selectedServiceId = id;
+    selectedServiceName = name;
     document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
-    document.getElementById('formServiceId').value = id;
+    element.classList.add('selected');
+    const serviceInput = document.getElementById('formServiceId');
+    if (serviceInput) serviceInput.value = id;
     document.getElementById('step2').style.display = 'block';
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'none';
@@ -206,7 +246,8 @@ function loadSlots() {
     const date = document.getElementById('bookingDate').value;
     if (!date || !selectedServiceId) return;
 
-    document.getElementById('formDate').value = date;
+    const dateInput = document.getElementById('formDate');
+    if (dateInput) dateInput.value = date;
     document.getElementById('step3').style.display = 'none';
     document.getElementById('step4').style.display = 'none';
 
@@ -221,28 +262,32 @@ function loadSlots() {
                 container.innerHTML = '<div class="col-12 text-center text-muted py-3">Немає вільних слотів на цей день</div>';
                 return;
             }
-            container.innerHTML = slots.map(s =>
-                `<div class="col-4 col-md-3"><div class="time-slot" onclick="selectTime('${s}')">${s}</div></div>`
+            container.innerHTML = slots.map(slot =>
+                `<div class="col-4 col-md-3"><div class="time-slot" onclick="selectTime(this, '${slot}')">${slot}</div></div>`
             ).join('');
         })
         .catch(() => container.innerHTML = '<div class="col-12 text-muted">Помилка завантаження слотів</div>');
 }
 
-function selectTime(time) {
+function selectTime(element, time) {
     selectedTime = time;
-    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
-    document.getElementById('formTime').value = time;
+    document.querySelectorAll('.time-slot').forEach(slot => slot.classList.remove('selected'));
+    element.classList.add('selected');
+
+    const timeInput = document.getElementById('formTime');
+    if (timeInput) timeInput.value = time;
     document.getElementById('step4').style.display = 'block';
 
     const date = document.getElementById('bookingDate').value;
-    const [y,m,d] = date.split('-');
-    const serviceName = event.currentTarget.closest('.card-body')?.querySelector('.service-card.selected .fw-semibold')?.textContent || '';
-
-    document.getElementById('bookingSummary').innerHTML = `
-        <strong>Ваш запис:</strong><br>
-        📅 ${d}.${m}.${y} о ${time}
-    `;
+    const [year, month, day] = date.split('-');
+    const summary = document.getElementById('bookingSummary');
+    if (summary) {
+        summary.innerHTML = `
+            <strong>Ваш запис:</strong><br>
+            ${selectedServiceName ? selectedServiceName + '<br>' : ''}
+            ${day}.${month}.${year} о ${time}
+        `;
+    }
 
     document.getElementById('step4').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
