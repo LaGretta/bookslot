@@ -122,13 +122,7 @@ builder.Services.AddRateLimiter(options =>
 builder.Services.AddScoped<BookingService>();
 builder.Services.AddHttpClient<ResendEmailService>();
 builder.Services.AddScoped<EmailService>();
-builder.Services.AddScoped<IEmailService>(sp =>
-{
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    return string.IsNullOrWhiteSpace(GetConfigValue(configuration, "Resend:ApiKey", "RESEND_API_KEY"))
-        ? sp.GetRequiredService<EmailService>()
-        : sp.GetRequiredService<ResendEmailService>();
-});
+builder.Services.AddScoped<IEmailService, ReliableEmailService>();
 builder.Services.AddScoped<IEmailSender, IdentityEmailSender>(); // "Forgot password" emails
 builder.Services.AddScoped<EmailVerificationCodeService>();
 builder.Services.AddScoped<StripeService>();
@@ -214,16 +208,4 @@ static string GetClientPartition(HttpContext context)
         return $"user:{context.User.Identity.Name}";
 
     return $"ip:{context.Connection.RemoteIpAddress?.ToString() ?? "unknown"}";
-}
-
-static string? GetConfigValue(IConfiguration configuration, params string[] keys)
-{
-    foreach (var key in keys)
-    {
-        var value = configuration[key] ?? Environment.GetEnvironmentVariable(key);
-        if (!string.IsNullOrWhiteSpace(value))
-            return value;
-    }
-
-    return null;
 }
