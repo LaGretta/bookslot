@@ -81,7 +81,7 @@ public class IndexModel : PageModel
         {
             ModelState.AddModelError(
                 string.Empty,
-                "На жаль, цей час недоступний або ліміт записів у тарифі вичерпано.");
+                "На жаль, цей час уже недоступний. Оновіть сторінку і виберіть інший слот.");
             return Page();
         }
 

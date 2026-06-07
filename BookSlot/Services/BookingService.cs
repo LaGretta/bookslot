@@ -8,13 +8,16 @@ namespace BookSlot.Services;
 public class BookingService
 {
     private readonly ApplicationDbContext _db;
-    private readonly IEmailService _emailService;
+    private readonly IBookingNotificationQueue _notificationQueue;
     private readonly ILogger<BookingService> _logger;
 
-    public BookingService(ApplicationDbContext db, IEmailService emailService, ILogger<BookingService> logger)
+    public BookingService(
+        ApplicationDbContext db,
+        IBookingNotificationQueue notificationQueue,
+        ILogger<BookingService> logger)
     {
         _db = db;
-        _emailService = emailService;
+        _notificationQueue = notificationQueue;
         _logger = logger;
     }
 
@@ -89,7 +92,15 @@ public class BookingService
         if (business == null) return null;
 
         if (!await CanCreateBookingThisMonthAsync(business))
+        {
+            _logger.LogWarning(
+                "Booking rejected by monthly limit for business {BusinessId}. Plan={Plan}, IsActive={IsActive}, EndDate={EndDate}",
+                business.Id,
+                business.Subscription?.Plan,
+                business.Subscription?.IsActive,
+                business.Subscription?.EndDate);
             return null;
+        }
 
         var available = await GetAvailableSlotsAsync(businessId, serviceId, date);
         if (!available.Contains(startTime)) return null;
@@ -126,14 +137,7 @@ public class BookingService
         await _db.SaveChangesAsync();
         await transaction.CommitAsync();
 
-        try
-        {
-            await SendPlanNotificationsAsync(booking, business, service);
-        }
-        catch (EmailDeliveryException ex)
-        {
-            _logger.LogError(ex, "Booking {BookingId} was created, but email notification failed.", booking.Id);
-        }
+        await QueueNotificationAsync(booking.Id);
 
         return booking;
     }
@@ -158,48 +162,15 @@ public class BookingService
         return count < max;
     }
 
-    private async Task SendPlanNotificationsAsync(Booking booking, Business business, Service service)
+    private async Task QueueNotificationAsync(int bookingId)
     {
-        var plan = IsActiveSubscription(business.Subscription)
-            ? business.Subscription!.Plan
-            : SubscriptionPlan.Free;
-        if (plan == SubscriptionPlan.Free) return;
-
-        var owner = await _db.Users.FirstOrDefaultAsync(u => u.Id == business.UserId);
-        if (!string.IsNullOrWhiteSpace(owner?.Email))
-        {
-            try
-            {
-                await _emailService.SendNewBookingNotificationAsync(
-                    owner.Email,
-                    booking.ClientName,
-                    service.Name,
-                    booking.BookingDate,
-                    booking.StartTime,
-                    booking.ClientPhone);
-            }
-            catch (EmailDeliveryException ex)
-            {
-                _logger.LogError(ex, "Failed to send owner notification for booking {BookingId}", booking.Id);
-            }
-        }
-
-        if (plan != SubscriptionPlan.Pro || string.IsNullOrWhiteSpace(booking.ClientEmail))
-            return;
-
         try
         {
-            await _emailService.SendBookingConfirmationAsync(
-                booking.ClientEmail,
-                booking.ClientName,
-                business.Name,
-                service.Name,
-                booking.BookingDate,
-                booking.StartTime);
+            await _notificationQueue.QueueAsync(bookingId);
         }
-        catch (EmailDeliveryException ex)
+        catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to send client confirmation for booking {BookingId}", booking.Id);
+            _logger.LogError(ex, "Booking {BookingId} was created, but notification queueing failed.", bookingId);
         }
     }
 

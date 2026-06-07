@@ -120,6 +120,9 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 builder.Services.AddScoped<BookingService>();
+builder.Services.AddSingleton<BookingNotificationQueue>();
+builder.Services.AddSingleton<IBookingNotificationQueue>(sp => sp.GetRequiredService<BookingNotificationQueue>());
+builder.Services.AddHostedService(sp => sp.GetRequiredService<BookingNotificationQueue>());
 builder.Services.AddHttpClient<ResendEmailService>();
 builder.Services.AddScoped<EmailService>();
 builder.Services.AddScoped<IEmailService, ReliableEmailService>();
