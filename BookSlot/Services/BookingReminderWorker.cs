@@ -6,22 +6,32 @@ namespace BookSlot.Services;
 
 public class BookingReminderWorker : BackgroundService
 {
-    private static readonly TimeSpan CheckInterval = TimeSpan.FromMinutes(15);
+    private static readonly TimeSpan ReminderLeadTime = TimeSpan.FromHours(24);
 
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<BookingReminderWorker> _logger;
+    private readonly TimeSpan _checkInterval;
+    private readonly TimeZoneInfo _bookingTimeZone;
 
-    public BookingReminderWorker(IServiceScopeFactory scopeFactory, ILogger<BookingReminderWorker> logger)
+    public BookingReminderWorker(
+        IServiceScopeFactory scopeFactory,
+        IConfiguration configuration,
+        ILogger<BookingReminderWorker> logger)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _checkInterval = TimeSpan.FromMinutes(Math.Max(
+            1,
+            configuration.GetValue("BookingReminders:CheckIntervalMinutes", 1)));
+        _bookingTimeZone = ResolveTimeZone(
+            configuration["BookingReminders:TimeZone"] ?? "Europe/Kyiv");
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         await SendDueRemindersAsync(stoppingToken);
 
-        using var timer = new PeriodicTimer(CheckInterval);
+        using var timer = new PeriodicTimer(_checkInterval);
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
             await SendDueRemindersAsync(stoppingToken);
@@ -36,10 +46,11 @@ public class BookingReminderWorker : BackgroundService
             var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var email = scope.ServiceProvider.GetRequiredService<IEmailService>();
 
-            var now = DateTime.UtcNow;
-            var windowEnd = now.AddHours(24);
-            var dateStart = DateTime.SpecifyKind(now.Date, DateTimeKind.Utc);
-            var dateEnd = DateTime.SpecifyKind(windowEnd.Date.AddDays(1), DateTimeKind.Utc);
+            var nowUtc = DateTimeOffset.UtcNow;
+            var nowLocal = TimeZoneInfo.ConvertTime(nowUtc, _bookingTimeZone);
+            var windowEndLocal = nowLocal.Add(ReminderLeadTime);
+            var dateStart = DateTime.SpecifyKind(nowLocal.Date, DateTimeKind.Utc);
+            var dateEnd = DateTime.SpecifyKind(windowEndLocal.Date.AddDays(1), DateTimeKind.Utc);
 
             var candidates = await db.Bookings
                 .Include(b => b.Business)
@@ -53,20 +64,26 @@ public class BookingReminderWorker : BackgroundService
                     b.BookingDate >= dateStart &&
                     b.BookingDate < dateEnd &&
                     b.Business.Subscription != null &&
-                    b.Business.Subscription.Plan == SubscriptionPlan.Pro)
+                    b.Business.Subscription.IsActive &&
+                    b.Business.Subscription.Plan == SubscriptionPlan.Pro &&
+                    (!b.Business.Subscription.EndDate.HasValue || b.Business.Subscription.EndDate > nowUtc.UtcDateTime))
                 .ToListAsync(cancellationToken);
 
             var sentAny = false;
+            var sentCount = 0;
             foreach (var booking in candidates)
             {
                 if (string.IsNullOrWhiteSpace(booking.ClientEmail))
                     continue;
 
-                var appointmentAt = DateTime.SpecifyKind(
+                var appointmentLocalDateTime = DateTime.SpecifyKind(
                     booking.BookingDate.Date + booking.StartTime,
-                    DateTimeKind.Utc);
+                    DateTimeKind.Unspecified);
+                var appointmentAtLocal = new DateTimeOffset(
+                    appointmentLocalDateTime,
+                    _bookingTimeZone.GetUtcOffset(appointmentLocalDateTime));
 
-                if (appointmentAt <= now || appointmentAt > windowEnd)
+                if (appointmentAtLocal <= nowLocal || appointmentAtLocal > windowEndLocal)
                     continue;
 
                 await email.SendBookingReminderAsync(
@@ -77,9 +94,19 @@ public class BookingReminderWorker : BackgroundService
                     booking.BookingDate,
                     booking.StartTime);
 
-                booking.ReminderSentAt = now;
+                booking.ReminderSentAt = nowUtc.UtcDateTime;
+                sentCount++;
                 sentAny = true;
+
+                _logger.LogInformation(
+                    "Sent booking reminder for booking {BookingId} at {AppointmentAt} ({TimeZone})",
+                    booking.Id,
+                    appointmentAtLocal,
+                    _bookingTimeZone.Id);
             }
+
+            if (sentCount > 0)
+                _logger.LogInformation("Sent {Count} booking reminder(s).", sentCount);
 
             if (sentAny)
                 await db.SaveChangesAsync(cancellationToken);
@@ -90,6 +117,37 @@ public class BookingReminderWorker : BackgroundService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to send booking reminders.");
+        }
+    }
+
+    private static TimeZoneInfo ResolveTimeZone(string id)
+    {
+        foreach (var candidate in TimeZoneCandidates(id))
+        {
+            try
+            {
+                return TimeZoneInfo.FindSystemTimeZoneById(candidate);
+            }
+            catch (TimeZoneNotFoundException)
+            {
+            }
+            catch (InvalidTimeZoneException)
+            {
+            }
+        }
+
+        return TimeZoneInfo.Utc;
+    }
+
+    private static IEnumerable<string> TimeZoneCandidates(string id)
+    {
+        yield return id;
+
+        if (id.Equals("Europe/Kyiv", StringComparison.OrdinalIgnoreCase) ||
+            id.Equals("Europe/Kiev", StringComparison.OrdinalIgnoreCase))
+        {
+            yield return "FLE Standard Time";
+            yield return "Europe/Kiev";
         }
     }
 }
