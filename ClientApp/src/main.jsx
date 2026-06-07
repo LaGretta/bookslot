@@ -70,7 +70,7 @@ const plans = [
 
 const walkthroughFrames = [
   {
-    label: "01",
+    label: "1",
     title: "Посилання лежить у кабінеті",
     ownerScene: "owner-dashboard",
     clientScene: "client-profile",
@@ -80,7 +80,7 @@ const walkthroughFrames = [
     clientText: "Для нього все виглядає знайомо: сторінка бізнесу і кнопка запису в шапці.",
   },
   {
-    label: "02",
+    label: "2",
     title: "Власник копіює лінк",
     ownerScene: "owner-copy",
     clientScene: "client-profile",
@@ -90,7 +90,7 @@ const walkthroughFrames = [
     clientText: "Саме цей лінк потім стане входом у запис без переписки.",
   },
   {
-    label: "03",
+    label: "3",
     title: "Лінк іде в шапку профілю",
     ownerScene: "owner-bio",
     clientScene: "client-tap",
@@ -100,7 +100,7 @@ const walkthroughFrames = [
     clientText: "Він не пише в Direct, а просто переходить з профілю на сторінку запису.",
   },
   {
-    label: "04",
+    label: "4",
     title: "Клієнт обирає послугу",
     ownerScene: "owner-live",
     clientScene: "client-booking",
@@ -110,7 +110,7 @@ const walkthroughFrames = [
     clientText: "Клієнт бачить послуги, час і може вибрати зручний варіант за кілька секунд.",
   },
   {
-    label: "05",
+    label: "5",
     title: "Запис готовий",
     ownerScene: "owner-notified",
     clientScene: "client-done",
