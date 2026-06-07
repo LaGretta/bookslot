@@ -130,7 +130,6 @@ public partial class AiReceptionistService : IAiReceptionistService
             cancellationToken);
 
         reply.SuggestedSlots = availability.AvailableSlots
-            .Take(3)
             .Select(slot => slot.ToString(@"hh\:mm"))
             .ToList();
 

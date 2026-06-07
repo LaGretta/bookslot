@@ -1,6 +1,8 @@
 using BookSlot.Data;
+using BookSlot.Features.AiAssistant.Configuration;
 using BookSlot.Features.AiAssistant.Models;
 using BookSlot.Features.AiAssistant.Services;
+using BookSlot.Features.AiAssistant.Telegram;
 using BookSlot.Models;
 using BookSlot.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace BookSlot.Pages.Dashboard.AiAssistant.Conversations;
 
@@ -18,17 +21,26 @@ public class DetailsModel : PageModel
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly BookingService _bookingService;
     private readonly IAiConversationStore _conversationStore;
+    private readonly ITelegramMessageSender _telegramSender;
+    private readonly AiAssistantOptions _aiOptions;
+    private readonly ILogger<DetailsModel> _logger;
 
     public DetailsModel(
         ApplicationDbContext db,
         UserManager<ApplicationUser> userManager,
         BookingService bookingService,
-        IAiConversationStore conversationStore)
+        IAiConversationStore conversationStore,
+        ITelegramMessageSender telegramSender,
+        IOptions<AiAssistantOptions> aiOptions,
+        ILogger<DetailsModel> logger)
     {
         _db = db;
         _userManager = userManager;
         _bookingService = bookingService;
         _conversationStore = conversationStore;
+        _telegramSender = telegramSender;
+        _aiOptions = aiOptions.Value;
+        _logger = logger;
     }
 
     public Business? Business { get; set; }
@@ -90,8 +102,50 @@ public class DetailsModel : PageModel
             $"Власник створив запис #{booking.Id} з цієї AI-чернетки.",
             HttpContext.RequestAborted);
 
+        var confirmationMessage = BuildTelegramConfirmationMessage(booking, DraftService);
+        await SendTelegramConfirmationAsync(Conversation, confirmationMessage);
+        await _conversationStore.AddMessageAsync(
+            Conversation.Id,
+            AiMessageSenderType.Assistant,
+            confirmationMessage,
+            HttpContext.RequestAborted);
+
         TempData["Success"] = $"Запис #{booking.Id} створено з AI-чернетки.";
         return RedirectToPage(new { id });
+    }
+
+    private async Task SendTelegramConfirmationAsync(AiConversation conversation, string message)
+    {
+        if (conversation.Channel != AiConversationChannel.Telegram ||
+            string.IsNullOrWhiteSpace(_aiOptions.TelegramBotToken) ||
+            !long.TryParse(conversation.ExternalChatId, out var chatId))
+        {
+            return;
+        }
+
+        var result = await _telegramSender.SendMessageAsync(
+            _aiOptions.TelegramBotToken,
+            chatId,
+            message,
+            quickReplies: null,
+            HttpContext.RequestAborted);
+
+        if (!result.Success)
+            _logger.LogWarning("Failed to send booking confirmation to Telegram chat {ChatId}: {Error}", chatId, result.ErrorMessage);
+    }
+
+    private static string BuildTelegramConfirmationMessage(Booking booking, Service? service)
+    {
+        var serviceName = service?.Name ?? "послуга";
+        return $"""
+            ✅ Майстер підтвердив ваш запис!
+
+            Послуга: {serviceName}
+            Дата: {booking.BookingDate:dd.MM.yyyy}
+            Час: {booking.StartTime:hh\:mm}
+
+            Чекаємо вас!
+            """;
     }
 
     private static bool LooksLikeEmail(string contact) =>

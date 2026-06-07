@@ -55,12 +55,13 @@
                                         var isAssistant = message.SenderType == BookSlot.Features.AiAssistant.Models.AiMessageSenderType.Assistant;
                                         var isSystem = message.SenderType == BookSlot.Features.AiAssistant.Models.AiMessageSenderType.System;
                                         <div class="@(isAssistant ? "ms-md-5" : isSystem ? "" : "me-md-5")">
-                                            <div class="border rounded-3 p-3" style="background:@(isSystem ? "#f8fafc" : isAssistant ? "#eef2ff" : "#ffffff")">
+                                            <div class="border rounded-3 p-3"
+                                                 style="background:@(isSystem ? "rgba(247,243,236,.10)" : isAssistant ? "rgba(99,102,241,.18)" : "rgba(255,255,255,.08)");border-color:rgba(247,243,236,.18)!important;color:#f7f3ec">
                                                 <div class="d-flex justify-content-between gap-2 mb-2">
                                                     <strong class="small">
                                                         @(isAssistant ? "AI" : isSystem ? "Система" : "Клієнт")
                                                     </strong>
-                                                    <span class="text-muted" style="font-size:.72rem">@message.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                                                    <span style="font-size:.72rem;color:rgba(247,243,236,.62)">@message.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
                                                 </div>
                                                 <div>@message.Text</div>
                                             </div>
