@@ -237,28 +237,7 @@
                 </div>
 
             </div>
-            @if (!string.IsNullOrWhiteSpace(Model.Business?.Slug))
-            {
-                var bookingLink = $"{Request.Scheme}://{Request.Host}/Book/{Model.Business.Slug}";
-                <div class="bs-quick-booking-link mt-4">
-                    <div>
-                        <span>Швидке посилання</span>
-                        <strong>Ваша сторінка запису</strong>
-                        <p>Скопіюйте лінк для Instagram, Telegram або сайту без переходу в налаштування.</p>
-                    </div>
-                    <div class="bs-quick-link-actions">
-                        <input id="subscriptionBookingLink" type="text" value="@bookingLink" readonly />
-                        <button type="button" onclick="copySubscriptionBookingLink(this)">
-                            <i class="bi bi-clipboard"></i>
-                            Копіювати
-                        </button>
-                        <a asp-page="/Book/Index" asp-route-slug="@Model.Business.Slug" target="_blank">
-                            <i class="bi bi-box-arrow-up-right"></i>
-                            Відкрити
-                        </a>
-                    </div>
-                </div>
-            }
+
             <p class="mt-3 small" style="color:#64748b">
                 <i class="bi bi-shield-check" style="color:#10b981"></i>
                 Оплата через <strong>Stripe</strong> — Visa, Mastercard, Apple Pay, Google Pay
@@ -269,28 +248,6 @@
 
 @section Scripts {
 <script>
-function copySubscriptionBookingLink(button) {
-  var input = document.getElementById('subscriptionBookingLink');
-  if (!input) return;
-
-  var original = button.innerHTML;
-  var done = function(){
-    button.innerHTML = '<i class="bi bi-check2"></i> Скопійовано';
-    setTimeout(function(){ button.innerHTML = original; }, 1800);
-  };
-
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(input.value).then(done).catch(function(){
-      input.select();
-      document.execCommand('copy');
-      done();
-    });
-  } else {
-    input.select();
-    document.execCommand('copy');
-    done();
-  }
-}
 
 // 3D tilt on pricing cards (same as landing page)
 document.querySelectorAll('.lp-p-card').forEach(function(card){

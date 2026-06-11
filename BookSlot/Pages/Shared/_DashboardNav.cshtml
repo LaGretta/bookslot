@@ -1,3 +1,19 @@
+@using BookSlot.Data
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DashboardNavDb
+@inject UserManager<ApplicationUser> DashboardNavUserManager
+@{
+    var dashboardNavUserId = DashboardNavUserManager.GetUserId(User);
+    var dashboardNavBusiness = string.IsNullOrWhiteSpace(dashboardNavUserId)
+        ? null
+        : await DashboardNavDb.Businesses.AsNoTracking()
+            .FirstOrDefaultAsync(b => b.UserId == dashboardNavUserId);
+    var dashboardNavBookingLink = !string.IsNullOrWhiteSpace(dashboardNavBusiness?.Slug)
+        ? $"{Context.Request.Scheme}://{Context.Request.Host}/Book/{dashboardNavBusiness.Slug}"
+        : "";
+}
+
 <nav class="nav flex-column">
     <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Index") == true ? "active" : "")"
        asp-page="/Dashboard/Index">
@@ -28,6 +44,46 @@
        asp-page="/Dashboard/Subscription/Index">
         <i class="bi bi-star"></i> Підписка
     </a>
+    @if (!string.IsNullOrWhiteSpace(dashboardNavBookingLink))
+    {
+        <div class="dashboard-nav-booking-shortcut">
+            <span>Ваш BookSlot</span>
+            <input id="dashboardNavBookingLink" type="text" value="@dashboardNavBookingLink" readonly />
+            <div class="dashboard-nav-booking-actions">
+                <button type="button" onclick="copyDashboardNavBookingLink(this)">
+                    <i class="bi bi-clipboard"></i>
+                    Копіювати
+                </button>
+                <a asp-page="/Book/Index" asp-route-slug="@dashboardNavBusiness!.Slug" target="_blank" title="Відкрити">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </a>
+            </div>
+        </div>
+        <script>
+            window.copyDashboardNavBookingLink = window.copyDashboardNavBookingLink || function(button) {
+                var input = document.getElementById('dashboardNavBookingLink');
+                if (!input) return;
+
+                var original = button.innerHTML;
+                var done = function() {
+                    button.innerHTML = '<i class="bi bi-check2"></i> Скопійовано';
+                    setTimeout(function(){ button.innerHTML = original; }, 1600);
+                };
+
+                if (navigator.clipboard && window.isSecureContext) {
+                    navigator.clipboard.writeText(input.value).then(done).catch(function(){
+                        input.select();
+                        document.execCommand('copy');
+                        done();
+                    });
+                } else {
+                    input.select();
+                    document.execCommand('copy');
+                    done();
+                }
+            };
+        </script>
+    }
     <hr class="mx-3">
     <a class="nav-link" asp-page="/Index">
         <i class="bi bi-house-fill"></i> Головна
