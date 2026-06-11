@@ -15,15 +15,15 @@ public class IndexModel : PageModel
     private readonly ApplicationDbContext _db;
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly BookingService _bookingService;
-    private readonly IEmailService _emailService;
+    private readonly IBookingNotificationQueue _notificationQueue;
 
     public IndexModel(ApplicationDbContext db, UserManager<ApplicationUser> userManager,
-        BookingService bookingService, IEmailService emailService)
+        BookingService bookingService, IBookingNotificationQueue notificationQueue)
     {
         _db = db;
         _userManager = userManager;
         _bookingService = bookingService;
-        _emailService = emailService;
+        _notificationQueue = notificationQueue;
     }
 
     public List<Booking> Bookings { get; set; } = [];
@@ -78,13 +78,9 @@ public class IndexModel : PageModel
         var business = await GetBusinessAsync();
         if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
 
-        var booking = await _db.Bookings.Include(b => b.Business).FirstOrDefaultAsync(b => b.Id == id && b.BusinessId == business.Id);
-        if (booking != null)
+        if (await _bookingService.CancelBookingAsync(id, business.Id))
         {
-            await _bookingService.CancelBookingAsync(id, business.Id);
-            if (!string.IsNullOrEmpty(booking.ClientEmail))
-                await _emailService.SendBookingCancelledAsync(
-                    booking.ClientEmail, booking.ClientName, business.Name, booking.BookingDate);
+            await _notificationQueue.QueueCancellationAsync(id);
         }
 
         TempData["Success"] = "Запис скасовано.";
