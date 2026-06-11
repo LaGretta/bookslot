@@ -12,6 +12,7 @@ document.documentElement.dataset.theme = "dark";
 
   const dictionary = {
     "Як працює": "How it works",
+    "Як це працює": "How it works",
     "AI-сценарій": "AI flow",
     "Докази": "Proof",
     "Тарифи": "Pricing",

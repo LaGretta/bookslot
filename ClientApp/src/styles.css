@@ -232,12 +232,16 @@ body.landing-react-body textarea {
 }
 
 .nav-cta {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   justify-content: center;
   gap: 10px;
   min-height: 44px;
   padding: 0 clamp(16px, 2.5vw, 22px);
   border-radius: 999px;
-  background: var(--bs-ink);
+  border: 1px solid rgba(247, 242, 233, 0.34);
+  background: transparent;
   color: #10100e;
   font-family: var(--bs-mono);
   font-size: 0.78rem;
@@ -369,12 +373,57 @@ body.landing-react-body .price-card a {
   font-family: var(--bs-mono);
   font-size: 0.8rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .primary-button {
-  background: var(--bs-ink);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(247, 242, 233, 0.34);
+  background: transparent;
   color: #11110f;
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.26),
+    0 0 22px rgba(242, 211, 145, 0.12);
+}
+
+.nav-cta::before,
+.primary-button::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  z-index: -2;
+  border-radius: inherit;
+  background:
+    conic-gradient(
+      from 0deg,
+      transparent 0deg 58deg,
+      rgba(242, 211, 145, 0.34) 86deg,
+      rgba(247, 242, 233, 0.96) 116deg,
+      rgba(155, 216, 255, 0.42) 145deg,
+      transparent 185deg 360deg
+    );
+  animation: ctaOrbit 3.4s linear infinite;
+}
+
+.nav-cta::after,
+.primary-button::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.86), transparent 30%),
+    linear-gradient(135deg, #fbf7ee 0%, #efe5ce 52%, #d8f0ff 100%);
+}
+
+.nav-cta span,
+.primary-button span {
+  position: relative;
+  z-index: 1;
 }
 
 .secondary-button {
@@ -456,10 +505,12 @@ body.landing-react-body .price-card a {
 .device-top strong {
   display: block;
   margin-top: 2px;
-  font-family: "Space Mono", monospace;
-  font-size: clamp(1.55rem, 2.6vw, 1.9rem);
-  font-weight: 400;
-  letter-spacing: -0.08em;
+  font-family: var(--bs-display);
+  font-size: clamp(2.2rem, 4vw, 3.15rem);
+  font-weight: 430;
+  line-height: 0.82;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 18px rgba(247, 242, 233, 0.2);
 }
 
 .device-orb {
@@ -681,10 +732,11 @@ body.landing-react-body .price-card a {
 
 .device-metrics strong {
   display: block;
-  font-family: "Space Mono", monospace;
-  font-size: 1.08rem;
-  font-weight: 400;
-  letter-spacing: -0.08em;
+  font-family: var(--bs-display);
+  font-size: 1.72rem;
+  font-weight: 430;
+  line-height: 0.88;
+  letter-spacing: 0.02em;
 }
 
 .journey-section {
@@ -1795,11 +1847,13 @@ body.landing-react-body .price-card a {
   font-weight: 430;
   letter-spacing: 0.01em;
   line-height: 0.82;
+  text-shadow: 0 0 22px rgba(247, 242, 233, 0.12);
 }
 
 .price small {
   color: var(--bs-faint);
-  font-size: 1.35rem;
+  font-size: 1.25rem;
+  vertical-align: 0.28em;
   letter-spacing: 0;
 }
 
@@ -1956,6 +2010,12 @@ body.landing-react-body .price-card a {
     box-shadow:
       0 0 34px rgba(155, 216, 255, 0.34),
       inset 0 1px 0 rgba(255, 255, 255, 0.64);
+  }
+}
+
+@keyframes ctaOrbit {
+  to {
+    rotate: 1turn;
   }
 }
 

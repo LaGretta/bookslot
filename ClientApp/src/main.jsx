@@ -483,8 +483,8 @@ function App() {
   const root = document.getElementById("bookslot-react-root");
   const isLoggedIn = root?.dataset.loggedIn === "true";
   const profileInitial = root?.dataset.profileInitial || "B";
-  const primaryHref = isLoggedIn ? "/Dashboard/AiAssistant" : "/Identity/Account/Register";
-  const secondaryHref = isLoggedIn ? "/Dashboard" : "#ai-flow";
+  const primaryHref = isLoggedIn ? "/Dashboard" : "/Identity/Account/Register";
+  const secondaryHref = "#how-it-works";
 
   useReveal();
   useTilt();
@@ -514,7 +514,7 @@ function App() {
             <i aria-hidden="true" />
           </button>
           <a className="nav-cta" href={primaryHref}>
-            {isLoggedIn ? "Відкрити AI" : "Почати"} <span>↗</span>
+            {isLoggedIn ? "До дашборда" : "Почати безкоштовно"} <span>↗</span>
           </a>
           {isLoggedIn && (
             <a className="landing-profile-button" href="/Dashboard">
@@ -539,10 +539,10 @@ function App() {
           </p>
           <div className="hero-actions">
             <a className="primary-button" href={primaryHref}>
-              {isLoggedIn ? "Відкрити AI-помічника" : "Почати"} <span>→</span>
+              {isLoggedIn ? "До дашборда" : "Почати безкоштовно"} <span>→</span>
             </a>
             <a className="secondary-button" href={secondaryHref}>
-              Подивитись сценарій
+              Як це працює
             </a>
           </div>
         </div>
