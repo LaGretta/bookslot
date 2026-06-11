@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&family=Tektur:wght@400;500;600&display=swap");
 
 :root {
   color-scheme: dark;
@@ -11,7 +11,7 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
-  --bs-display: "Handjet", "Space Mono", monospace;
+  --bs-display: "Tektur", "Handjet", "Space Mono", monospace;
   --bs-mono: "Space Mono", "Courier New", monospace;
 }
 
@@ -242,10 +242,13 @@ body.landing-react-body textarea {
   border-radius: 999px;
   border: 1px solid rgba(247, 242, 233, 0.34);
   background: transparent;
-  color: #10100e;
+  color: var(--bs-ink);
   font-family: var(--bs-mono);
   font-size: 0.78rem;
   font-weight: 700;
+  box-shadow:
+    0 16px 42px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .landing-profile-button {
@@ -285,10 +288,13 @@ body.landing-react-body textarea {
   line-height: 1;
 }
 
-body.landing-react-body .nav-cta,
-body.landing-react-body .primary-button,
 body.landing-react-body .price-card.featured a {
   color: #11110f;
+}
+
+body.landing-react-body .nav-cta,
+body.landing-react-body .primary-button {
+  color: var(--bs-ink);
 }
 
 body.landing-react-body .secondary-button,
@@ -334,17 +340,17 @@ body.landing-react-body .price-card a {
 .contact-copy h2 {
   margin: 0;
   font-family: var(--bs-display);
-  font-weight: 430;
-  letter-spacing: 0.015em;
+  font-weight: 400;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 
 .hero-copy h1 {
   max-width: 820px;
   font-size: clamp(3.7rem, 7.2vw, 6.6rem);
-  font-weight: 390;
-  line-height: 0.84;
-  letter-spacing: 0.015em;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
 }
 
 .hero-copy p,
@@ -383,10 +389,10 @@ body.landing-react-body .price-card a {
   overflow: hidden;
   border: 1px solid rgba(247, 242, 233, 0.34);
   background: transparent;
-  color: #11110f;
   box-shadow:
-    0 18px 42px rgba(0, 0, 0, 0.26),
-    0 0 22px rgba(242, 211, 145, 0.12);
+    0 18px 42px rgba(0, 0, 0, 0.34),
+    0 0 28px rgba(242, 211, 145, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .nav-cta::before,
@@ -400,12 +406,13 @@ body.landing-react-body .price-card a {
     conic-gradient(
       from 0deg,
       transparent 0deg 58deg,
-      rgba(242, 211, 145, 0.34) 86deg,
-      rgba(247, 242, 233, 0.96) 116deg,
-      rgba(155, 216, 255, 0.42) 145deg,
+      rgba(242, 211, 145, 0.78) 86deg,
+      rgba(247, 242, 233, 1) 116deg,
+      rgba(155, 216, 255, 0.76) 145deg,
       transparent 185deg 360deg
     );
-  animation: ctaOrbit 3.4s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(242, 211, 145, 0.42));
+  animation: ctaOrbit 2.85s linear infinite;
 }
 
 .nav-cta::after,
@@ -416,8 +423,8 @@ body.landing-react-body .price-card a {
   z-index: -1;
   border-radius: inherit;
   background:
-    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.86), transparent 30%),
-    linear-gradient(135deg, #fbf7ee 0%, #efe5ce 52%, #d8f0ff 100%);
+    radial-gradient(circle at 18% 10%, rgba(247, 242, 233, 0.13), transparent 30%),
+    linear-gradient(135deg, rgba(58, 59, 63, 0.96) 0%, rgba(29, 29, 30, 0.98) 54%, rgba(17, 19, 23, 0.98) 100%);
 }
 
 .nav-cta span,
