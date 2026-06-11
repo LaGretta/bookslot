@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   --product-ink: #f7f2e9;
@@ -8,8 +8,13 @@
   --product-gold: #f2d391;
   --product-blue: #9bd8ff;
   --product-green: #b9ffd7;
+  --product-display: "Handjet", "Space Mono", monospace;
   --product-x: 72vw;
   --product-y: 16vh;
+}
+
+html[data-lang="en"] {
+  --product-display: "DotGothic16", "Space Mono", monospace;
 }
 
 body.bs-product-react-active {
@@ -297,9 +302,43 @@ body.bs-product-react-active .sidebar .nav-link:hover {
 
 body.bs-product-react-active .col-md-10.py-4 > .d-flex:first-of-type h4,
 body.bs-product-react-active .col-md-10.py-4 > h4:first-child {
-  font-family: "Space Mono", "Courier New", monospace;
+  font-family: var(--product-display);
   font-weight: 400;
-  letter-spacing: -0.06em;
+  letter-spacing: 0.01em;
+}
+
+body.bs-product-react-active .lp-price-grid {
+  perspective: 1200px;
+}
+
+body.bs-product-react-active .lp-p-card {
+  border-radius: 8px !important;
+}
+
+body.bs-product-react-active .lp-p-plan,
+body.bs-product-react-active .lp-p-badge {
+  font-family: "Space Mono", "Courier New", monospace;
+  letter-spacing: 0.12em;
+}
+
+body.bs-product-react-active .lp-p-price {
+  font-family: var(--product-display);
+  font-size: clamp(4.4rem, 6vw, 5.45rem) !important;
+  font-weight: 430 !important;
+  line-height: 0.82 !important;
+  letter-spacing: 0.01em !important;
+  text-shadow: 0 0 22px rgba(247, 242, 233, 0.12);
+}
+
+body.bs-product-react-active .lp-p-price sub {
+  font-family: var(--product-display);
+  font-size: 1.2rem !important;
+  vertical-align: 0.28em;
+  letter-spacing: 0;
+}
+
+body.bs-product-react-active .lp-btn-price {
+  font-family: "Space Mono", "Courier New", monospace;
 }
 
 @keyframes productAurora {

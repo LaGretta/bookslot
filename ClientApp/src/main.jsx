@@ -513,9 +513,11 @@ function App() {
             <span>EN</span>
             <i aria-hidden="true" />
           </button>
-          <a className="nav-cta" href={primaryHref}>
-            {isLoggedIn ? "До дашборда" : "Почати безкоштовно"} <span>↗</span>
-          </a>
+          {!isLoggedIn && (
+            <a className="nav-cta" href={primaryHref}>
+              Почати безкоштовно <span>↗</span>
+            </a>
+          )}
           {isLoggedIn && (
             <a className="landing-profile-button" href="/Dashboard">
               <span className="landing-profile-avatar">{profileInitial}</span>

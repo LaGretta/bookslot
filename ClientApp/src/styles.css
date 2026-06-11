@@ -308,12 +308,12 @@ body.landing-react-body .price-card a {
 
 .hero-section {
   display: grid;
-  width: min(calc(100% - 44px), 1220px);
-  grid-template-columns: minmax(0, 0.86fr) minmax(420px, 0.64fr);
-  gap: clamp(30px, 4.2vw, 64px);
-  align-items: end;
+  width: min(calc(100% - 24px), 1320px);
+  grid-template-columns: minmax(0, 0.96fr) minmax(410px, 0.58fr);
+  gap: clamp(26px, 3.6vw, 58px);
+  align-items: center;
   min-height: calc(100vh - 100px);
-  padding: clamp(86px, 13vh, 150px) 0 86px;
+  padding: clamp(58px, 9vh, 118px) 0 86px;
 }
 
 .hero-copy,
@@ -362,6 +362,13 @@ body.landing-react-body .price-card a {
   line-height: 0.98;
   letter-spacing: -0.025em;
   overflow-wrap: anywhere;
+}
+
+html:not([data-lang="en"]) .hero-copy h1 {
+  max-width: 840px;
+  font-size: clamp(4.05rem, 6.55vw, 6.95rem);
+  line-height: 0.92;
+  letter-spacing: -0.018em;
 }
 
 .hero-copy p,
@@ -2135,7 +2142,7 @@ body.landing-react-body .price-card a {
 
   .hero-section {
     align-items: start;
-    padding-top: 72px;
+    padding-top: 54px;
   }
 
   .hero-device {
@@ -2195,9 +2202,14 @@ body.landing-react-body .price-card a {
   }
 
   .hero-copy h1 {
-    font-size: clamp(2.8rem, 11vw, 3.75rem);
+    font-size: clamp(3rem, 12vw, 4.05rem);
     line-height: 1.02;
     letter-spacing: -0.02em;
+  }
+
+  html:not([data-lang="en"]) .hero-copy h1 {
+    font-size: clamp(3.25rem, 14vw, 4.6rem);
+    line-height: 0.96;
   }
 
   .outcome-section h2,
