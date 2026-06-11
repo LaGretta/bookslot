@@ -219,9 +219,12 @@ body.bs-product-react-active {
 }
 
 .ops-button {
-    color: #111;
-    border-color: rgba(248, 243, 234, .72);
-    background: #f8f3ea;
+    color: var(--ops-ink);
+    border-color: rgba(242, 211, 145, .36);
+    background:
+        radial-gradient(circle at 18% 12%, rgba(248, 243, 234, .13), transparent 32%),
+        linear-gradient(135deg, rgba(58, 59, 63, .96), rgba(24, 24, 24, .98) 58%, rgba(15, 17, 20, .98));
+    box-shadow: inset 0 1px rgba(255, 255, 255, .08), 0 14px 34px rgba(0, 0, 0, .28);
 }
 
 .ops-button-soft {

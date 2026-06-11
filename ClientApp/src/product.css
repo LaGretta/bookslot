@@ -99,24 +99,80 @@ body.bs-product-react-active .navbar-brand {
 
 .bs-product-stage-host {
   margin-bottom: 1.35rem;
+  display: none;
 }
 
 body.bs-product-react-active .container-fluid > .row {
-  display: block;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
   min-height: auto;
+  width: min(calc(100vw - 28px), 1280px);
+  margin: clamp(1rem, 3vw, 1.7rem) auto 4rem;
 }
 
 body.bs-product-react-active .sidebar {
-  display: none !important;
+  position: sticky;
+  top: 5.5rem;
+  display: block !important;
+  width: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1px solid var(--product-line);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(242, 211, 145, 0.18), transparent 16rem),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.025)),
+    rgba(11, 12, 11, 0.78);
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+}
+
+body.bs-product-react-active .sidebar nav {
+  padding: 0.65rem;
+}
+
+body.bs-product-react-active .sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 44px;
+  margin: 0.2rem 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 17px;
+  color: var(--product-muted) !important;
+  background: transparent !important;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+body.bs-product-react-active .sidebar .nav-link i {
+  color: var(--product-gold);
+}
+
+body.bs-product-react-active .sidebar .nav-link:hover,
+body.bs-product-react-active .sidebar .nav-link.active {
+  color: var(--product-ink) !important;
+  border-color: rgba(242, 211, 145, 0.22);
+  background: rgba(255, 255, 255, 0.075) !important;
+  transform: translateX(4px);
+}
+
+body.bs-product-react-active .sidebar hr {
+  border-color: var(--product-line);
+  opacity: 1;
 }
 
 body.bs-product-react-active .col-md-10.py-4,
 body.bs-product-react-active .col-md-10.py-4.px-4 {
-  width: min(calc(100% - 32px), 1240px) !important;
-  max-width: 1240px !important;
-  margin-inline: auto !important;
-  padding-left: 0 !important;
-  padding-right: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-width: 0;
 }
 
 .bs-product-stage {
@@ -296,6 +352,26 @@ body.bs-product-react-active .col-md-10.py-4 > h4:first-child {
 }
 
 @media (max-width: 900px) {
+  body.bs-product-react-active .container-fluid > .row {
+    grid-template-columns: 1fr;
+  }
+
+  body.bs-product-react-active .sidebar {
+    position: relative;
+    top: 0;
+  }
+
+  body.bs-product-react-active .sidebar nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.35rem;
+  }
+
+  body.bs-product-react-active .sidebar .nav-link {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
   .bs-product-stage {
     grid-template-columns: 1fr;
   }

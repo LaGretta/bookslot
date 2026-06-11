@@ -1,7 +1,7 @@
 <nav class="nav flex-column">
     <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Index") == true ? "active" : "")"
        asp-page="/Dashboard/Index">
-        <i class="bi bi-speedometer2"></i> Дашборд
+        <i class="bi bi-speedometer2"></i> Центр
     </a>
     <a class="nav-link @(ViewContext.RouteData.Values["page"]?.ToString()?.StartsWith("/Dashboard/Bookings") == true ? "active" : "")"
        asp-page="/Dashboard/Bookings/Index">
@@ -29,8 +29,7 @@
         <i class="bi bi-star"></i> Підписка
     </a>
     <hr class="mx-3">
-    <a class="nav-link" asp-page="/Index"
-       style="background:#EEF2FF;color:#4F46E5;border:1px solid #c7d2fe;margin:2px 12px;border-radius:10px">
+    <a class="nav-link" asp-page="/Index">
         <i class="bi bi-house-fill"></i> Головна
     </a>
 </nav>

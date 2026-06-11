@@ -87,10 +87,6 @@ function useProductPolish() {
   useEffect(() => {
     document.body.classList.add("bs-product-react-active");
 
-    document.querySelectorAll(".sidebar").forEach((sidebar) => {
-      sidebar.remove();
-    });
-
     const cards = [
       ...document.querySelectorAll(
         ".dashboard-ai-banner, .stat-card, .card, .lp-p-card, .ai-demo-phone, .booking-header, .service-card",
@@ -174,14 +170,11 @@ function ProductStage() {
 }
 
 function ProductExperience() {
-  const host = useContentHost();
-
   useProductPolish();
 
   return (
     <>
       <AmbientLayer />
-      {host ? createPortal(<ProductStage />, host) : null}
     </>
   );
 }
