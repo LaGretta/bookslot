@@ -10,29 +10,6 @@
         <div class="col-md-10 py-4 px-4">
             <h4 class="fw-bold mb-4">Підписка</h4>
 
-            @if (!string.IsNullOrWhiteSpace(Model.Business?.Slug))
-            {
-                var bookingLink = $"{Request.Scheme}://{Request.Host}/Book/{Model.Business.Slug}";
-                <div class="bs-quick-booking-link mb-4">
-                    <div>
-                        <span>Швидке посилання</span>
-                        <strong>Ваша сторінка запису</strong>
-                        <p>Скопіюйте лінк для Instagram, Telegram або сайту без переходу в налаштування.</p>
-                    </div>
-                    <div class="bs-quick-link-actions">
-                        <input id="subscriptionBookingLink" type="text" value="@bookingLink" readonly />
-                        <button type="button" onclick="copySubscriptionBookingLink(this)">
-                            <i class="bi bi-clipboard"></i>
-                            Копіювати
-                        </button>
-                        <a asp-page="/Book/Index" asp-route-slug="@Model.Business.Slug" target="_blank">
-                            <i class="bi bi-box-arrow-up-right"></i>
-                            Відкрити
-                        </a>
-                    </div>
-                </div>
-            }
-
             @if (TempData["Success"] != null)
             {
                 <div class="alert alert-success"><i class="bi bi-check-circle me-2"></i>@TempData["Success"]</div>
@@ -260,6 +237,28 @@
                 </div>
 
             </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Business?.Slug))
+            {
+                var bookingLink = $"{Request.Scheme}://{Request.Host}/Book/{Model.Business.Slug}";
+                <div class="bs-quick-booking-link mt-4">
+                    <div>
+                        <span>Швидке посилання</span>
+                        <strong>Ваша сторінка запису</strong>
+                        <p>Скопіюйте лінк для Instagram, Telegram або сайту без переходу в налаштування.</p>
+                    </div>
+                    <div class="bs-quick-link-actions">
+                        <input id="subscriptionBookingLink" type="text" value="@bookingLink" readonly />
+                        <button type="button" onclick="copySubscriptionBookingLink(this)">
+                            <i class="bi bi-clipboard"></i>
+                            Копіювати
+                        </button>
+                        <a asp-page="/Book/Index" asp-route-slug="@Model.Business.Slug" target="_blank">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            Відкрити
+                        </a>
+                    </div>
+                </div>
+            }
             <p class="mt-3 small" style="color:#64748b">
                 <i class="bi bi-shield-check" style="color:#10b981"></i>
                 Оплата через <strong>Stripe</strong> — Visa, Mastercard, Apple Pay, Google Pay
