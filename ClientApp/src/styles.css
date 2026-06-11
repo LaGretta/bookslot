@@ -586,8 +586,23 @@ html:not([data-lang="en"]) .hero-copy h1 {
 
 .booking-card-title {
   display: grid;
-  gap: 2px;
-  margin-bottom: 7px;
+  gap: 4px;
+  min-width: 0;
+  margin-bottom: 8px;
+}
+
+.booking-card-title span {
+  font-size: clamp(0.86rem, 1.25vw, 1rem);
+  line-height: 1.05;
+  letter-spacing: 0.08em;
+  overflow-wrap: anywhere;
+}
+
+.booking-card-title b {
+  min-width: 0;
+  color: var(--bs-ink);
+  font-size: 0.94rem;
+  overflow-wrap: anywhere;
 }
 
 .telegram-header {
@@ -614,15 +629,18 @@ html:not([data-lang="en"]) .hero-copy h1 {
 }
 
 .telegram-header strong {
-  display: block;
-  color: var(--bs-ink);
+    display: block;
+    color: var(--bs-ink);
+    line-height: 1.08;
 }
 
 .telegram-header span {
   display: block;
   margin-top: 2px;
-  color: var(--bs-muted);
-  font-size: 0.74rem;
+    color: var(--bs-muted);
+    font-size: 0.74rem;
+    line-height: 1.18;
+    overflow-wrap: anywhere;
 }
 
 .slot-grid {
@@ -2300,6 +2318,16 @@ html:not([data-lang="en"]) .hero-copy h1 {
 
   .copy-panel span {
     font-size: 0.82rem;
+  }
+
+  .booking-card-title span {
+    font-size: 0.78rem;
+    line-height: 1.05;
+  }
+
+  .booking-card-title b,
+  .telegram-header strong {
+    font-size: 0.9rem;
   }
 
   .profile-cover {

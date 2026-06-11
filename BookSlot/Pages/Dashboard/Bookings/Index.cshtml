@@ -36,7 +36,7 @@
                         <div class="ops-kicker">// робочий тиждень</div>
                         <h1 class="ops-title">Записи як календар, а не список.</h1>
                         <p class="ops-subtitle">
-                            Бачите день, час, клієнта й статус одним поглядом. На телефоні записи переходять у компактні картки.
+                            Бачите день, час, клієнта й статус одним поглядом. На телефоні записи згруповані по днях.
                         </p>
                     </div>
                     <div class="ops-actions">
@@ -100,15 +100,23 @@
                                     <span class="ops-badge">@dayBookings.Count</span>
                                 </div>
                                 <div class="ops-day-body">
+                                    @if (!dayBookings.Any())
+                                    {
+                                        <div class="ops-day-empty">Вільно</div>
+                                    }
                                     @foreach (var booking in dayBookings)
                                     {
                                         <div class="ops-calendar-event" data-booking-id="@booking.Id">
-                                            <div class="d-flex justify-content-between gap-2">
+                                            <div class="ops-calendar-event-top">
                                                 <strong>@booking.ClientName</strong>
                                                 <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
                                             </div>
                                             <small>@booking.StartTime.ToString(@"hh\:mm")-@booking.EndTime.ToString(@"hh\:mm") · @booking.Service.Name</small>
                                             <small class="d-block">@booking.ClientPhone</small>
+                                            @if (!string.IsNullOrWhiteSpace(booking.ClientEmail))
+                                            {
+                                                <small class="d-block">@booking.ClientEmail</small>
+                                            }
                                             @if (booking.Status == BookSlot.Models.BookingStatus.Confirmed || booking.Status == BookSlot.Models.BookingStatus.Pending)
                                             {
                                                 <div class="ops-calendar-actions">
@@ -133,45 +141,70 @@
                     </div>
                 </section>
 
-                <section class="ops-mobile-bookings" aria-label="Мобільний список записів">
-                    @foreach (var booking in Model.Bookings.OrderBy(b => b.BookingDate).ThenBy(b => b.StartTime))
+                <section class="ops-mobile-bookings" aria-label="Мобільний календар записів">
+                    @foreach (var day in days)
                     {
-                        <article class="ops-mobile-booking">
-                            <div class="d-flex justify-content-between gap-2">
+                        var mobileDayBookings = Model.Bookings
+                            .Where(b => b.BookingDate.Date == day.Date)
+                            .OrderBy(b => b.StartTime)
+                            .ToList();
+
+                        <article class="ops-mobile-day">
+                            <div class="ops-mobile-day-head">
                                 <div>
-                                    <strong>@booking.ClientName</strong>
-                                    <small class="d-block">@booking.ClientPhone</small>
-                                    @if (!string.IsNullOrWhiteSpace(booking.ClientEmail))
-                                    {
-                                        <small class="d-block">@booking.ClientEmail</small>
-                                    }
+                                    <strong>@uk.TextInfo.ToTitleCase(day.ToString("dddd", uk))</strong>
+                                    <span>@day.ToString("dd.MM")</span>
                                 </div>
-                                <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
+                                <span class="ops-badge">@mobileDayBookings.Count</span>
                             </div>
-                            <p class="ops-panel-copy mb-0 mt-2">
-                                @booking.Service.Name · @booking.BookingDate.ToString("dd.MM.yyyy") · @booking.StartTime.ToString(@"hh\:mm")-@booking.EndTime.ToString(@"hh\:mm")
-                            </p>
-                            @if (!string.IsNullOrWhiteSpace(booking.Notes))
+
+                            @if (!mobileDayBookings.Any())
                             {
-                                <p class="ops-panel-copy mb-0">@booking.Notes</p>
+                                <div class="ops-mobile-empty">На цей день записів немає</div>
                             }
-                            @if (booking.Status == BookSlot.Models.BookingStatus.Confirmed || booking.Status == BookSlot.Models.BookingStatus.Pending)
+                            else
                             {
-                                <div class="ops-card-actions">
-                                    <form method="post" asp-page-handler="Complete" asp-route-id="@booking.Id">
-                                        <button class="ops-button-soft" title="Завершити">
-                                            <i class="bi bi-check-lg"></i>
-                                            Завершити
-                                        </button>
-                                    </form>
-                                    <form method="post" asp-page-handler="Cancel" asp-route-id="@booking.Id"
-                                          onsubmit="return confirm('Скасувати запис?')">
-                                        <button class="ops-button-soft" title="Скасувати">
-                                            <i class="bi bi-x-lg"></i>
-                                            Скасувати
-                                        </button>
-                                    </form>
-                                </div>
+                                @foreach (var booking in mobileDayBookings)
+                                {
+                                    <div class="ops-mobile-booking">
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <div>
+                                                <strong>@booking.ClientName</strong>
+                                                <small class="d-block">@booking.ClientPhone</small>
+                                                @if (!string.IsNullOrWhiteSpace(booking.ClientEmail))
+                                                {
+                                                    <small class="d-block">@booking.ClientEmail</small>
+                                                }
+                                            </div>
+                                            <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
+                                        </div>
+                                        <p class="ops-panel-copy mb-0 mt-2">
+                                            @booking.Service.Name · @booking.StartTime.ToString(@"hh\:mm")-@booking.EndTime.ToString(@"hh\:mm")
+                                        </p>
+                                        @if (!string.IsNullOrWhiteSpace(booking.Notes))
+                                        {
+                                            <p class="ops-panel-copy mb-0">@booking.Notes</p>
+                                        }
+                                        @if (booking.Status == BookSlot.Models.BookingStatus.Confirmed || booking.Status == BookSlot.Models.BookingStatus.Pending)
+                                        {
+                                            <div class="ops-card-actions">
+                                                <form method="post" asp-page-handler="Complete" asp-route-id="@booking.Id">
+                                                    <button class="ops-button-soft" title="Завершити">
+                                                        <i class="bi bi-check-lg"></i>
+                                                        Завершити
+                                                    </button>
+                                                </form>
+                                                <form method="post" asp-page-handler="Cancel" asp-route-id="@booking.Id"
+                                                      onsubmit="return confirm('Скасувати запис?')">
+                                                    <button class="ops-button-soft" title="Скасувати">
+                                                        <i class="bi bi-x-lg"></i>
+                                                        Скасувати
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        }
+                                    </div>
+                                }
                             }
                         </article>
                     }

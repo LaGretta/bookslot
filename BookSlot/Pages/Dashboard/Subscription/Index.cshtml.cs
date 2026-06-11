@@ -24,6 +24,7 @@ public class IndexModel : PageModel
     }
 
     public Models.Subscription? Subscription    { get; set; }
+    public Business?             Business        { get; set; }
     public bool                 StripeConfigured => _stripe.IsConfigured;
     public string?              SuccessMessage  { get; set; }
 
@@ -36,6 +37,7 @@ public class IndexModel : PageModel
         var business = await _db.Businesses.Include(b => b.Subscription)
                                            .FirstOrDefaultAsync(b => b.UserId == userId);
         if (business == null) return RedirectToPage("/Dashboard/Settings/Index");
+        Business = business;
         Subscription = business.Subscription;
         return Page();
     }

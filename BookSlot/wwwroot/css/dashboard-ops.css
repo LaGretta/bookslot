@@ -373,11 +373,11 @@ body.bs-product-react-active {
 }
 
 .ops-event strong,
-.ops-calendar-event strong {
+.ops-calendar-event strong,
+.ops-mobile-booking strong {
     display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .ops-event small,
@@ -500,9 +500,9 @@ body.bs-product-react-active {
 
 .ops-calendar {
     display: grid;
-    grid-template-columns: repeat(7, minmax(220px, 1fr));
-    gap: .85rem;
-    min-width: 1540px;
+    grid-template-columns: repeat(7, minmax(300px, 1fr));
+    gap: 1rem;
+    min-width: 2100px;
     margin-top: 1rem;
 }
 
@@ -512,7 +512,7 @@ body.bs-product-react-active {
 }
 
 .ops-day {
-    min-height: 520px;
+    min-height: 580px;
     border: 1px solid var(--ops-line);
     border-radius: 22px;
     background: rgba(255, 255, 255, .035);
@@ -546,8 +546,8 @@ body.bs-product-react-active {
     display: grid;
     align-content: start;
     gap: .75rem;
-    min-height: 454px;
-    padding: .75rem;
+    min-height: 514px;
+    padding: .9rem;
     background-image:
         linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
@@ -556,13 +556,30 @@ body.bs-product-react-active {
 
 .ops-calendar-event {
     position: relative;
-    min-height: 138px;
-    padding: .85rem;
+    min-height: 160px;
+    padding: 1rem;
     border: 1px solid rgba(242, 211, 145, .22);
     border-radius: 18px;
     background: rgba(17, 17, 15, .96);
     box-shadow: 0 14px 34px rgba(0, 0, 0, .24);
     cursor: default;
+}
+
+.ops-calendar-event-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: .65rem;
+    align-items: start;
+}
+
+.ops-day-empty {
+    display: grid;
+    place-items: center;
+    min-height: 110px;
+    border: 1px dashed var(--ops-line);
+    border-radius: 18px;
+    color: var(--ops-faint);
+    font-weight: 900;
 }
 
 .ops-calendar-actions,
@@ -596,12 +613,52 @@ body.bs-product-react-active {
 
 .ops-mobile-bookings {
     display: none;
-    gap: .75rem;
+    gap: .9rem;
     margin-top: 1rem;
 }
 
+.ops-mobile-day {
+    overflow: hidden;
+    border: 1px solid var(--ops-line);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .035);
+}
+
+.ops-mobile-day-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .9rem;
+    border-bottom: 1px solid var(--ops-line);
+    background: rgba(16, 16, 14, .92);
+}
+
+.ops-mobile-day-head strong {
+    display: block;
+    color: var(--ops-ink);
+    font-weight: 950;
+}
+
+.ops-mobile-day-head span:not(.ops-badge) {
+    color: var(--ops-faint);
+    font-family: "Space Mono", monospace;
+    font-size: .78rem;
+}
+
+.ops-mobile-empty {
+    margin: .85rem;
+    padding: 1rem;
+    border: 1px dashed var(--ops-line);
+    border-radius: 18px;
+    color: var(--ops-faint);
+    text-align: center;
+    font-weight: 850;
+}
+
 .ops-mobile-booking {
-    padding: .85rem;
+    margin: .85rem;
+    padding: .95rem;
     border: 1px solid var(--ops-line);
     border-radius: 20px;
     background: rgba(255, 255, 255, .045);
