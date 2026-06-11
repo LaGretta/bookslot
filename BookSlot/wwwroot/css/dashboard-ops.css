@@ -823,8 +823,14 @@ body.bs-product-react-active {
 
     .ops-sidebar nav {
         display: flex;
+        flex-direction: row !important;
+        align-items: center;
         overflow-x: auto;
         gap: .35rem;
+    }
+
+    .ops-sidebar hr {
+        display: none;
     }
 
     .ops-sidebar .nav-link {
@@ -833,30 +839,41 @@ body.bs-product-react-active {
     }
 
     .dashboard-nav-booking-shortcut {
-        flex: 0 0 min(220px, calc(100vw - 2rem));
+        flex: 0 0 min(236px, calc(100vw - 2rem));
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "label actions"
+            "input actions";
+        align-items: center;
         margin: 0 .4rem;
-        padding: .55rem;
-        gap: .38rem;
+        padding: .4rem;
+        gap: .28rem .42rem;
     }
 
     .dashboard-nav-booking-shortcut span {
-        font-size: .56rem;
+        grid-area: label;
+        font-size: .52rem;
+        line-height: 1;
     }
 
     .dashboard-nav-booking-shortcut input {
-        height: 32px;
-        font-size: .68rem;
+        grid-area: input;
+        height: 28px;
+        padding: 0 .55rem;
+        font-size: .64rem;
     }
 
     .dashboard-nav-booking-actions {
-        grid-template-columns: 34px 34px;
+        grid-area: actions;
+        grid-template-columns: repeat(2, 30px);
         justify-content: end;
     }
 
     .dashboard-nav-booking-actions button,
     .dashboard-nav-booking-actions a {
-        width: 34px;
-        min-height: 34px;
+        width: 30px;
+        min-height: 30px;
         padding: 0;
         font-size: 0;
     }
