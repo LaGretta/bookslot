@@ -1,174 +1,205 @@
 @page
 @model BookSlot.Pages.Dashboard.IndexModel
 @{
-    ViewData["Title"] = "Дашборд";
+    ViewData["Title"] = "Центр";
+    var businessName = Model.Business?.Name ?? "Ваш бізнес";
+    var bookingLink = $"{Request.Scheme}://{Request.Host}/Book/{Model.Business?.Slug}";
+    var timelineBookings = Model.RecentBookings
+        .OrderByDescending(b => b.BookingDate)
+        .ThenBy(b => b.StartTime)
+        .Take(5)
+        .ToList();
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2 sidebar">
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard-ops.css" asp-append-version="true" />
+}
+
+<section class="ops-shell">
+    <div class="ops-layout">
+        <aside class="ops-sidebar" aria-label="Навігація кабінету">
+            <div class="ops-sidebar-head">
+                <div class="ops-business-chip">
+                    <span class="ops-orb">✶</span>
+                    <div class="min-w-0">
+                        <div class="ops-business-name">@businessName</div>
+                        <div class="ops-business-meta">операційний центр</div>
+                    </div>
+                </div>
+            </div>
             <partial name="_DashboardNav" />
-        </div>
+        </aside>
 
-        <div class="col-md-10 py-4 px-4">
-            <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <div>
-                    <h4 class="fw-bold mb-0">Дашборд</h4>
-                    <p class="text-muted mb-0">@Model.Business?.Name</p>
+        <main class="ops-main">
+            <header class="ops-hero">
+                <div class="ops-hero-inner">
+                    <div>
+                        <div class="ops-kicker">// сьогодні у фокусі</div>
+                        <h1 class="ops-title">Керуйте записами без хаосу.</h1>
+                        <p class="ops-subtitle">
+                            Тут видно темп бізнесу: нові записи, активні послуги, швидке посилання для клієнтів і найближчі бронювання.
+                        </p>
+                    </div>
+                    <div class="ops-actions">
+                        <a asp-page="/Book/Index" asp-route-slug="@Model.Business?.Slug" target="_blank" class="ops-button">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                            Сторінка запису
+                        </a>
+                        <a asp-page="/Dashboard/Bookings/Index" class="ops-button-soft">
+                            <i class="bi bi-calendar-week"></i>
+                            Всі записи
+                        </a>
+                    </div>
                 </div>
-                <a asp-page="/Book/Index" asp-route-slug="@Model.Business?.Slug" target="_blank" class="btn btn-outline-primary">
-                    <i class="bi bi-box-arrow-up-right me-1"></i> Моя сторінка запису
-                </a>
-            </div>
+            </header>
 
-            <div class="dashboard-ai-banner mb-4">
-                <div>
-                    <div class="small text-uppercase fw-bold mb-1" style="letter-spacing:.08em;color:#a5b4fc">BookSlot Pro / AI</div>
-                    <h5 class="fw-bold mb-1 text-white">AI-помічник уже готується для вашого бізнесу</h5>
-                    <p class="mb-0">Telegram-бот може відповідати клієнтам українською або російською, збирати дані для запису і створювати чернетку в дашборді.</p>
-                </div>
-                <a asp-page="/Dashboard/AiAssistant/Index" class="btn btn-light fw-bold">
-                    <i class="bi bi-stars me-1"></i> Відкрити AI
-                </a>
-            </div>
+            <section class="ops-grid" aria-label="Статистика">
+                <article class="ops-card ops-card-glow ops-stat">
+                    <div class="ops-card-pad">
+                        <div class="ops-stat-label">Всього записів</div>
+                        <div class="ops-stat-value">@Model.TotalBookings</div>
+                        <div class="ops-stat-foot">вся історія клієнтів</div>
+                    </div>
+                </article>
+                <article class="ops-card ops-card-glow ops-stat">
+                    <div class="ops-card-pad">
+                        <div class="ops-stat-label">Цього місяця</div>
+                        <div class="ops-stat-value">@Model.MonthBookings</div>
+                        <div class="ops-stat-foot">поточний темп</div>
+                    </div>
+                </article>
+                <article class="ops-card ops-card-glow ops-stat">
+                    <div class="ops-card-pad">
+                        <div class="ops-stat-label">Сьогодні</div>
+                        <div class="ops-stat-value">@Model.TodayBookings</div>
+                        <div class="ops-stat-foot">живий день</div>
+                    </div>
+                </article>
+                <article class="ops-card ops-card-glow ops-stat">
+                    <div class="ops-card-pad">
+                        <div class="ops-stat-label">Послуги</div>
+                        <div class="ops-stat-value">@Model.ServicesCount</div>
+                        <div class="ops-stat-foot">доступно клієнтам</div>
+                    </div>
+                </article>
+            </section>
 
-            <div class="row g-3 mb-4">
-                <div class="col-6 col-md-3">
-                    <div class="stat-card">
-                        <div class="d-flex justify-content-between align-items-center">
+            <section class="ops-grid">
+                <article class="ops-card ops-card-glow ops-span-7">
+                    <div class="ops-card-pad">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
                             <div>
-                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Всього записів</p>
-                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.TotalBookings</h3>
+                                <h2 class="ops-panel-title">Найближчий ритм</h2>
+                                <p class="ops-panel-copy">Останні записи зібрані як робоча стрічка, щоб швидко зрозуміти завантаження.</p>
                             </div>
-                            <div class="stat-icon" style="background:var(--primary-light)">
-                                <i class="bi bi-calendar-check" style="color:var(--primary)"></i>
-                            </div>
+                            <span class="ops-badge"><i class="bi bi-activity"></i> live</span>
                         </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-card">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Цього місяця</p>
-                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.MonthBookings</h3>
-                            </div>
-                            <div class="stat-icon" style="background:#ECFDF5">
-                                <i class="bi bi-bar-chart-line" style="color:#10B981"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-card">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Сьогодні</p>
-                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.TodayBookings</h3>
-                            </div>
-                            <div class="stat-icon" style="background:#FEF3C7">
-                                <i class="bi bi-clock" style="color:#D97706"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="stat-card">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="text-muted mb-1" style="font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Послуг</p>
-                                <h3 class="fw-bold mb-0" style="color:var(--dark)">@Model.ServicesCount</h3>
-                            </div>
-                            <div class="stat-icon" style="background:#FDF2F8">
-                                <i class="bi bi-scissors" style="color:#9333EA"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-0 pt-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold mb-0">Останні записи</h6>
-                        <a asp-page="/Dashboard/Bookings/Index" class="btn btn-sm btn-outline-primary">Всі записи</a>
-                    </div>
-                </div>
-                <div class="card-body p-0">
-                    @if (!Model.RecentBookings.Any())
-                    {
-                        <div class="text-center py-5">
-                            <div class="mb-3" style="font-size:2.5rem"><i class="bi bi-calendar2-plus text-primary"></i></div>
-                            <h6 class="fw-bold text-dark">Ще немає записів</h6>
-                            <p class="text-muted mb-3">Поділіться посиланням або протестуйте AI-помічника у Telegram.</p>
-                            <div class="input-group mx-auto" style="max-width:420px">
-                                <input id="dashLink" type="text" class="form-control form-control-sm"
-                                       value="https://bookslot-production-8bbb.up.railway.app/book/@Model.Business?.Slug"
-                                       readonly />
-                                <button class="btn btn-primary btn-sm" onclick="copyDashLink(event)">
-                                    <i class="bi bi-clipboard"></i>
-                                </button>
+                        @if (!timelineBookings.Any())
+                        {
+                            <div class="ops-empty">
+                                <div class="ops-empty-icon"><i class="bi bi-calendar2-plus"></i></div>
+                                <h3 class="ops-panel-title">Ще немає записів</h3>
+                                <p class="ops-panel-copy">Поділіться посиланням, щоб перші клієнти могли записатися самостійно.</p>
+                                <div class="ops-link-copy">
+                                    <input id="dashLink" type="text" value="@bookingLink" readonly />
+                                    <button type="button" class="ops-button" onclick="copyOpsInput('dashLink', this)">
+                                        <i class="bi bi-clipboard"></i>
+                                        Копіювати
+                                    </button>
+                                </div>
                             </div>
+                        }
+                        else
+                        {
+                            <div class="ops-timeline">
+                                @for (var i = 0; i < 6; i++)
+                                {
+                                    <div class="ops-time-row" style="top:@(i * 72 + 8)px"><span>@(8 + i):00</span></div>
+                                }
+                                @foreach (var booking in timelineBookings)
+                                {
+                                    <div class="ops-event" style="top:@EventTop(booking.StartTime)px">
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <strong>@booking.ClientName</strong>
+                                            <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
+                                        </div>
+                                        <small>
+                                            @booking.Service.Name · @booking.BookingDate.ToString("dd.MM") · @booking.StartTime.ToString(@"hh\:mm")-@booking.EndTime.ToString(@"hh\:mm")
+                                        </small>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </article>
+
+                <article class="ops-card ops-card-glow ops-span-5">
+                    <div class="ops-card-pad">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <h2 class="ops-panel-title">Операційна стрічка</h2>
+                                <p class="ops-panel-copy">Короткий зріз того, що щойно відбувалося у записах.</p>
+                            </div>
+                            <a asp-page="/Dashboard/AiAssistant/Index" class="ops-icon-button" title="AI-помічник">
+                                <i class="bi bi-stars"></i>
+                            </a>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Клієнт</th>
-                                        <th>Послуга</th>
-                                        <th>Дата/час</th>
-                                        <th>Статус</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var b in Model.RecentBookings)
-                                    {
-                                        <tr>
-                                            <td>
-                                                <div class="fw-semibold">@b.ClientName</div>
-                                                <small class="text-muted">@b.ClientPhone</small>
-                                            </td>
-                                            <td>@b.Service.Name</td>
-                                            <td>@b.BookingDate.ToString("dd.MM.yyyy") о @b.StartTime.ToString(@"hh\:mm")</td>
-                                            <td>
-                                                <span class="badge @GetBadgeClass(b.Status)">@GetStatusLabel(b.Status)</span>
-                                            </td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
+
+                        <div class="ops-inbox">
+                            @if (!Model.RecentBookings.Any())
+                            {
+                                <div class="ops-inbox-item">
+                                    <span class="ops-badge">старт</span>
+                                    <p>Скопіюйте посилання на сторінку запису й додайте його в Instagram, Telegram або сайт.</p>
+                                </div>
+                                <div class="ops-link-copy">
+                                    <input id="dashLinkSide" type="text" value="@bookingLink" readonly />
+                                    <button type="button" class="ops-icon-button" onclick="copyOpsInput('dashLinkSide', this)" title="Копіювати">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                @foreach (var booking in Model.RecentBookings.Take(5))
+                                {
+                                    <div class="ops-inbox-item">
+                                        <div class="d-flex justify-content-between gap-2">
+                                            <strong>@booking.ClientName</strong>
+                                            <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
+                                        </div>
+                                        <p>@booking.Service.Name на @booking.BookingDate.ToString("dd.MM.yyyy") о @booking.StartTime.ToString(@"hh\:mm")</p>
+                                    </div>
+                                }
+                            }
                         </div>
-                    }
-                </div>
-            </div>
-        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
     </div>
-</div>
+</section>
 
 @section Scripts {
-<script>
-function copyDashLink(event) {
-    const val = document.getElementById('dashLink')?.value;
-    if (!val) return;
-    navigator.clipboard.writeText(val).then(() => {
-        const btn = event.target.closest('button');
-        btn.innerHTML = '<i class="bi bi-check-lg"></i>';
-        setTimeout(() => btn.innerHTML = '<i class="bi bi-clipboard"></i>', 2000);
-    });
-}
-</script>
+    <script src="~/js/dashboard-ops.js" asp-append-version="true"></script>
 }
 
 @functions {
+    int EventTop(TimeSpan start)
+    {
+        var minutes = (start - TimeSpan.FromHours(8)).TotalMinutes;
+        var top = (int)(minutes / 60 * 72) + 8;
+        return Math.Max(8, Math.Min(360, top));
+    }
+
     string GetBadgeClass(BookSlot.Models.BookingStatus s) => s switch {
-        BookSlot.Models.BookingStatus.Confirmed => "bg-info text-dark",
-        BookSlot.Models.BookingStatus.Completed => "bg-success",
-        BookSlot.Models.BookingStatus.Cancelled => "bg-danger",
-        _ => "bg-warning text-dark"
+        BookSlot.Models.BookingStatus.Confirmed => "is-confirmed",
+        BookSlot.Models.BookingStatus.Completed => "is-completed",
+        BookSlot.Models.BookingStatus.Cancelled => "is-cancelled",
+        _ => "is-pending"
     };
+
     string GetStatusLabel(BookSlot.Models.BookingStatus s) => s switch {
         BookSlot.Models.BookingStatus.Confirmed => "Підтверджено",
         BookSlot.Models.BookingStatus.Completed => "Завершено",

@@ -1,88 +1,127 @@
 @page
+@using System.Globalization
+@using System.Text.Json
 @model BookSlot.Pages.Dashboard.Services.IndexModel
 @{
     ViewData["Title"] = "Послуги";
 }
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2 sidebar">
-            <partial name="_DashboardNav" />
-        </div>
-        <div class="col-md-10 py-4 px-4">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="fw-bold mb-0">Послуги</h4>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addServiceModal">
-                    <i class="bi bi-plus-lg me-1"></i> Додати послугу
-                </button>
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard-ops.css" asp-append-version="true" />
+}
+
+<section class="ops-shell">
+    <div class="ops-layout">
+        <aside class="ops-sidebar" aria-label="Навігація кабінету">
+            <div class="ops-sidebar-head">
+                <div class="ops-business-chip">
+                    <span class="ops-orb">✶</span>
+                    <div class="min-w-0">
+                        <div class="ops-business-name">Послуги</div>
+                        <div class="ops-business-meta">меню для клієнтів</div>
+                    </div>
+                </div>
             </div>
+            <partial name="_DashboardNav" />
+        </aside>
+
+        <main class="ops-main">
+            <header class="ops-hero">
+                <div class="ops-hero-inner">
+                    <div>
+                        <div class="ops-kicker">// меню запису</div>
+                        <h1 class="ops-title">Послуги, які легко обрати.</h1>
+                        <p class="ops-subtitle">
+                            Картки показують назву, ціну, тривалість і стан послуги так, як це має відчуватися в сучасному кабінеті.
+                        </p>
+                    </div>
+                    <div class="ops-actions">
+                        <button class="ops-button" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                            <i class="bi bi-plus-lg"></i>
+                            Додати послугу
+                        </button>
+                    </div>
+                </div>
+            </header>
 
             @if (TempData["Success"] != null)
             {
-                <div class="alert alert-success">@TempData["Success"]</div>
+                <div class="ops-card mt-3">
+                    <div class="ops-card-pad">
+                        <span class="ops-badge is-completed"><i class="bi bi-check2-circle"></i> @TempData["Success"]</span>
+                    </div>
+                </div>
             }
 
             @if (!Model.Services.Any())
             {
-                <div class="card border-0 shadow-sm text-center py-5">
-                    <div style="font-size:3rem">✂️</div>
-                    <h5 class="mt-3">Ще немає послуг</h5>
-                    <p class="text-muted">Додайте перші послуги, щоб клієнти могли записатися</p>
+                <div class="ops-card ops-empty mt-3">
+                    <div class="ops-empty-icon"><i class="bi bi-scissors"></i></div>
+                    <h2 class="ops-panel-title">Ще немає послуг</h2>
+                    <p class="ops-panel-copy">Додайте перші послуги, щоб клієнти могли записуватися без переписок.</p>
+                    <button class="ops-button mt-3" data-bs-toggle="modal" data-bs-target="#addServiceModal">
+                        <i class="bi bi-plus-lg"></i>
+                        Додати першу послугу
+                    </button>
                 </div>
             }
             else
             {
-                <div class="card border-0 shadow-sm">
-                    <div class="table-responsive">
-                        <table class="table mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Назва</th>
-                                    <th>Опис</th>
-                                    <th>Тривалість</th>
-                                    <th>Ціна</th>
-                                    <th>Статус</th>
-                                    <th>Дії</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var s in Model.Services)
-                                {
-                                    <tr>
-                                        <td class="fw-semibold">@s.Name</td>
-                                        <td class="text-muted">@(s.Description ?? "—")</td>
-                                        <td>@s.DurationMinutes хв</td>
-                                        <td>@s.Price.ToString("N0") грн</td>
-                                        <td>
-                                            <span class="badge @(s.IsActive ? "bg-success" : "bg-secondary")">
-                                                @(s.IsActive ? "Активна" : "Неактивна")
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-outline-primary me-1"
-                                                    onclick="editService(@s.Id,'@s.Name','@s.Description','@s.DurationMinutes','@s.Price')">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" class="d-inline"
-                                                  onsubmit="return confirm('Видалити послугу?')">
-                                                <button class="btn btn-sm btn-outline-danger">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            }
-        </div>
-    </div>
-</div>
+                <section class="ops-service-grid" aria-label="Список послуг">
+                    @foreach (var service in Model.Services)
+                    {
+                        var meter = Math.Max(28, Math.Min(100, service.DurationMinutes));
+                        <article class="ops-card ops-card-glow ops-service-card">
+                            <div class="ops-card-pad">
+                                <div class="ops-service-top">
+                                    <div class="min-w-0">
+                                        <span class="ops-badge @(service.IsActive ? "is-completed" : "is-cancelled")">
+                                            @(service.IsActive ? "Активна" : "Неактивна")
+                                        </span>
+                                        <h2 class="ops-panel-title mt-2">@service.Name</h2>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="ops-price">@service.Price.ToString("N0")</div>
+                                        <small>грн</small>
+                                    </div>
+                                </div>
 
-<!-- Add Modal -->
-<div class="modal fade" id="addServiceModal" tabindex="-1">
+                                <p class="ops-panel-copy">
+                                    @(string.IsNullOrWhiteSpace(service.Description) ? "Короткий опис ще не додано." : service.Description)
+                                </p>
+
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <span class="ops-mini-chip"><i class="bi bi-clock"></i> @service.DurationMinutes хв</span>
+                                    <span class="ops-mini-chip"><i class="bi bi-calendar2-check"></i> онлайн-запис</span>
+                                </div>
+
+                                <div class="ops-meter" aria-hidden="true">
+                                    <span style="width:@meter%"></span>
+                                </div>
+
+                                <div class="ops-card-actions">
+                                    <button class="ops-button-soft"
+                                            onclick='editService(@service.Id, @Html.Raw(JsonSerializer.Serialize(service.Name)), @Html.Raw(JsonSerializer.Serialize(service.Description ?? "")), @service.DurationMinutes, @service.Price.ToString(CultureInfo.InvariantCulture))'>
+                                        <i class="bi bi-pencil"></i>
+                                        Редагувати
+                                    </button>
+                                    <form method="post" asp-page-handler="Delete" asp-route-id="@service.Id"
+                                          onsubmit="return confirm('Видалити послугу?')">
+                                        <button class="ops-icon-button" title="Видалити">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </article>
+                    }
+                </section>
+            }
+        </main>
+    </div>
+</section>
+
+<div class="modal fade ops-modal" id="addServiceModal" tabindex="-1">
     <div class="modal-dialog">
         <form method="post" asp-page-handler="Add">
             <div class="modal-content">
@@ -93,7 +132,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Назва *</label>
-                        <input name="name" class="form-control" required placeholder="напр. Стрижка чоловіча" />
+                        <input name="name" class="form-control" required placeholder="Наприклад: чоловіча стрижка" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Опис</label>
@@ -111,16 +150,15 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                    <button type="submit" class="btn btn-primary">Додати</button>
+                    <button type="button" class="ops-button-soft" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="ops-button">Додати</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<!-- Edit Modal -->
-<div class="modal fade" id="editServiceModal" tabindex="-1">
+<div class="modal fade ops-modal" id="editServiceModal" tabindex="-1">
     <div class="modal-dialog">
         <form method="post" asp-page-handler="Edit">
             <div class="modal-content">
@@ -150,8 +188,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <button type="button" class="ops-button-soft" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="submit" class="ops-button">Зберегти</button>
                 </div>
             </div>
         </form>
@@ -159,14 +197,15 @@
 </div>
 
 @section Scripts {
-<script>
-function editService(id, name, description, duration, price) {
-    document.getElementById('editId').value = id;
-    document.getElementById('editName').value = name;
-    document.getElementById('editDescription').value = description || '';
-    document.getElementById('editDuration').value = duration;
-    document.getElementById('editPrice').value = price;
-    new bootstrap.Modal(document.getElementById('editServiceModal')).show();
-}
-</script>
+    <script src="~/js/dashboard-ops.js" asp-append-version="true"></script>
+    <script>
+        function editService(id, name, description, duration, price) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editName').value = name;
+            document.getElementById('editDescription').value = description || '';
+            document.getElementById('editDuration').value = duration;
+            document.getElementById('editPrice').value = price;
+            new bootstrap.Modal(document.getElementById('editServiceModal')).show();
+        }
+    </script>
 }
