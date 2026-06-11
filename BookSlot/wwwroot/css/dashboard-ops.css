@@ -500,9 +500,9 @@ body.bs-product-react-active {
 
 .ops-calendar {
     display: grid;
-    grid-template-columns: repeat(7, minmax(148px, 1fr));
-    gap: .7rem;
-    min-width: 980px;
+    grid-template-columns: repeat(7, minmax(220px, 1fr));
+    gap: .85rem;
+    min-width: 1540px;
     margin-top: 1rem;
 }
 
@@ -512,7 +512,7 @@ body.bs-product-react-active {
 }
 
 .ops-day {
-    min-height: 640px;
+    min-height: 520px;
     border: 1px solid var(--ops-line);
     border-radius: 22px;
     background: rgba(255, 255, 255, .035);
@@ -543,43 +543,41 @@ body.bs-product-react-active {
 }
 
 .ops-day-body {
-    position: relative;
-    min-height: 574px;
-    padding: .65rem;
-    background-image: linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px);
-    background-size: 100% 72px;
+    display: grid;
+    align-content: start;
+    gap: .75rem;
+    min-height: 454px;
+    padding: .75rem;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .025) 1px, transparent 1px);
+    background-size: 100% 84px, 42px 42px;
 }
 
 .ops-calendar-event {
-    position: absolute;
-    left: .65rem;
-    right: .65rem;
-    min-height: 64px;
-    padding: .65rem;
+    position: relative;
+    min-height: 138px;
+    padding: .85rem;
     border: 1px solid rgba(242, 211, 145, .22);
-    border-radius: 16px;
+    border-radius: 18px;
     background: rgba(17, 17, 15, .96);
     box-shadow: 0 14px 34px rgba(0, 0, 0, .24);
-    cursor: grab;
-}
-
-.ops-calendar-event:active {
-    cursor: grabbing;
+    cursor: default;
 }
 
 .ops-calendar-actions,
 .ops-card-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: .35rem;
-    margin-top: .55rem;
+    gap: .45rem;
+    margin-top: .75rem;
 }
 
 .ops-mini-action {
     display: inline-grid;
     place-items: center;
-    width: 30px;
-    height: 30px;
+    width: 36px;
+    height: 36px;
     border: 1px solid var(--ops-line);
     border-radius: 999px;
     color: var(--ops-ink);

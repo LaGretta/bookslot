@@ -91,7 +91,7 @@
                                 .OrderBy(b => b.StartTime)
                                 .ToList();
 
-                            <article class="ops-day" data-ops-drop-day="@day.ToString("yyyy-MM-dd")">
+                            <article class="ops-day">
                                 <div class="ops-day-head">
                                     <div>
                                         <div class="ops-day-name">@uk.TextInfo.ToTitleCase(day.ToString("ddd", uk))</div>
@@ -102,11 +102,7 @@
                                 <div class="ops-day-body">
                                     @foreach (var booking in dayBookings)
                                     {
-                                        <div class="ops-calendar-event"
-                                             draggable="true"
-                                             data-ops-draggable="booking"
-                                             data-booking-id="@booking.Id"
-                                             style="top:@BookingTop(booking.StartTime)px;height:@BookingHeight(booking.StartTime, booking.EndTime)px">
+                                        <div class="ops-calendar-event" data-booking-id="@booking.Id">
                                             <div class="d-flex justify-content-between gap-2">
                                                 <strong>@booking.ClientName</strong>
                                                 <span class="ops-badge @GetBadgeClass(booking.Status)">@GetStatusLabel(booking.Status)</span>
@@ -190,19 +186,6 @@
 }
 
 @functions {
-    int BookingTop(TimeSpan start)
-    {
-        var minutes = (start - TimeSpan.FromHours(8)).TotalMinutes;
-        var top = (int)(minutes / 60 * 72);
-        return Math.Max(0, Math.Min(510, top));
-    }
-
-    int BookingHeight(TimeSpan start, TimeSpan end)
-    {
-        var minutes = Math.Max(30, (end - start).TotalMinutes);
-        return Math.Max(64, Math.Min(190, (int)(minutes / 60 * 72)));
-    }
-
     string GetBadgeClass(BookSlot.Models.BookingStatus s) => s switch {
         BookSlot.Models.BookingStatus.Confirmed => "is-confirmed",
         BookSlot.Models.BookingStatus.Completed => "is-completed",
