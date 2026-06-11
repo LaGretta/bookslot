@@ -11,8 +11,12 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
-  --bs-display: "DotGothic16", "Handjet", "Space Mono", monospace;
+  --bs-display: "Handjet", "Space Mono", monospace;
   --bs-mono: "Space Mono", "Courier New", monospace;
+}
+
+html[data-lang="en"] {
+  --bs-display: "DotGothic16", "Space Mono", monospace;
 }
 
 * {
@@ -304,11 +308,16 @@ body.landing-react-body .price-card a {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(430px, 0.72fr);
-  gap: clamp(20px, 3.6vw, 48px);
+  grid-template-columns: minmax(0, 0.7fr) minmax(440px, 0.72fr);
+  gap: clamp(32px, 5vw, 72px);
   align-items: end;
   min-height: calc(100vh - 100px);
   padding: clamp(86px, 13vh, 150px) 0 86px;
+}
+
+.hero-copy,
+.hero-visual {
+  min-width: 0;
 }
 
 .eyebrow,
@@ -346,11 +355,12 @@ body.landing-react-body .price-card a {
 }
 
 .hero-copy h1 {
-  max-width: 820px;
-  font-size: clamp(3.7rem, 7.2vw, 6.6rem);
+  max-width: 690px;
+  font-size: clamp(2.9rem, 4.7vw, 4.7rem);
   font-weight: 400;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere;
 }
 
 .hero-copy p,
@@ -2184,8 +2194,9 @@ body.landing-react-body .price-card a {
   }
 
   .hero-copy h1 {
-    font-size: clamp(3.2rem, 14.5vw, 4.2rem);
-    line-height: 0.86;
+    font-size: clamp(2.8rem, 11vw, 3.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
   }
 
   .outcome-section h2,
@@ -2193,7 +2204,7 @@ body.landing-react-body .price-card a {
   .pricing-section h2,
   .contact-copy h2 {
     font-size: clamp(2.8rem, 11.5vw, 3.65rem);
-    line-height: 0.9;
+    line-height: 1.02;
   }
 
   .price {

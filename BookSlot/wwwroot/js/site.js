@@ -27,6 +27,7 @@ document.documentElement.dataset.theme = "dark";
     "Відкрити AI-помічника": "Open AI assistant",
     "Подивитись сценарій": "View the flow",
     "Приватна бета вже відкрита": "Private beta is now open",
+    "Запис без зайвої переписки.": "Bookings without the extra back-and-forth.",
     "Менше переписок. Більше записів. Спокійний графік.": "Fewer messages. More bookings. A calmer schedule.",
     "BookSlot дає локальному бізнесу преміальний шар онлайн-запису: сторінку бронювання, Telegram AI-помічника, чисту логіку слотів і чернетки під контроль власника.": "BookSlot gives local businesses a premium booking layer: a public booking page, a Telegram AI assistant, clean slot logic, and drafts that stay under the owner's control.",
     "Telegram AI": "Telegram AI",
