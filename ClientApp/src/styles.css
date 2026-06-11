@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&family=Tektur:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Handjet:wght@300..700&family=Inter:wght@500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap");
 
 :root {
   color-scheme: dark;
@@ -11,7 +11,7 @@
   --bs-gold: #f2d391;
   --bs-green: #b9ffd7;
   --bs-max: 1080px;
-  --bs-display: "Tektur", "Handjet", "Space Mono", monospace;
+  --bs-display: "DotGothic16", "Handjet", "Space Mono", monospace;
   --bs-mono: "Space Mono", "Courier New", monospace;
 }
 
@@ -341,7 +341,7 @@ body.landing-react-body .price-card a {
   margin: 0;
   font-family: var(--bs-display);
   font-weight: 400;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -349,8 +349,8 @@ body.landing-react-body .price-card a {
   max-width: 820px;
   font-size: clamp(3.7rem, 7.2vw, 6.6rem);
   font-weight: 400;
-  line-height: 0.92;
-  letter-spacing: -0.03em;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
 }
 
 .hero-copy p,
@@ -1732,8 +1732,8 @@ body.landing-react-body .price-card a {
   max-width: 780px;
   margin-top: 20px;
   font-size: clamp(3.2rem, 6vw, 5.35rem);
-  font-weight: 410;
-  line-height: 0.88;
+  font-weight: 400;
+  line-height: 0.98;
 }
 
 .feature-grid,
